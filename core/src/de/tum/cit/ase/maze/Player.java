@@ -25,6 +25,13 @@ public class Player {
     private Animation<TextureRegion> characterLeftAnimation;
     private Animation<TextureRegion> characterRightAnimation;
 
+    public final int DOWN = 0;
+    public final int RIGHT = 1;
+    public final int UP = 2;
+    public final int LEFT = 3;
+
+
+
     public int getXpos() {
         return xpos;
     }
@@ -65,13 +72,30 @@ public class Player {
         this.health = health;
     }
 
+    public Animation<TextureRegion> getCharacterDownAnimation() {
+        return characterDownAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterUpAnimation() {
+        return characterUpAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterLeftAnimation() {
+        return characterLeftAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterRightAnimation() {
+        return characterRightAnimation;
+    }
+
     public Player(Texture texture, int xpos, int ypos) {
         this.texture = texture;
         this.xpos = xpos;
         this.ypos = ypos;
+        this.direction = 0;
     }
 
-    private void loadCharacterAnimation() {
+    public void loadCharacterAnimation() {
         Texture walkSheet = texture;
 
         int frameWidth = 16;
@@ -86,7 +110,7 @@ public class Player {
             downWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
         }
 
-        characterDownAnimation = new Animation<>(0.1f, downWalkFrames);
+        characterDownAnimation = new Animation<TextureRegion>(0.1f, downWalkFrames);
 
         Array<TextureRegion> rightWalkFrames = new Array<>(TextureRegion.class);
 
@@ -94,7 +118,7 @@ public class Player {
             rightWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 32, frameWidth, frameHeight));
         }
 
-        characterRightAnimation = new Animation<>(0.1f, rightWalkFrames);
+        characterRightAnimation = new Animation<TextureRegion>(0.1f, rightWalkFrames);
 
         Array<TextureRegion> upWalkFrames = new Array<>(TextureRegion.class);
 
@@ -102,7 +126,7 @@ public class Player {
             upWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 64, frameWidth, frameHeight));
         }
 
-        characterUpAnimation = new Animation<>(0.1f, upWalkFrames);
+        characterUpAnimation = new Animation<TextureRegion>(0.1f, upWalkFrames);
 
         Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
 
@@ -110,8 +134,19 @@ public class Player {
             leftWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 96, frameWidth, frameHeight));
         }
 
-        characterLeftAnimation = new Animation<>(0.1f, leftWalkFrames);
+        characterLeftAnimation = new Animation<TextureRegion>(0.1f, leftWalkFrames);
 
+    }
+
+    public Animation<TextureRegion> getWalkAnimation(int direction){
+        loadCharacterAnimation();
+        switch(direction){
+            case 0 -> { return characterDownAnimation; }
+            case 1 -> { return characterRightAnimation; }
+            case 2 -> { return characterUpAnimation; }
+            case 3 -> { return characterLeftAnimation; }
+            default -> {return characterUpAnimation; }
+        }
     }
 
 

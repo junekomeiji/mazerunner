@@ -1,8 +1,7 @@
 # Game Idea
 
 ## Backlog
-### Transfer all assets onto GH
-### Implement player
+
 ### Implement animations
 ### Implement viewing of the maze
 ### Implement HUD
@@ -21,4 +20,6 @@
 ## Review
 
 ## Done
+### Transfer all assets onto GH
+### Implement player animation
 
