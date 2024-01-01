@@ -61,7 +61,7 @@ public class MenuScreen implements Screen {
         stage.draw(); // Draw the stage
 
         batch.begin();
-        font.draw(batch, "Test", 200, 200);
+        font.draw(batch, "Test Message", 200, 200);
         batch.end();
 
 
