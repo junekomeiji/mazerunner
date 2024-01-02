@@ -27,7 +27,7 @@ public class GameScreen implements Screen {
     private float sinusInput = 0f;
 
     private Player player;
-    private Animation<TextureRegion> playerWalkAnimation;
+    private Animation<TextureRegion> playerAnimation;
     private float elapsedTime = 0f;
 
 
@@ -41,6 +41,8 @@ public class GameScreen implements Screen {
         this.game = game;
 
         player = new Player(new Texture(Gdx.files.internal("character.png")), 0, 0);
+        player.setDirection(player.UP);
+        playerAnimation = player.getPickingUpAnimation();
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
@@ -59,7 +61,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         elapsedTime += Gdx.graphics.getDeltaTime();
-        playerWalkAnimation = player.getWalkAnimation(player.getDirection());
 
 
         // Check for escape key press to go back to the menu
@@ -70,29 +71,33 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
             player.setYpos(player.getYpos() + 20);
             player.setDirection(player.UP);
-            playerWalkAnimation = player.getWalkAnimation(player.getDirection());
+            playerAnimation = player.getWalkAnimation();
 
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             player.setXpos(player.getXpos() - 20);
             player.setDirection(player.LEFT);
-            playerWalkAnimation = player.getWalkAnimation(player.getDirection());
+            playerAnimation = player.getWalkAnimation();
 
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             player.setYpos(player.getYpos() - 20);
             player.setDirection(player.DOWN);
-            playerWalkAnimation = player.getWalkAnimation(player.getDirection());
+            playerAnimation = player.getWalkAnimation();
 
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
             player.setXpos(player.getXpos() + 20);
             player.setDirection(player.RIGHT);
-            playerWalkAnimation = player.getWalkAnimation(player.getDirection());
+            playerAnimation = player.getWalkAnimation();
+        }
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            player.setPickingUp(true);
+            playerAnimation = player.getPickingUpAnimation();
         }
 
 
@@ -100,7 +105,7 @@ public class GameScreen implements Screen {
         player.loadCharacterAnimation();
 
         font.draw(game.getSpriteBatch(), "test", 0, 0);
-        TextureRegion currentFrame = playerWalkAnimation.getKeyFrame(elapsedTime, true);
+        TextureRegion currentFrame = playerAnimation.getKeyFrame(elapsedTime, true);
 
         game.getSpriteBatch().draw(currentFrame, player.getXpos(), player.getYpos(), 64, 128);
 
