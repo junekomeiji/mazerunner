@@ -232,21 +232,63 @@ public class Player {
 
         Array<TextureRegion> characterPickingUpLeftFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < pickingUpAnimationFrames; col++){
-            characterPickingUpLeftFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 80, 128, frameWidth, frameHeight));
+            characterPickingUpLeftFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 80, 96, frameWidth, frameHeight));
         }
 
         characterPickingUpLeft = new Animation<TextureRegion>(0.1f, characterPickingUpLeftFrames);
+
+        //load picked up frames
+        Array<TextureRegion> characterPickedUpDownFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            characterPickingUpDownFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 0, frameWidth, frameHeight));
+        }
+
+        characterPickedUpDown = new Animation<TextureRegion>(0.1f, characterPickingUpDownFrames);
+
+
+        Array<TextureRegion> characterPickedUpRightFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            characterPickedUpRightFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 32, frameWidth, frameHeight));
+        }
+
+        characterPickedUpRight = new Animation<TextureRegion>(0.1f, characterPickedUpRightFrames);
+
+
+        Array<TextureRegion> characterPickedUpUpFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            characterPickedUpUpFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 64, frameWidth, frameHeight));
+        }
+
+        characterPickedUpUp = new Animation<TextureRegion>(0.1f, characterPickedUpUpFrames);
+
+
+        Array<TextureRegion> characterPickedUpLeftFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            characterPickedUpLeftFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 96, frameWidth, frameHeight));
+        }
+
+        characterPickedUpLeft = new Animation<TextureRegion>(0.1f, characterPickedUpLeftFrames);
 
     }
 
     public Animation<TextureRegion> getWalkAnimation(){
 
-        switch(this.direction){
-            case 0 -> { return characterDownAnimation; }
-            case 1 -> { return characterRightAnimation; }
-            case 2 -> { return characterUpAnimation; }
-            case 3 -> { return characterLeftAnimation; }
-            default -> {return characterUpAnimation; }
+        if(!pickedUp){
+            switch(this.direction){
+                case 0 -> { return characterDownAnimation; }
+                case 1 -> { return characterRightAnimation; }
+                case 2 -> { return characterUpAnimation; }
+                case 3 -> { return characterLeftAnimation; }
+                default -> {return characterUpAnimation; }
+            }
+        } else{
+            switch(this.direction){
+                case 0 -> { return characterPickedUpDown; }
+                case 1 -> { return characterPickedUpRight; }
+                case 2 -> { return characterPickedUpUp; }
+                case 3 -> { return characterPickedUpLeft; }
+                default -> {return characterUpAnimation; }
+            }
         }
 
     }

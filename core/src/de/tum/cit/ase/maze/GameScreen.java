@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
 
         player = new Player(new Texture(Gdx.files.internal("character.png")), 0, 0);
         player.setDirection(player.UP);
-        playerAnimation = player.getPickingUpAnimation();
+        playerAnimation = player.getWalkAnimation();
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
@@ -96,8 +96,16 @@ public class GameScreen implements Screen {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-            player.setPickingUp(true);
-            playerAnimation = player.getPickingUpAnimation();
+            if(!player.isPickingUp()) {
+                player.setPickingUp(true);
+                player.setPickedUp(true);
+                playerAnimation = player.getPickingUpAnimation();
+            } else {
+                player.setPickingUp(false);
+                player.setPickedUp(false);
+                playerAnimation = player.getWalkAnimation();
+            }
+
         }
 
 
