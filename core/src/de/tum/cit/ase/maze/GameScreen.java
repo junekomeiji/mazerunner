@@ -96,16 +96,25 @@ public class GameScreen implements Screen {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-            if(!player.isPickingUp()) {
+            if(!player.isPickedUp()) {
+                elapsedTime = 0;
                 player.setPickingUp(true);
                 player.setPickedUp(true);
                 playerAnimation = player.getPickingUpAnimation();
+
             } else {
+                elapsedTime = 0;
                 player.setPickingUp(false);
                 player.setPickedUp(false);
                 playerAnimation = player.getWalkAnimation();
             }
 
+        }
+
+        if(playerAnimation.isAnimationFinished(elapsedTime) && player.isPickingUp()){
+            player.setPickingUp(false);
+            elapsedTime = 0;
+            playerAnimation = player.getWalkAnimation();
         }
 
 

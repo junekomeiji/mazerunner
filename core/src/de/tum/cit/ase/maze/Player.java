@@ -39,6 +39,11 @@ public class Player {
     private Animation<TextureRegion> characterPickedUpUp;
     private Animation<TextureRegion> characterPickedUpLeft;
 
+    private Animation<TextureRegion> playerSlashDown;
+    private Animation<TextureRegion> playerSlashUp;
+    private Animation<TextureRegion> playerSlashRight;
+    private Animation<TextureRegion> playerSlashLeft;
+
     public final int DOWN = 0;
     public final int RIGHT = 1;
     public final int UP = 2;
@@ -268,6 +273,7 @@ public class Player {
         }
 
         characterPickedUpLeft = new Animation<TextureRegion>(0.1f, characterPickedUpLeftFrames);
+
 
     }
 
