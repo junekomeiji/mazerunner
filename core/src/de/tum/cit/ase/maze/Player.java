@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import org.w3c.dom.Text;
 
-public class Player {
+public class Player extends Character{
 
     private Texture texture;
     private SpriteBatch spriteBatch;
@@ -24,11 +24,6 @@ public class Player {
 
     private int lives;
     private int health;
-
-    private Animation<TextureRegion> characterDownAnimation;
-    private Animation<TextureRegion> characterUpAnimation;
-    private Animation<TextureRegion> characterLeftAnimation;
-    private Animation<TextureRegion> characterRightAnimation;
 
     private Animation<TextureRegion> characterPickingUpDown;
     private Animation<TextureRegion> characterPickingUpRight;
@@ -116,22 +111,6 @@ public class Player {
         this.health = health;
     }
 
-    public Animation<TextureRegion> getCharacterDownAnimation() {
-        return characterDownAnimation;
-    }
-
-    public Animation<TextureRegion> getCharacterUpAnimation() {
-        return characterUpAnimation;
-    }
-
-    public Animation<TextureRegion> getCharacterLeftAnimation() {
-        return characterLeftAnimation;
-    }
-
-    public Animation<TextureRegion> getCharacterRightAnimation() {
-        return characterRightAnimation;
-    }
-
     public Animation<TextureRegion> getCharacterPickingUpDown() {
         return characterPickingUpDown;
     }
@@ -180,18 +159,13 @@ public class Player {
         return playerSlashLeft;
     }
 
-    public Player(Texture texture, int xpos, int ypos) {
-
-        this.texture = texture;
-        this.xpos = xpos;
-        this.ypos = ypos;
-        this.direction = 0;
-
+    public Player(Texture texture, int xpos, int ypos, int direction) {
+        super(texture, xpos, ypos, direction);
         loadCharacterAnimation();
     }
 
     public void loadCharacterAnimation() {
-        Texture walkSheet = texture;
+        Texture walkSheet = this.texture;
 
         int frameWidth = 16;
         int frameHeight = 32;

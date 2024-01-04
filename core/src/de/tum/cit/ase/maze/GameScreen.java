@@ -40,7 +40,7 @@ public class GameScreen implements Screen {
 
         this.game = game;
 
-        player = new Player(new Texture(Gdx.files.internal("character.png")), 0, 0);
+        player = new Player(new Texture(Gdx.files.internal("character.png")), 0, 0, 0);
         player.setDirection(player.UP);
         playerAnimation = player.getWalkAnimation();
 
