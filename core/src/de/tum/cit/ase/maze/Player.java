@@ -11,19 +11,9 @@ import org.w3c.dom.Text;
 
 public class Player extends Character{
 
-    private Texture texture;
-    private SpriteBatch spriteBatch;
-
-    private int xpos;
-    private int ypos;
-    private int direction;
-
     private boolean pickingUp;
     private boolean pickedUp;
     private boolean slashing;
-
-    private int lives;
-    private int health;
 
     private Animation<TextureRegion> characterPickingUpDown;
     private Animation<TextureRegion> characterPickingUpRight;
@@ -39,37 +29,6 @@ public class Player extends Character{
     private Animation<TextureRegion> playerSlashUp;
     private Animation<TextureRegion> playerSlashRight;
     private Animation<TextureRegion> playerSlashLeft;
-
-    public final int DOWN = 0;
-    public final int RIGHT = 1;
-    public final int UP = 2;
-    public final int LEFT = 3;
-
-
-
-    public int getXpos() {
-        return xpos;
-    }
-
-    public void setXpos(int xpos) {
-        this.xpos = xpos;
-    }
-
-    public int getYpos() {
-        return ypos;
-    }
-
-    public void setYpos(int ypos) {
-        this.ypos = ypos;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
 
     public boolean isPickingUp() {
         return pickingUp;
@@ -101,14 +60,6 @@ public class Player extends Character{
 
     public void setLives(int lives) {
         this.lives = lives;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public Animation<TextureRegion> getCharacterPickingUpDown() {
@@ -161,9 +112,11 @@ public class Player extends Character{
 
     public Player(Texture texture, int xpos, int ypos, int direction) {
         super(texture, xpos, ypos, direction);
+        this.texture = texture;
         loadCharacterAnimation();
     }
 
+    @Override
     public void loadCharacterAnimation() {
         Texture walkSheet = this.texture;
 

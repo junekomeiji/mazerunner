@@ -39,8 +39,9 @@ public class GameScreen implements Screen {
     public GameScreen(MazeRunnerGame game) {
 
         this.game = game;
+        Texture playerTexture = new Texture(Gdx.files.internal("character.png"));
 
-        player = new Player(new Texture(Gdx.files.internal("character.png")), 0, 0, 0);
+        player = new Player(playerTexture, 0, 0, 0);
         player.setDirection(player.UP);
         playerAnimation = player.getWalkAnimation();
 

@@ -13,6 +13,7 @@ public abstract class Character {
     protected int ypos;
     protected int direction;
 
+    protected int lives;
     protected int health;
 
     protected Animation<TextureRegion> characterIdleAnimation;
