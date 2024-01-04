@@ -1,9 +1,11 @@
 package de.tum.cit.ase.maze;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.Gdx;
 
 public abstract class Character {
     protected Texture texture;
@@ -79,9 +81,8 @@ public abstract class Character {
         return characterRightAnimation;
     }
 
-    public Character(Texture texture, int xpos, int ypos, int direction) {
+    public Character(int xpos, int ypos, int direction) {
 
-        this.texture = texture;
         this.xpos = xpos;
         this.ypos = ypos;
         this.direction = 0;

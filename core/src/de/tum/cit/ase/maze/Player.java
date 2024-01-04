@@ -110,19 +110,18 @@ public class Player extends Character{
         return playerSlashLeft;
     }
 
-    public Player(Texture texture, int xpos, int ypos, int direction) {
-        super(texture, xpos, ypos, direction);
-        this.texture = texture;
+    public Player(int xpos, int ypos, int direction) {
+        super(xpos, ypos, direction);
         loadCharacterAnimation();
     }
 
     @Override
     public void loadCharacterAnimation() {
-        Texture walkSheet = this.texture;
-
         int frameWidth = 16;
         int frameHeight = 32;
         int walkAnimationFrames = 4;
+
+        this.texture = new Texture(Gdx.files.internal("character.png"));
 
         // libGDX internal Array instead of ArrayList because of performance
         Array<TextureRegion> downWalkFrames = new Array<>(TextureRegion.class);
@@ -130,7 +129,7 @@ public class Player extends Character{
         // Add all frames to the animation
         //walk frames
         for (int col = 0; col < walkAnimationFrames; col++) {
-            downWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
+            downWalkFrames.add(new TextureRegion(this.texture, col * frameWidth, 0, frameWidth, frameHeight));
         }
 
         characterDownAnimation = new Animation<TextureRegion>(0.1f, downWalkFrames);
@@ -138,7 +137,7 @@ public class Player extends Character{
         Array<TextureRegion> rightWalkFrames = new Array<>(TextureRegion.class);
 
         for (int col = 0; col < walkAnimationFrames; col++) {
-            rightWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 32, frameWidth, frameHeight));
+            rightWalkFrames.add(new TextureRegion(this.texture, col * frameWidth, 32, frameWidth, frameHeight));
         }
 
         characterRightAnimation = new Animation<TextureRegion>(0.1f, rightWalkFrames);
@@ -146,7 +145,7 @@ public class Player extends Character{
         Array<TextureRegion> upWalkFrames = new Array<>(TextureRegion.class);
 
         for (int col = 0; col < walkAnimationFrames; col++) {
-            upWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 64, frameWidth, frameHeight));
+            upWalkFrames.add(new TextureRegion(this.texture, col * frameWidth, 64, frameWidth, frameHeight));
         }
 
         characterUpAnimation = new Animation<TextureRegion>(0.1f, upWalkFrames);
@@ -154,7 +153,7 @@ public class Player extends Character{
         Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
 
         for (int col = 0; col < walkAnimationFrames; col++) {
-            leftWalkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 96, frameWidth, frameHeight));
+            leftWalkFrames.add(new TextureRegion(this.texture, col * frameWidth, 96, frameWidth, frameHeight));
         }
 
         characterLeftAnimation = new Animation<TextureRegion>(0.1f, leftWalkFrames);
@@ -165,7 +164,7 @@ public class Player extends Character{
 
         Array<TextureRegion> characterPickingUpDownFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < pickingUpAnimationFrames; col++){
-            characterPickingUpDownFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 80, 0, frameWidth, frameHeight));
+            characterPickingUpDownFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 80, 0, frameWidth, frameHeight));
         }
 
         characterPickingUpDown = new Animation<TextureRegion>(0.1f, characterPickingUpDownFrames);
@@ -173,7 +172,7 @@ public class Player extends Character{
 
         Array<TextureRegion> characterPickingUpRightFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < pickingUpAnimationFrames; col++){
-            characterPickingUpRightFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 80, 32, frameWidth, frameHeight));
+            characterPickingUpRightFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 80, 32, frameWidth, frameHeight));
         }
 
         characterPickingUpRight = new Animation<TextureRegion>(0.1f, characterPickingUpRightFrames);
@@ -181,7 +180,7 @@ public class Player extends Character{
 
         Array<TextureRegion> characterPickingUpUpFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < pickingUpAnimationFrames; col++){
-            characterPickingUpUpFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 80, 64, frameWidth, frameHeight));
+            characterPickingUpUpFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 80, 64, frameWidth, frameHeight));
         }
 
         characterPickingUpUp = new Animation<TextureRegion>(0.1f, characterPickingUpUpFrames);
@@ -189,7 +188,7 @@ public class Player extends Character{
 
         Array<TextureRegion> characterPickingUpLeftFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < pickingUpAnimationFrames; col++){
-            characterPickingUpLeftFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 80, 96, frameWidth, frameHeight));
+            characterPickingUpLeftFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 80, 96, frameWidth, frameHeight));
         }
 
         characterPickingUpLeft = new Animation<TextureRegion>(0.1f, characterPickingUpLeftFrames);
@@ -197,7 +196,7 @@ public class Player extends Character{
         //load picked up frames
         Array<TextureRegion> characterPickedUpDownFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            characterPickingUpDownFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 0, frameWidth, frameHeight));
+            characterPickingUpDownFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 144, 0, frameWidth, frameHeight));
         }
 
         characterPickedUpDown = new Animation<TextureRegion>(0.1f, characterPickingUpDownFrames);
@@ -205,7 +204,7 @@ public class Player extends Character{
 
         Array<TextureRegion> characterPickedUpRightFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            characterPickedUpRightFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 32, frameWidth, frameHeight));
+            characterPickedUpRightFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 144, 32, frameWidth, frameHeight));
         }
 
         characterPickedUpRight = new Animation<TextureRegion>(0.1f, characterPickedUpRightFrames);
@@ -213,7 +212,7 @@ public class Player extends Character{
 
         Array<TextureRegion> characterPickedUpUpFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            characterPickedUpUpFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 64, frameWidth, frameHeight));
+            characterPickedUpUpFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 144, 64, frameWidth, frameHeight));
         }
 
         characterPickedUpUp = new Animation<TextureRegion>(0.1f, characterPickedUpUpFrames);
@@ -221,7 +220,7 @@ public class Player extends Character{
 
         Array<TextureRegion> characterPickedUpLeftFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            characterPickedUpLeftFrames.add(new TextureRegion(walkSheet, (col * frameWidth) + 144, 96, frameWidth, frameHeight));
+            characterPickedUpLeftFrames.add(new TextureRegion(this.texture, (col * frameWidth) + 144, 96, frameWidth, frameHeight));
         }
 
         characterPickedUpLeft = new Animation<TextureRegion>(0.1f, characterPickedUpLeftFrames);
@@ -229,28 +228,28 @@ public class Player extends Character{
         //slashing animations
         Array<TextureRegion> playerSlashDownFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            playerSlashDownFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 8, 128, frameWidth, frameHeight));
+            playerSlashDownFrames.add(new TextureRegion(this.texture, 2 * (col * frameWidth) + 8, 128, frameWidth, frameHeight));
         }
 
         playerSlashDown = new Animation<TextureRegion>(0.1f,playerSlashDownFrames);
 
         Array<TextureRegion> playerSlashUpFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            playerSlashUpFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 8, 160, frameWidth, frameHeight));
+            playerSlashUpFrames.add(new TextureRegion(this.texture, 2 * (col * frameWidth) + 8, 160, frameWidth, frameHeight));
         }
 
         playerSlashUp = new Animation<TextureRegion>(0.1f,playerSlashUpFrames);
 
         Array<TextureRegion> playerSlashRightFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            playerSlashRightFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 8, 192, frameWidth, frameHeight));
+            playerSlashRightFrames.add(new TextureRegion(this.texture, 2 * (col * frameWidth) + 8, 192, frameWidth, frameHeight));
         }
 
         playerSlashRight = new Animation<TextureRegion>(0.1f,playerSlashRightFrames);
 
         Array<TextureRegion> playerSlashLeftFrames = new Array<>(TextureRegion.class);
         for(int col = 0; col < walkAnimationFrames; col++){
-            playerSlashLeftFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 4, 224, frameWidth, frameHeight));
+            playerSlashLeftFrames.add(new TextureRegion(this.texture, 2 * (col * frameWidth) + 4, 224, frameWidth, frameHeight));
         }
 
         playerSlashLeft = new Animation<TextureRegion>(0.1f,playerSlashLeftFrames);

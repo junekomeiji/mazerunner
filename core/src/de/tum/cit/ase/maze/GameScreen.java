@@ -41,13 +41,9 @@ public class GameScreen implements Screen {
         this.game = game;
         Texture playerTexture = new Texture(Gdx.files.internal("character.png"));
 
-        player = new Player(playerTexture, 0, 0, 0);
+        player = new Player(0, 0, 0);
         player.setDirection(player.UP);
         playerAnimation = player.getWalkAnimation();
-
-        Player player2 = new Player(playerTexture, 50, 50, 0);
-        player2.setDirection(player.UP);
-        playerAnimation = player2.getWalkAnimation();
 
 
         // Create and configure the camera for the game view
