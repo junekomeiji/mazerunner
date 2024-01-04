@@ -112,11 +112,14 @@ public class GameScreen implements Screen {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
+            elapsedTime = 0;
+            player.setSlashing(true);
             playerAnimation = player.getSlashingAnimation();
         }
 
-        if(playerAnimation.isAnimationFinished(elapsedTime) && player.isPickingUp()){
+        if(playerAnimation.isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())){
             player.setPickingUp(false);
+            player.setSlashing(false);
             elapsedTime = 0;
             playerAnimation = player.getWalkAnimation();
         }
