@@ -45,6 +45,11 @@ public class GameScreen implements Screen {
         player.setDirection(player.UP);
         playerAnimation = player.getWalkAnimation();
 
+        Player player2 = new Player(playerTexture, 50, 50, 0);
+        player2.setDirection(player.UP);
+        playerAnimation = player2.getWalkAnimation();
+
+
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -69,34 +74,30 @@ public class GameScreen implements Screen {
             game.goToMenu();
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-            player.setYpos(player.getYpos() + 20);
-            player.setDirection(player.UP);
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            player.moveUp();
             playerAnimation = player.getWalkAnimation();
 
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            player.setXpos(player.getXpos() - 20);
-            player.setDirection(player.LEFT);
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            player.moveLeft();
             playerAnimation = player.getWalkAnimation();
 
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            player.setYpos(player.getYpos() - 20);
-            player.setDirection(player.DOWN);
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            player.moveDown();
             playerAnimation = player.getWalkAnimation();
 
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            player.setXpos(player.getXpos() + 20);
-            player.setDirection(player.RIGHT);
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            player.moveRight();
             playerAnimation = player.getWalkAnimation();
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+        if(Gdx.input.isKeyPressed(Input.Keys.E)){
             if(!player.isPickedUp()) {
                 elapsedTime = 0;
                 player.setPickingUp(true);
@@ -130,9 +131,10 @@ public class GameScreen implements Screen {
         player.loadCharacterAnimation();
 
         font.draw(game.getSpriteBatch(), "test", 0, 0);
-        TextureRegion currentFrame = playerAnimation.getKeyFrame(elapsedTime, true);
+        TextureRegion playerFrame = playerAnimation.getKeyFrame(elapsedTime, true);
 
-        game.getSpriteBatch().draw(currentFrame, player.getXpos(), player.getYpos(), 64, 128);
+        game.getSpriteBatch().draw(playerFrame, player.getXpos(), player.getYpos(), 64, 128);
+
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 

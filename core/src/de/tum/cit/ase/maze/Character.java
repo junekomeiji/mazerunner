@@ -16,6 +16,8 @@ public abstract class Character {
     protected int lives;
     protected int health;
 
+    protected boolean walking;
+
     protected Animation<TextureRegion> characterIdleAnimation;
     protected Animation<TextureRegion> characterDownAnimation;
     protected Animation<TextureRegion> characterUpAnimation;
@@ -59,6 +61,8 @@ public abstract class Character {
         this.health = health;
     }
 
+
+
     public Animation<TextureRegion> getCharacterIdleAnimation() {return characterIdleAnimation;}
 
     public Animation<TextureRegion> getCharacterDownAnimation() {return characterDownAnimation;}
@@ -86,4 +90,25 @@ public abstract class Character {
     }
 
     public void loadCharacterAnimation() {}
+
+    public void moveUp(){
+        setDirection(this.UP);
+        this.ypos += 20;
+    }
+
+    public void moveDown(){
+        setDirection(this.DOWN);
+        this.ypos -= 20;
+    }
+
+    public void moveLeft(){
+        setDirection(this.LEFT);
+        this.xpos -= 20;
+    }
+
+    public void moveRight(){
+        setDirection(this.RIGHT);
+        this.xpos += 20;
+    }
+
     }
