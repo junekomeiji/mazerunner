@@ -20,6 +20,7 @@ public class Player {
 
     private boolean pickingUp;
     private boolean pickedUp;
+    private boolean slashing;
 
     private int lives;
     private int health;
@@ -91,6 +92,14 @@ public class Player {
         this.pickedUp = pickedUp;
     }
 
+    public boolean isSlashing() {
+        return slashing;
+    }
+
+    public void setSlashing(boolean slashing) {
+        this.slashing = slashing;
+    }
+
     public int getLives() {
         return lives;
     }
@@ -153,6 +162,22 @@ public class Player {
 
     public Animation<TextureRegion> getCharacterPickedUpLeft() {
         return characterPickedUpLeft;
+    }
+
+    public Animation<TextureRegion> getPlayerSlashDown() {
+        return playerSlashDown;
+    }
+
+    public Animation<TextureRegion> getPlayerSlashUp() {
+        return playerSlashUp;
+    }
+
+    public Animation<TextureRegion> getPlayerSlashRight() {
+        return playerSlashRight;
+    }
+
+    public Animation<TextureRegion> getPlayerSlashLeft() {
+        return playerSlashLeft;
     }
 
     public Player(Texture texture, int xpos, int ypos) {
@@ -274,6 +299,35 @@ public class Player {
 
         characterPickedUpLeft = new Animation<TextureRegion>(0.1f, characterPickedUpLeftFrames);
 
+        //slashing animations
+        Array<TextureRegion> playerSlashDownFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            playerSlashDownFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 8, 128, frameWidth, frameHeight));
+        }
+
+        playerSlashDown = new Animation<TextureRegion>(0.1f,playerSlashDownFrames);
+
+        Array<TextureRegion> playerSlashUpFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            playerSlashUpFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 8, 160, frameWidth, frameHeight));
+        }
+
+        playerSlashUp = new Animation<TextureRegion>(0.1f,playerSlashUpFrames);
+
+        Array<TextureRegion> playerSlashRightFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            playerSlashRightFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 8, 192, frameWidth, frameHeight));
+        }
+
+        playerSlashRight = new Animation<TextureRegion>(0.1f,playerSlashRightFrames);
+
+        Array<TextureRegion> playerSlashLeftFrames = new Array<>(TextureRegion.class);
+        for(int col = 0; col < walkAnimationFrames; col++){
+            playerSlashLeftFrames.add(new TextureRegion(walkSheet, 2 * (col * frameWidth) + 4, 224, frameWidth, frameHeight));
+        }
+
+        playerSlashLeft = new Animation<TextureRegion>(0.1f,playerSlashLeftFrames);
+
 
     }
 
@@ -306,6 +360,16 @@ public class Player {
             case 2 -> { return characterPickingUpUp; }
             case 3 -> { return characterPickingUpLeft; }
             default -> {return characterPickingUpDown; }
+        }
+    }
+
+    public Animation<TextureRegion> getSlashingAnimation(){
+        switch(this.direction){
+            case DOWN -> { return playerSlashDown; }
+            case UP -> { return playerSlashUp; }
+            case RIGHT -> { return playerSlashRight; }
+            case LEFT -> { return playerSlashLeft; }
+            default -> {return playerSlashUp; }
         }
     }
 
