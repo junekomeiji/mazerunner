@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import de.tum.cit.ase.maze.Mobs.Humanoid;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -22,6 +23,8 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
 
+    private SpriteBatch batch;
+
     private final BitmapFont font;
 
     private float sinusInput = 0f;
@@ -29,6 +32,9 @@ public class GameScreen implements Screen {
     private Player player;
     private Animation<TextureRegion> playerAnimation;
     private float elapsedTime = 0f;
+
+    private Humanoid humanoid;
+    private Animation<TextureRegion> humanoidAnimation;
 
 
     /**
@@ -39,12 +45,14 @@ public class GameScreen implements Screen {
     public GameScreen(MazeRunnerGame game) {
 
         this.game = game;
+        batch = new SpriteBatch();
         Texture playerTexture = new Texture(Gdx.files.internal("character.png"));
 
         player = new Player(0, 0, 0);
-        player.setDirection(player.UP);
         playerAnimation = player.getWalkAnimation();
 
+        humanoid = new Humanoid(20,20,0);
+        humanoidAnimation = humanoid.getWalkAnimation();
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
@@ -125,11 +133,14 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().begin();
         player.loadCharacterAnimation();
+        humanoid.loadCharacterAnimation();
 
         font.draw(game.getSpriteBatch(), "test", 0, 0);
         TextureRegion playerFrame = playerAnimation.getKeyFrame(elapsedTime, true);
+        TextureRegion humanoidFrame = humanoidAnimation.getKeyFrame(elapsedTime, true);
 
-        game.getSpriteBatch().draw(playerFrame, player.getXpos(), player.getYpos(), 64, 128);
+        //game.getSpriteBatch().draw(playerFrame, player.getXpos(), player.getYpos(), 64, 128);
+        game.getSpriteBatch().draw(humanoidFrame, humanoid.getXpos(), humanoid.getYpos(), 64, 128);
 
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen

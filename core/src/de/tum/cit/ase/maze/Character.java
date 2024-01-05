@@ -64,10 +64,13 @@ public abstract class Character {
     }
 
 
+    public Animation<TextureRegion> getCharacterIdleAnimation() {
+        return characterIdleAnimation;
+    }
 
-    public Animation<TextureRegion> getCharacterIdleAnimation() {return characterIdleAnimation;}
-
-    public Animation<TextureRegion> getCharacterDownAnimation() {return characterDownAnimation;}
+    public Animation<TextureRegion> getCharacterDownAnimation() {
+        return characterDownAnimation;
+    }
 
     public Animation<TextureRegion> getCharacterUpAnimation() {
         return characterUpAnimation;
@@ -90,26 +93,48 @@ public abstract class Character {
         loadCharacterAnimation();
     }
 
-    public void loadCharacterAnimation() {}
+    public void loadCharacterAnimation() {
+    }
 
-    public void moveUp(){
+    public void moveUp() {
         setDirection(this.UP);
         this.ypos += 20;
     }
 
-    public void moveDown(){
+    public void moveDown() {
         setDirection(this.DOWN);
         this.ypos -= 20;
     }
 
-    public void moveLeft(){
+    public void moveLeft() {
         setDirection(this.LEFT);
         this.xpos -= 20;
     }
 
-    public void moveRight(){
+    public void moveRight() {
         setDirection(this.RIGHT);
         this.xpos += 20;
     }
 
+    public Animation<TextureRegion> getWalkAnimation() {
+
+        switch (this.direction) {
+            case 0 -> {
+                return characterDownAnimation;
+            }
+            case 1 -> {
+                return characterRightAnimation;
+            }
+            case 2 -> {
+                return characterUpAnimation;
+            }
+            case 3 -> {
+                return characterLeftAnimation;
+            }
+            default -> {
+                return characterUpAnimation;
+            }
+        }
+
     }
+}

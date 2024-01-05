@@ -257,6 +257,7 @@ public class Player extends Character{
 
     }
 
+    @Override
     public Animation<TextureRegion> getWalkAnimation(){
 
         if(!pickedUp){
