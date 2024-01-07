@@ -1,13 +1,13 @@
-package de.tum.cit.ase.maze.Mobs;
+package de.tum.cit.ase.maze.Entities.Mobs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import de.tum.cit.ase.maze.Mobs.Character;
+import de.tum.cit.ase.maze.Entities.Entity;
 
-public class Player extends Character {
+public class Player extends Entity {
 
     private boolean pickingUp;
     private boolean pickedUp;
@@ -110,11 +110,10 @@ public class Player extends Character {
 
     public Player(int xpos, int ypos, int direction) {
         super(xpos, ypos, direction);
-        loadCharacterAnimation();
     }
 
     @Override
-    public void loadCharacterAnimation() {
+    public void loadAnimations() {
         int frameWidth = 16;
         int frameHeight = 32;
         int walkAnimationFrames = 4;

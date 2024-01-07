@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze.Mobs;
+package de.tum.cit.ase.maze.Entities.Mobs;
 
 public class Ghost extends Mob{
     public Ghost(int xpos, int ypos, int direction) {

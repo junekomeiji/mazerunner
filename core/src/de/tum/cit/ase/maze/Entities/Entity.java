@@ -1,13 +1,11 @@
-package de.tum.cit.ase.maze.Mobs;
+package de.tum.cit.ase.maze.Entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.Gdx;
 
-public abstract class Character {
+public abstract class Entity {
     protected Texture texture;
     protected SpriteBatch spriteBatch;
 
@@ -84,16 +82,16 @@ public abstract class Character {
         return characterRightAnimation;
     }
 
-    public Character(int xpos, int ypos, int direction) {
+    public Entity(int xpos, int ypos, int direction) {
 
         this.xpos = xpos;
         this.ypos = ypos;
         this.direction = direction;
 
-        loadCharacterAnimation();
+        loadAnimations();
     }
 
-    public void loadCharacterAnimation(){}
+    public void loadAnimations(){}
 
 
     public Animation<TextureRegion> getAnimation() {

@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze.Mobs;
+package de.tum.cit.ase.maze.Entities.Mobs;
 
 public class Spider extends Mob{
 
