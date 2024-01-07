@@ -2,7 +2,6 @@
 
 ## Backlog
 
-### Implement animations
 ### Implement viewing of the maze
 ### Implement HUD
 ### Implement main menu
