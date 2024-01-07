@@ -48,11 +48,8 @@ public class GameScreen implements Screen {
         Texture playerTexture = new Texture(Gdx.files.internal("character.png"));
 
         player = new Player(0, 0, 0);
-        playerAnimation = player.getAnimation();
 
         humanoid = new Humanoid(200,200,3);
-        humanoidAnimation = humanoid.getAnimation();
-
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
