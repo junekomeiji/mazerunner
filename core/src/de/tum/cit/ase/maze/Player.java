@@ -258,7 +258,26 @@ public class Player extends Character{
     }
 
     @Override
-    public Animation<TextureRegion> getWalkAnimation(){
+    public Animation<TextureRegion> getAnimation(){
+        if(pickingUp){
+            switch(this.direction){
+                case 0 -> { return characterPickingUpDown; }
+                case 1 -> { return characterPickingUpRight; }
+                case 2 -> { return characterPickingUpUp; }
+                case 3 -> { return characterPickingUpLeft; }
+                default -> {return characterPickingUpDown; }
+            }
+        }
+
+        if(slashing){
+            switch(this.direction){
+                case DOWN -> { return playerSlashDown; }
+                case UP -> { return playerSlashUp; }
+                case RIGHT -> { return playerSlashRight; }
+                case LEFT -> { return playerSlashLeft; }
+                default -> {return playerSlashUp; }
+            }
+        }
 
         if(!pickedUp){
             switch(this.direction){
@@ -277,32 +296,46 @@ public class Player extends Character{
                 default -> {return characterUpAnimation; }
             }
         }
+    }
 
+    public Animation<TextureRegion> getWalkAnimation(){
+        if(!pickedUp){
+            switch(this.direction){
+                case 0 -> { return characterDownAnimation; }
+                case 1 -> { return characterRightAnimation; }
+                case 2 -> { return characterUpAnimation; }
+                case 3 -> { return characterLeftAnimation; }
+                default -> {return characterUpAnimation; }
+            }
+        } else{
+            switch(this.direction){
+                case 0 -> { return characterPickedUpDown; }
+                case 1 -> { return characterPickedUpRight; }
+                case 2 -> { return characterPickedUpUp; }
+                case 3 -> { return characterPickedUpLeft; }
+                default -> {return characterUpAnimation; }
+            }
+        }
     }
 
     public Animation<TextureRegion> getPickingUpAnimation(){
-        switch(this.direction){
-            case 0 -> { return characterPickingUpDown; }
-            case 1 -> { return characterPickingUpRight; }
-            case 2 -> { return characterPickingUpUp; }
-            case 3 -> { return characterPickingUpLeft; }
-            default -> {return characterPickingUpDown; }
-        }
+            switch(this.direction){
+                case 0 -> { return characterPickingUpDown; }
+                case 1 -> { return characterPickingUpRight; }
+                case 2 -> { return characterPickingUpUp; }
+                case 3 -> { return characterPickingUpLeft; }
+                default -> {return characterPickingUpDown; }
+            }
     }
 
     public Animation<TextureRegion> getSlashingAnimation(){
-        switch(this.direction){
-            case DOWN -> { return playerSlashDown; }
-            case UP -> { return playerSlashUp; }
-            case RIGHT -> { return playerSlashRight; }
-            case LEFT -> { return playerSlashLeft; }
-            default -> {return playerSlashUp; }
-        }
+            switch(this.direction){
+                case DOWN -> { return playerSlashDown; }
+                case UP -> { return playerSlashUp; }
+                case RIGHT -> { return playerSlashRight; }
+                case LEFT -> { return playerSlashLeft; }
+                default -> {return playerSlashUp; }
+            }
     }
-
-
-
-
-
 
 }

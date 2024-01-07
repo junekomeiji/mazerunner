@@ -15,7 +15,7 @@ public class Slime extends Character{
     @Override
     public void loadCharacterAnimation() {
         int frameWidth = 16;
-        int frameHeight = 32;
+        int frameHeight = 16;
         int walkAnimationFrames = 3;
 
         this.texture = new Texture(Gdx.files.internal("mobs.png"));

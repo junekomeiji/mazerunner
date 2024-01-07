@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.Mobs.Humanoid;
+import de.tum.cit.ase.maze.Mobs.Slime;
+
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -29,11 +31,9 @@ public class GameScreen implements Screen {
     private float sinusInput = 0f;
 
     private Player player;
-    private Animation<TextureRegion> playerAnimation;
     private float elapsedTime = 0f;
 
     private Humanoid humanoid;
-    private Animation<TextureRegion> humanoidAnimation;
 
 
     /**
@@ -48,10 +48,10 @@ public class GameScreen implements Screen {
         Texture playerTexture = new Texture(Gdx.files.internal("character.png"));
 
         player = new Player(0, 0, 0);
-        playerAnimation = player.getWalkAnimation();
+        playerAnimation = player.getAnimation();
 
         humanoid = new Humanoid(200,200,3);
-        humanoidAnimation = humanoid.getWalkAnimation();
+        humanoidAnimation = humanoid.getAnimation();
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
@@ -79,25 +79,18 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             player.moveUp();
-            playerAnimation = player.getWalkAnimation();
-
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.moveLeft();
-            playerAnimation = player.getWalkAnimation();
-
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             player.moveDown();
-            playerAnimation = player.getWalkAnimation();
-
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             player.moveRight();
-            playerAnimation = player.getWalkAnimation();
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.E)){
@@ -105,32 +98,26 @@ public class GameScreen implements Screen {
                 elapsedTime = 0;
                 player.setPickingUp(true);
                 player.setPickedUp(true);
-                playerAnimation = player.getPickingUpAnimation();
-
             } else {
                 elapsedTime = 0;
                 player.setPickingUp(false);
                 player.setPickedUp(false);
-                playerAnimation = player.getWalkAnimation();
             }
-
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
             elapsedTime = 0;
             player.setSlashing(true);
-            playerAnimation = player.getSlashingAnimation();
         }
 
         if(playerAnimation.isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())){
             player.setPickingUp(false);
             player.setSlashing(false);
             elapsedTime = 0;
-            playerAnimation = player.getWalkAnimation();
         }
 
-        TextureRegion playerFrame = playerAnimation.getKeyFrame(elapsedTime, true);
-        TextureRegion humanoidFrame = humanoidAnimation.getKeyFrame(elapsedTime, true);
+        TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 

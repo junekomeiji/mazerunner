@@ -60,26 +60,4 @@ public class Humanoid extends Character {
 
     }
 
-    @Override
-    public Animation<TextureRegion> getWalkAnimation() {
-
-        switch (this.direction) {
-            case 0 -> {
-                return characterDownAnimation;
-            }
-            case 1 -> {
-                return characterRightAnimation;
-            }
-            case 2 -> {
-                return characterUpAnimation;
-            }
-            case 3 -> {
-                return characterLeftAnimation;
-            }
-            default -> {
-                return characterUpAnimation;
-            }
-        }
-
-    }
 }

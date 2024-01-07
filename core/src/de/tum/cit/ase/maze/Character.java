@@ -93,7 +93,29 @@ public abstract class Character {
         loadCharacterAnimation();
     }
 
-    public void loadCharacterAnimation() {
+    abstract public void loadCharacterAnimation();
+
+
+    public Animation<TextureRegion> getAnimation() {
+
+        switch (this.direction) {
+            case 0 -> {
+                return characterDownAnimation;
+            }
+            case 1 -> {
+                return characterRightAnimation;
+            }
+            case 2 -> {
+                return characterUpAnimation;
+            }
+            case 3 -> {
+                return characterLeftAnimation;
+            }
+            default -> {
+                return characterUpAnimation;
+            }
+        }
+
     }
 
     public void moveUp() {
@@ -114,27 +136,5 @@ public abstract class Character {
     public void moveRight() {
         setDirection(this.RIGHT);
         this.xpos += 20;
-    }
-
-    public Animation<TextureRegion> getWalkAnimation() {
-
-        switch (this.direction) {
-            case DOWN -> {
-                return characterDownAnimation;
-            }
-            case RIGHT -> {
-                return characterRightAnimation;
-            }
-            case UP -> {
-                return characterUpAnimation;
-            }
-            case LEFT -> {
-                return characterLeftAnimation;
-            }
-            default -> {
-                return characterUpAnimation;
-            }
-        }
-
     }
 }
