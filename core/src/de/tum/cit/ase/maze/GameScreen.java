@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.Mobs.Humanoid;
 
@@ -51,7 +50,7 @@ public class GameScreen implements Screen {
         player = new Player(0, 0, 0);
         playerAnimation = player.getWalkAnimation();
 
-        humanoid = new Humanoid(20,20,0);
+        humanoid = new Humanoid(200,200,3);
         humanoidAnimation = humanoid.getWalkAnimation();
 
         // Create and configure the camera for the game view
@@ -130,22 +129,18 @@ public class GameScreen implements Screen {
             playerAnimation = player.getWalkAnimation();
         }
 
-
-        game.getSpriteBatch().begin();
-        player.loadCharacterAnimation();
-        humanoid.loadCharacterAnimation();
-
-        font.draw(game.getSpriteBatch(), "test", 0, 0);
         TextureRegion playerFrame = playerAnimation.getKeyFrame(elapsedTime, true);
         TextureRegion humanoidFrame = humanoidAnimation.getKeyFrame(elapsedTime, true);
 
-        //game.getSpriteBatch().draw(playerFrame, player.getXpos(), player.getYpos(), 64, 128);
-        game.getSpriteBatch().draw(humanoidFrame, humanoid.getXpos(), humanoid.getYpos(), 64, 128);
-
-
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
+        game.getSpriteBatch().begin();
+
+        game.getSpriteBatch().draw(playerFrame, player.getXpos(), player.getYpos(), 64, 128);
+        game.getSpriteBatch().draw(humanoidFrame, humanoid.getXpos(), humanoid.getYpos(), 64, 64);
+
         camera.update(); // Update the camera
+
 
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }

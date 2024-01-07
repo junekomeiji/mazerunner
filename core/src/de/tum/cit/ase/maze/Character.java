@@ -88,7 +88,7 @@ public abstract class Character {
 
         this.xpos = xpos;
         this.ypos = ypos;
-        this.direction = 0;
+        this.direction = direction;
 
         loadCharacterAnimation();
     }
@@ -119,16 +119,16 @@ public abstract class Character {
     public Animation<TextureRegion> getWalkAnimation() {
 
         switch (this.direction) {
-            case 0 -> {
+            case DOWN -> {
                 return characterDownAnimation;
             }
-            case 1 -> {
+            case RIGHT -> {
                 return characterRightAnimation;
             }
-            case 2 -> {
+            case UP -> {
                 return characterUpAnimation;
             }
-            case 3 -> {
+            case LEFT -> {
                 return characterLeftAnimation;
             }
             default -> {
