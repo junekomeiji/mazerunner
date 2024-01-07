@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze.Entities.Thing;
+package de.tum.cit.ase.maze.Entities.Things;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

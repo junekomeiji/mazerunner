@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.Entities.Mobs.*;
+import de.tum.cit.ase.maze.Entities.Things.*;
+
 
 
 /**
@@ -35,6 +37,7 @@ public class GameScreen implements Screen {
     private Slime slime;
     private Man man;
 
+    private Door door;
 
 
     /**
@@ -53,6 +56,8 @@ public class GameScreen implements Screen {
         humanoid = new Humanoid(200,200,0);
         slime = new Slime(100, 100, 0);
         man = new Man(200, 100, 0);
+
+        door = new Door(100, 200, 0);
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -130,6 +135,7 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().draw(humanoidFrame, humanoid.getXpos(), humanoid.getYpos(), 64, 64);
         game.getSpriteBatch().draw(slimeFrame, slime.getXpos(), slime.getYpos(), 64, 64);
         game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getXpos(), man.getYpos(), 64, 64);
+        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getXpos(), door.getYpos(), 64, 64);
 
         camera.update(); // Update the camera
 
