@@ -6,13 +6,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
-import de.tum.cit.ase.maze.Mobs.Humanoid;
-import de.tum.cit.ase.maze.Mobs.Slime;
+import de.tum.cit.ase.maze.Mobs.*;
 
 
 /**
@@ -30,10 +28,13 @@ public class GameScreen implements Screen {
 
     private float sinusInput = 0f;
 
-    private Player player;
     private float elapsedTime = 0f;
 
+    private Player player;
     private Humanoid humanoid;
+    private Slime slime;
+    private Man man;
+
 
 
     /**
@@ -49,7 +50,9 @@ public class GameScreen implements Screen {
 
         player = new Player(0, 0, 0);
 
-        humanoid = new Humanoid(200,200,3);
+        humanoid = new Humanoid(200,200,0);
+        slime = new Slime(100, 100, 0);
+        man = new Man(200, 100, 0);
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -69,7 +72,7 @@ public class GameScreen implements Screen {
         elapsedTime += Gdx.graphics.getDeltaTime();
 
 
-        // Check for escape key press to go back to the menu
+        //key press statements
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
         }
@@ -107,7 +110,9 @@ public class GameScreen implements Screen {
             player.setSlashing(true);
         }
 
-        if(playerAnimation.isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())){
+        //may refactor later ^^
+
+        if(player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())){
             player.setPickingUp(false);
             player.setSlashing(false);
             elapsedTime = 0;
@@ -115,6 +120,7 @@ public class GameScreen implements Screen {
 
         TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
@@ -122,6 +128,8 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().draw(playerFrame, player.getXpos(), player.getYpos(), 64, 128);
         game.getSpriteBatch().draw(humanoidFrame, humanoid.getXpos(), humanoid.getYpos(), 64, 64);
+        game.getSpriteBatch().draw(slimeFrame, slime.getXpos(), slime.getYpos(), 64, 64);
+        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getXpos(), man.getYpos(), 64, 64);
 
         camera.update(); // Update the camera
 

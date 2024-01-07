@@ -1,15 +1,13 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.Mobs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import org.w3c.dom.Text;
+import de.tum.cit.ase.maze.Mobs.Character;
 
-public class Player extends Character{
+public class Player extends Character {
 
     private boolean pickingUp;
     private boolean pickedUp;

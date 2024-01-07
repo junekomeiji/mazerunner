@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.Mobs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -93,7 +93,7 @@ public abstract class Character {
         loadCharacterAnimation();
     }
 
-    abstract public void loadCharacterAnimation();
+    public void loadCharacterAnimation(){}
 
 
     public Animation<TextureRegion> getAnimation() {

@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-public class Humanoid extends Mob {
-    public Humanoid(int xpos, int ypos, int direction){
-        super(xpos, ypos, direction, 0, 0);
+public class Man extends Mob{
+    public Man(int xpos, int ypos, int direction){
+        super(xpos, ypos, direction, 48, 0);
     }
-
 
 }
