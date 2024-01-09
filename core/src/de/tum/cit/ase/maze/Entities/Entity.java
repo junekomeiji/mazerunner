@@ -9,8 +9,8 @@ public abstract class Entity {
     protected Texture texture;
     protected SpriteBatch spriteBatch;
 
-    protected int xpos;
-    protected int ypos;
+    protected int x;
+    protected int y;
     protected int direction;
 
     protected int lives;
@@ -29,20 +29,20 @@ public abstract class Entity {
     public final int UP = 2;
     public final int LEFT = 3;
 
-    public int getXpos() {
-        return xpos;
+    public int getX() {
+        return x;
     }
 
-    public void setXpos(int xpos) {
-        this.xpos = xpos;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public int getYpos() {
-        return ypos;
+    public int getY() {
+        return y;
     }
 
-    public void setYpos(int ypos) {
-        this.ypos = ypos;
+    public void setY(int y) {
+        this.y = y;
     }
 
     public int getDirection() {
@@ -82,10 +82,10 @@ public abstract class Entity {
         return characterRightAnimation;
     }
 
-    public Entity(int xpos, int ypos, int direction) {
+    public Entity(int x, int ypos, int direction) {
 
-        this.xpos = xpos;
-        this.ypos = ypos;
+        this.x = x;
+        this.y = ypos;
         this.direction = direction;
 
         loadAnimations();
@@ -118,21 +118,21 @@ public abstract class Entity {
 
     public void moveUp() {
         setDirection(this.UP);
-        this.ypos += 20;
+        this.y += 20;
     }
 
     public void moveDown() {
         setDirection(this.DOWN);
-        this.ypos -= 20;
+        this.y -= 20;
     }
 
     public void moveLeft() {
         setDirection(this.LEFT);
-        this.xpos -= 20;
+        this.x -= 20;
     }
 
     public void moveRight() {
         setDirection(this.RIGHT);
-        this.xpos += 20;
+        this.x += 20;
     }
 }

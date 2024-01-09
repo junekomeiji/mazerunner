@@ -9,6 +9,9 @@ import de.tum.cit.ase.maze.Entities.Entity;
 
 public class Player extends Entity {
 
+    private int score;
+    private boolean key;
+
     private boolean pickingUp;
     private boolean pickedUp;
     private boolean slashing;
@@ -52,60 +55,28 @@ public class Player extends Entity {
         this.slashing = slashing;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public boolean isKey() {
+        return key;
+    }
+
+    public void setKey(boolean key) {
+        this.key = key;
+    }
+
     public int getLives() {
         return lives;
     }
 
     public void setLives(int lives) {
         this.lives = lives;
-    }
-
-    public Animation<TextureRegion> getCharacterPickingUpDown() {
-        return characterPickingUpDown;
-    }
-
-    public Animation<TextureRegion> getCharacterPickingUpRight() {
-        return characterPickingUpRight;
-    }
-
-    public Animation<TextureRegion> getCharacterPickingUpUp() {
-        return characterPickingUpUp;
-    }
-
-    public Animation<TextureRegion> getCharacterPickingUpLeft() {
-        return characterPickingUpLeft;
-    }
-
-    public Animation<TextureRegion> getCharacterPickedUpDown() {
-        return characterPickedUpDown;
-    }
-
-    public Animation<TextureRegion> getCharacterPickedUpRight() {
-        return characterPickedUpRight;
-    }
-
-    public Animation<TextureRegion> getCharacterPickedUpUp() {
-        return characterPickedUpUp;
-    }
-
-    public Animation<TextureRegion> getCharacterPickedUpLeft() {
-        return characterPickedUpLeft;
-    }
-
-    public Animation<TextureRegion> getPlayerSlashDown() {
-        return playerSlashDown;
-    }
-
-    public Animation<TextureRegion> getPlayerSlashUp() {
-        return playerSlashUp;
-    }
-
-    public Animation<TextureRegion> getPlayerSlashRight() {
-        return playerSlashRight;
-    }
-
-    public Animation<TextureRegion> getPlayerSlashLeft() {
-        return playerSlashLeft;
     }
 
     public Player(int xpos, int ypos, int direction) {

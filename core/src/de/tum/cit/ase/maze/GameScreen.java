@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -49,7 +48,6 @@ public class GameScreen implements Screen {
 
         this.game = game;
         batch = new SpriteBatch();
-        Texture playerTexture = new Texture(Gdx.files.internal("character.png"));
 
         player = new Player(0, 0, 0);
 
@@ -131,11 +129,13 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().begin();
 
-        game.getSpriteBatch().draw(playerFrame, player.getXpos(), player.getYpos(), 64, 128);
-        game.getSpriteBatch().draw(humanoidFrame, humanoid.getXpos(), humanoid.getYpos(), 64, 64);
-        game.getSpriteBatch().draw(slimeFrame, slime.getXpos(), slime.getYpos(), 64, 64);
-        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getXpos(), man.getYpos(), 64, 64);
-        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getXpos(), door.getYpos(), 64, 64);
+        font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 400, 400);
+
+        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
+        game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
+        game.getSpriteBatch().draw(slimeFrame, slime.getX(), slime.getY(), 64, 64);
+        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getX(), man.getY(), 64, 64);
+        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getX(), door.getY(), 64, 64);
 
         camera.update(); // Update the camera
 

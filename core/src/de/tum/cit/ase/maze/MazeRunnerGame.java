@@ -67,6 +67,14 @@ public class MazeRunnerGame extends Game {
         }
     }
 
+    public void goToDebug(){
+        this.setScreen(new DebugScreen(this));
+        if(menuScreen != null){
+            menuScreen.dispose();
+            menuScreen = null;
+        }
+    }
+
     /**
      * Loads the character animation from the character.png file.
      */

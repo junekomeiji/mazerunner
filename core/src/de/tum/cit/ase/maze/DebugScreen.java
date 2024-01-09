@@ -1,5 +1,6 @@
 package de.tum.cit.ase.maze;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -7,36 +8,45 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import de.tum.cit.ase.maze.Entities.Mobs.*;
 
-/**
- * The MenuScreen class is responsible for displaying the main menu of the game.
- * It extends the LibGDX Screen class and sets up the UI components for the menu.
- */
-public class MenuScreen implements Screen {
+// a debug screen to draw all the sprites and soon, tiles
+public class DebugScreen implements Screen {
 
     private final Stage stage;
+
+    private final OrthographicCamera camera;
+
     SpriteBatch batch;
     BitmapFont font;
+    private float elapsedTime = 0;
 
     MazeRunnerGame game;
 
-    /**
-     * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
-     *
-     * @param game The main game class, used to access global resources and methods.
-     */
-    public MenuScreen(MazeRunnerGame game) {
+    //declare all the characters...
+    Bat b;
+    Ghost g;
+    Humanoid h;
+    Man m;
+    Player p;
+    Skeleton s;
+    Slime l;
+    Spider d;
+    Woman w;
+
+    public DebugScreen(MazeRunnerGame game){
         this.game = game;
-        var camera = new OrthographicCamera();
+        batch = new SpriteBatch();
+
+        camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
+
+        p = new Player(0,0,0);
 
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
@@ -45,29 +55,31 @@ public class MenuScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
-        batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
 
     }
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToGame();
-        }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)){
-            game.goToDebug();
-        }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
-        stage.draw(); // Draw the stage
+        elapsedTime += Gdx.graphics.getDeltaTime();
 
-        batch.begin();
-        font.draw(batch, "Test Message", 200, 200);
-        batch.end();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.goToMenu();
+        }
 
+        ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
+
+        game.getSpriteBatch().begin();
+
+        font.draw(game.getSpriteBatch(), "Lives: " + p.getLives(), 400, 400);
+
+        camera.update(); // Update the camera
+
+
+        game.getSpriteBatch().end(); // Important to call this after drawing everything
 
     }
 
@@ -100,4 +112,6 @@ public class MenuScreen implements Screen {
     @Override
     public void hide() {
     }
+
+
 }
