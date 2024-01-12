@@ -44,7 +44,7 @@ public class GameScreen implements Screen {
     private Fireplace fireplace;
     private Vase vase;
 
-    public Maploader mapLoader; //Maploader
+    public Maploader mapLoader;
 
 
     /**
@@ -89,6 +89,10 @@ public class GameScreen implements Screen {
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
+
+        //TODO: Hinders performance but for some reason it only works here, need to fix later
+        mapLoader.reader();
+        mapLoader.createMap();
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -140,11 +144,6 @@ public class GameScreen implements Screen {
             elapsedTime = 0;
         }
 
-        //Maploader (need to move this, currently gets called constantly)
-        mapLoader.reader();
-        mapLoader.createMap();
-
-
         TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
@@ -171,10 +170,10 @@ public class GameScreen implements Screen {
 
 
 
-        //Hopefully renders the Map
-        for (int x = 0; x < 15; x++) {
-            for (int y = 0; y < 15; y++) {
-                int entityType = mapLoader.map[x][y]; // Retrieves the object type
+        //Renders the Map
+        for (int x = 0; x < mapLoader.getMapWidth(); x++) {
+            for (int y = 0; y < mapLoader.getMapHeight(); y++) {
+                int entityType = mapLoader.getMap()[x][y]; // Retrieves the object type
 
                 // Render Objects based on their type
                 switch (entityType) {
@@ -205,6 +204,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
+
 
 
         camera.update(); // Update the camera
