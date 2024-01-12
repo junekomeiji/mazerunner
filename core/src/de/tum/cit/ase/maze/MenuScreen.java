@@ -28,6 +28,8 @@ public class MenuScreen implements Screen {
 
     MazeRunnerGame game;
 
+     public Maploader mapLoader;
+
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
@@ -48,6 +50,8 @@ public class MenuScreen implements Screen {
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
 
+        mapLoader = new Maploader(game);
+
     }
 
     @Override
@@ -60,15 +64,28 @@ public class MenuScreen implements Screen {
             game.goToDebug();
         }
 
+        /* //TODO: REMOVE
+        if (Gdx.input.isKeyPressed(Input.Keys.T)) {
+            System.out.println("TEST IF T IS PRESSED");
+            mapLoader.reader();
+            mapLoader.createMap();
+        }
+
+
+        if (Gdx.input.isKeyPressed(Input.Keys.G)) {
+            System.out.println("TEST IF G IS PRESSED");
+            mapLoader.render();
+        }
+         */
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
 
         batch.begin();
         font.draw(batch, "Test Message", 200, 200);
+        font.draw(batch, "T for output of String", 200, 150);
         batch.end();
-
-
     }
 
     @Override

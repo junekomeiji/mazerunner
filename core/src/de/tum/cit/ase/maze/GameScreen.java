@@ -13,7 +13,6 @@ import de.tum.cit.ase.maze.Entities.Mobs.*;
 import de.tum.cit.ase.maze.Entities.Things.*;
 
 
-
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
  * It handles the game logic and rendering of the game elements.
@@ -38,6 +37,15 @@ public class GameScreen implements Screen {
 
     private Door door;
 
+    private Lever lever;
+    private Torch torch;
+    private Spike spike;
+    private Chest chest;
+    private Fireplace fireplace;
+    private Vase vase;
+
+    public Maploader mapLoader; //Maploader
+
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -56,6 +64,16 @@ public class GameScreen implements Screen {
         man = new Man(200, 100, 0);
 
         door = new Door(100, 200, 0);
+
+        torch = new Torch(100, 100, 0);
+        lever = new Lever(500, 100, 0);
+        spike = new Spike(900, 100, 0);
+        chest = new Chest(900, 900, 0);
+        fireplace = new Fireplace(1300, 100, 0);
+        vase = new Vase(1300, 500, 0);
+
+
+
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -63,6 +81,8 @@ public class GameScreen implements Screen {
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
+
+        mapLoader = new Maploader(game);
     }
 
 
@@ -73,7 +93,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         elapsedTime += Gdx.graphics.getDeltaTime();
-
 
         //key press statements
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -121,15 +140,27 @@ public class GameScreen implements Screen {
             elapsedTime = 0;
         }
 
+        //Maploader (need to move this, currently gets called constantly)
+        mapLoader.reader();
+        mapLoader.createMap();
+
+
         TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
+
+        TextureRegion leverFrame = lever.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion torchFrame = torch.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion fireplaceFrame = fireplace.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion vaseFrame = vase.getAnimation().getKeyFrame(elapsedTime, true);
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
         game.getSpriteBatch().begin();
 
-        font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 400, 400);
+        font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 0, 400);
 
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
         game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
@@ -137,8 +168,46 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getX(), man.getY(), 64, 64);
         game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getX(), door.getY(), 64, 64);
 
-        camera.update(); // Update the camera
 
+
+
+        //Hopefully renders the Map
+        for (int x = 0; x < 15; x++) {
+            for (int y = 0; y < 15; y++) {
+                int entityType = mapLoader.map[x][y]; // Retrieves the object type
+
+                // Render Objects based on their type
+                switch (entityType) {
+                    case 0:
+                        // Render Wall(currently lever) at position (x, y)
+                        game.getSpriteBatch().draw(torchFrame, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                    case 1:
+                        // Render Entry point (currently torch) at position (x, y)
+                        game.getSpriteBatch().draw(leverFrame, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                    case 2:
+                        // Render Exit (currently chest) at position (x, y)
+                        game.getSpriteBatch().draw(chestFrame, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                    case 3:
+                        // Render Trap (currently trap) at position (x, y)
+                        game.getSpriteBatch().draw(spikeFrame, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                    case 4:
+                        // Render Enemy (currently fireplace) at position (x, y)
+                        game.getSpriteBatch().draw(fireplaceFrame, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                    case 5:
+                        // Render Key (currently vase) at position (x, y)
+                        game.getSpriteBatch().draw(vaseFrame, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                }
+            }
+        }
+
+
+        camera.update(); // Update the camera
 
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
