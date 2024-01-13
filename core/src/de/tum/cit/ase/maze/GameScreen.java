@@ -73,7 +73,6 @@ public class GameScreen implements Screen {
         vase = new Vase(1300, 500, 0);
 
 
-
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -171,6 +170,7 @@ public class GameScreen implements Screen {
 
 
         //Renders the Map
+        System.out.println(mapLoader.getMapType());
         for (int x = 0; x < mapLoader.getMapWidth(); x++) {
             for (int y = 0; y < mapLoader.getMapHeight(); y++) {
                 int entityType = mapLoader.getMap()[x][y]; // Retrieves the object type

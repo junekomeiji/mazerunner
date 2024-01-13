@@ -25,6 +25,7 @@ public class MazeRunnerGame extends Game {
 
     // UI Skin
     private Skin skin;
+
     /**
      * Constructor for MazeRunnerGame.
      *

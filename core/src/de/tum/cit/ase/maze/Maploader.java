@@ -18,10 +18,10 @@ public class Maploader {
 
     private final MazeRunnerGame game;
 
-    int mapType = 1; //Default Map type
+    int mapType; //Default Map type
 
     int mapWidth;  // max Width of the map
-    int mapHeight; // max Height of the map
+    int mapHeight; // max Height of the map ( both flexible)
     int[][] map;
 
     Properties properties = new Properties();
@@ -29,18 +29,15 @@ public class Maploader {
     //Constructor
     public Maploader(MazeRunnerGame game) {
         this.game = game;
+        this.mapType = 2; //TODO: Gets called every time I render a map, therfore Filechooser useless
+        loadMapSize();
+        map = new int[mapHeight][mapWidth];
     }
 
     //Reads the .properties file
     public void reader() {
         try (InputStream input = Gdx.files.internal("maps/level-" + mapType + ".properties").read()) {
             properties.load(input);
-
-            //Flexible Map Size
-            mapWidth = Integer.parseInt(properties.getProperty("Width", "0"));
-            mapHeight = Integer.parseInt(properties.getProperty("Height", "0"));
-
-            map = new int[mapWidth][mapHeight];
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,14 +46,32 @@ public class Maploader {
     //Fills out the Array
     public void createMap() {
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            if (!entry.getKey().equals("Width") && !entry.getKey().equals("Height")) {
-                String[] coordinates = entry.getKey().toString().split(",");
+            String[] coordinates = entry.getKey().toString().split(",");
+            int x = Integer.parseInt(coordinates[0]);
+            int y = Integer.parseInt(coordinates[1]);
+            int entityType = Integer.parseInt(entry.getValue().toString());
+
+            map[x][y] = entityType;
+        }
+    }
+
+    private void loadMapSize() {
+        try (InputStream input = Gdx.files.internal("maps/level-" + mapType + ".properties").read()) {
+            properties.load(input);
+            for (Object key : properties.keySet()) {
+                String[] coordinates = key.toString().split(",");
                 int x = Integer.parseInt(coordinates[0]);
                 int y = Integer.parseInt(coordinates[1]);
-                int entityType = Integer.parseInt(entry.getValue().toString());
 
-                map[x][y] = entityType;
+                // Updates mapWidth and mapHeight based on the highest coordinates
+                mapWidth = Math.max(mapWidth, x + 1);
+                mapHeight = Math.max(mapHeight, y + 1);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exceptions accordingly
+            mapWidth = 99; // default values if stuff goes wrong
+            mapHeight = 99;
         }
     }
 
@@ -66,6 +81,8 @@ public class Maploader {
 
     public void setMapType(int mapType) {
         this.mapType = mapType;
+        loadMapSize(); //Updates map size when Map changes
+        map = new int[mapHeight][mapWidth];
     }
 
     public int getMapWidth() {

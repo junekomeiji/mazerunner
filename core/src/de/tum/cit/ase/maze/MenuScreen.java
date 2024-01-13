@@ -69,6 +69,17 @@ public class MenuScreen implements Screen {
             game.goToGame();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             mapLoader.setMapType(2);
+            System.out.println("ADHAOISDJOIASJD: " + mapLoader.getMapType()); //TODO: REMOVE
+            game.goToGame();
+            System.out.println("ADHAOISDJOIASJD: " + mapLoader.getMapType()); //TODO: REMOVE
+         }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+            mapLoader.setMapType(3);
+            game.goToGame();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
+            mapLoader.setMapType(4);
+            game.goToGame();
+         }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
+            mapLoader.setMapType(5);
             game.goToGame();
         }
 
