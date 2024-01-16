@@ -23,6 +23,8 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
 
+    public Maploader mapLoader;
+
     private SpriteBatch batch;
 
     private final BitmapFont font;
@@ -44,8 +46,6 @@ public class GameScreen implements Screen {
     private Chest chest;
     private Fireplace fireplace;
     private Vase vase;
-
-    public Maploader mapLoader;
 
     //Maybe put this somewhere else later
     private Texture TextureRegion;
@@ -79,7 +79,9 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game) {
+    public GameScreen(MazeRunnerGame game, Maploader mapLoader) {
+
+        this.mapLoader = mapLoader;
 
         this.game = game;
         batch = new SpriteBatch();
@@ -108,17 +110,13 @@ public class GameScreen implements Screen {
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
 
-        mapLoader = new Maploader(game);
+
     }
 
 
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
-
-        //TODO: Hinders performance, need to fix later (same problem as map selector not working)
-        mapLoader.reader();
-        mapLoader.createMap();
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -235,6 +233,10 @@ public class GameScreen implements Screen {
                 }
             }
         }
+        //TODO: Remove once I fix map selector
+        mapLoader.clearMap();
+        mapLoader.reader();
+        mapLoader.createMap();
         camera.update(); // Update the camera
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }

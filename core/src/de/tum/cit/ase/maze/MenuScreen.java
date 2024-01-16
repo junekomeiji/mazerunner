@@ -28,15 +28,17 @@ public class MenuScreen implements Screen {
 
     MazeRunnerGame game;
 
-     public Maploader mapLoader;
+    public Maploader mapLoader;
 
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(MazeRunnerGame game) {
+    public MenuScreen(MazeRunnerGame game, Maploader mapLoader) {
         this.game = game;
+        this.mapLoader = mapLoader;
+
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
@@ -63,23 +65,32 @@ public class MenuScreen implements Screen {
             game.goToDebug();
         }
 
-        //TODO: Implement Map selector properly
+        //First map gets cleared, then Map gets selected, then read and created
+        //TODO: Desnt work bc old map doesnt get deleted properly
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             mapLoader.setMapType(1);
+            mapLoader.reader();
+            mapLoader.createMap();
             game.goToGame();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             mapLoader.setMapType(2);
-            System.out.println("ADHAOISDJOIASJD: " + mapLoader.getMapType()); //TODO: REMOVE
+            mapLoader.reader();
+            mapLoader.createMap();
             game.goToGame();
-            System.out.println("ADHAOISDJOIASJD: " + mapLoader.getMapType()); //TODO: REMOVE
          }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
             mapLoader.setMapType(3);
+            mapLoader.reader();
+            mapLoader.createMap();
             game.goToGame();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
             mapLoader.setMapType(4);
+            mapLoader.reader();
+            mapLoader.createMap();
             game.goToGame();
          }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
             mapLoader.setMapType(5);
+            mapLoader.reader();
+            mapLoader.createMap();
             game.goToGame();
         }
 
