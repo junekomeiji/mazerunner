@@ -29,7 +29,7 @@ public class Maploader {
     //Constructor
     public Maploader(MazeRunnerGame game) {
         this.game = game;
-        this.mapType = 2; //TODO: Gets called every time I render a map, therfore Filechooser useless
+        this.mapType = 3; //TODO: Gets called every time I render a map, therfore Filechooser useless
         loadMapSize();
         map = new int[mapHeight][mapWidth];
     }
@@ -45,6 +45,12 @@ public class Maploader {
 
     //Fills out the Array
     public void createMap() {
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                map[x][y] = 6; // Set default value for all positions
+            }
+        }
+
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             String[] coordinates = entry.getKey().toString().split(",");
             int x = Integer.parseInt(coordinates[0]);
@@ -54,6 +60,8 @@ public class Maploader {
             map[x][y] = entityType;
         }
     }
+
+
 
     private void loadMapSize() {
         try (InputStream input = Gdx.files.internal("maps/level-" + mapType + ".properties").read()) {

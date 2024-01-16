@@ -66,6 +66,14 @@ public class GameScreen implements Screen {
     Texture placeholderTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion placeholderTextureRegion = new TextureRegion(placeholderTexture, 64, 0, 16, 16);
 
+    //Grass Texture
+    Texture grassTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion grassTextureRegion = new TextureRegion(grassTexture, 0, 128, 16, 16);
+
+    //Lush Grass Texture
+    Texture lushGrassTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion lushGrassTextureRegion = new TextureRegion(lushGrassTexture, 16, 128, 16, 16);
+
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
@@ -190,7 +198,6 @@ public class GameScreen implements Screen {
         for (int x = 0; x < mapLoader.getMapWidth(); x++) {
             for (int y = 0; y < mapLoader.getMapHeight(); y++) {
                 int entityType = mapLoader.getMap()[x][y]; // Retrieves the object type
-
                 // Render Objects based on their type
                 switch (entityType) {
                     case 0:
@@ -216,6 +223,14 @@ public class GameScreen implements Screen {
                     case 5:
                         // Render Chest (for obtaining key) at position (x, y)
                         game.getSpriteBatch().draw(chestFrame, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                    case 6:
+                        // Render Chest (for obtaining key) at position (x, y)
+                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        break;
+                    case 7:
+                        // Render Chest (for obtaining key) at position (x, y)
+                        game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                 }
             }
