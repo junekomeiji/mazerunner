@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -46,6 +47,24 @@ public class GameScreen implements Screen {
 
     public Maploader mapLoader;
 
+    //Maybe put this somewhere else later
+    private Texture TextureRegion;
+
+    //Wall Texture
+    Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 0, 0, 16, 16);
+
+    //Entry Point Texture
+    Texture entryPointTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion entryPointTextureRegion = new TextureRegion(entryPointTexture, 64, 16, 16, 16);
+
+    //Exit Texture (currently door)
+    Texture exitTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion exitTextureRegion = new TextureRegion(exitTexture, 0, 96, 16, 16);
+
+    //Placeholder Texture (dynamic enemy later, currently red Wall)
+    Texture placeholderTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion placeholderTextureRegion = new TextureRegion(placeholderTexture, 64, 0, 16, 16);
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -65,12 +84,12 @@ public class GameScreen implements Screen {
 
         door = new Door(100, 200, 0);
 
-        torch = new Torch(100, 100, 0);
-        lever = new Lever(500, 100, 0);
-        spike = new Spike(900, 100, 0);
-        chest = new Chest(900, 900, 0);
-        fireplace = new Fireplace(1300, 100, 0);
-        vase = new Vase(1300, 500, 0);
+        torch = new Torch(0, 0, 0);
+        lever = new Lever(0, 0, 0);
+        spike = new Spike(0, 0, 0);
+        chest = new Chest(0, 0, 0);
+        fireplace = new Fireplace(0, 0, 0);
+        vase = new Vase(0, 0, 0);
 
 
         // Create and configure the camera for the game view
@@ -89,7 +108,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        //TODO: Hinders performance but for some reason it only works here, need to fix later
+        //TODO: Hinders performance, need to fix later (same problem as map selector not working)
         mapLoader.reader();
         mapLoader.createMap();
 
@@ -147,12 +166,9 @@ public class GameScreen implements Screen {
         TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
 
-        TextureRegion leverFrame = lever.getAnimation().getKeyFrame(elapsedTime, true);
-        TextureRegion torchFrame = torch.getAnimation().getKeyFrame(elapsedTime, true);
+        //For Maploader
         TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
-        TextureRegion fireplaceFrame = fireplace.getAnimation().getKeyFrame(elapsedTime, true);
-        TextureRegion vaseFrame = vase.getAnimation().getKeyFrame(elapsedTime, true);
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
@@ -178,37 +194,33 @@ public class GameScreen implements Screen {
                 // Render Objects based on their type
                 switch (entityType) {
                     case 0:
-                        // Render Wall(currently lever) at position (x, y)
-                        game.getSpriteBatch().draw(torchFrame, x * 64 + 400, y * 64, 64, 64);
+                        // Render Wall at position (x, y)
+                        game.getSpriteBatch().draw(wallTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 1:
-                        // Render Entry point (currently torch) at position (x, y)
-                        game.getSpriteBatch().draw(leverFrame, x * 64 + 400, y * 64, 64, 64);
+                        // Render Entry point at position (x, y)
+                        game.getSpriteBatch().draw(entryPointTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 2:
-                        // Render Exit (currently chest) at position (x, y)
-                        game.getSpriteBatch().draw(chestFrame, x * 64 + 400, y * 64, 64, 64);
+                        // Render Exit at position (x, y)
+                        game.getSpriteBatch().draw(exitTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 3:
-                        // Render Trap (currently trap) at position (x, y)
+                        // Render Trap at position (x, y)
                         game.getSpriteBatch().draw(spikeFrame, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 4:
-                        // Render Enemy (currently fireplace) at position (x, y)
-                        game.getSpriteBatch().draw(fireplaceFrame, x * 64 + 400, y * 64, 64, 64);
+                        // Render Enemy (currently Placeholder) at position (x, y)
+                        game.getSpriteBatch().draw(placeholderTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 5:
-                        // Render Key (currently vase) at position (x, y)
-                        game.getSpriteBatch().draw(vaseFrame, x * 64 + 400, y * 64, 64, 64);
+                        // Render Chest (for obtaining key) at position (x, y)
+                        game.getSpriteBatch().draw(chestFrame, x * 64 + 400, y * 64, 64, 64);
                         break;
                 }
             }
         }
-
-
-
         camera.update(); // Update the camera
-
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
