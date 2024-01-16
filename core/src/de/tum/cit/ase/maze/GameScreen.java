@@ -22,7 +22,7 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
 
-    private SpriteBatch batch;
+    private SpriteBatch batch, hudBatch;
 
     private final BitmapFont font;
 
@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
     private float elapsedTime = 0f;
 
     private Player player;
+    private HUD hud;
     private Humanoid humanoid;
     private Slime slime;
     private Man man;
@@ -56,6 +57,7 @@ public class GameScreen implements Screen {
 
         this.game = game;
         batch = new SpriteBatch();
+        hudBatch = new SpriteBatch();
 
         player = new Player(0, 0, 0);
 
@@ -158,7 +160,6 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().begin();
 
-        font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 0, 400);
 
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
         game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
@@ -206,8 +207,15 @@ public class GameScreen implements Screen {
         }
 
 
+        hudBatch.begin();
+
+        font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 0, 400);
+        font.draw(game.getSpriteBatch(), "Score: " + player.getScore(), 0, 350);
+
+        hudBatch.end();
 
         camera.update(); // Update the camera
+
 
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }

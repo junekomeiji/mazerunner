@@ -29,7 +29,7 @@ public class Maploader {
     //Constructor
     public Maploader(MazeRunnerGame game) {
         this.game = game;
-        this.mapType = 2; //TODO: Gets called every time I render a map, therfore Filechooser useless
+        this.mapType = 1; //TODO: Gets called every time I render a map, therfore Filechooser useless
         loadMapSize();
         map = new int[mapHeight][mapWidth];
     }
