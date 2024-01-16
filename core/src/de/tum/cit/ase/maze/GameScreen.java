@@ -17,6 +17,8 @@ import de.tum.cit.ase.maze.Entities.Things.*;
  * The GameScreen class is responsible for rendering the gameplay screen.
  * It handles the game logic and rendering of the game elements.
  */
+
+//gh pls work
 public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
