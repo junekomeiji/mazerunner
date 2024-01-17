@@ -27,13 +27,13 @@ public class Maploader {
     }
 
 
-    //Fills out the Array
+    // Fills out the Array
     public void createMap() {
         properties.clear(); // Necessary to delete old Map
         reader();
         setMapType(mapType);
 
-        //Randomly fills out the Map with Grass or Lush Grass (Case 6 or 7)
+        // Randomly fills out the Map with Grass or Lush Grass (Case 6 or 7)
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
                 // Generate a random value (0 or 1) to decide between grass and lush grass
@@ -43,7 +43,7 @@ public class Maploader {
             }
         }
 
-        //Fills out the Array
+        // Fills out the Array
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             String[] coordinates = entry.getKey().toString().split(",");
             int x = Integer.parseInt(coordinates[0]);
@@ -54,7 +54,7 @@ public class Maploader {
         }
     }
 
-    //Reads the .properties file
+    // Reads the .properties file
     public void reader() {
         try (InputStream input = Gdx.files.internal("maps/level-" + mapType + ".properties").read()) {
             properties.load(input);
@@ -93,7 +93,7 @@ public class Maploader {
 
     public void setMapType(int mapType) {
         this.mapType = mapType;
-        loadMapSize(); //Updates map size when Map changes
+        loadMapSize(); // Updates map size when Map changes
         map = new int[mapHeight][mapWidth];
     }
 

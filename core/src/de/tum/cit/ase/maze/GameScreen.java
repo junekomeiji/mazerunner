@@ -37,6 +37,7 @@ public class GameScreen implements Screen {
     private Humanoid humanoid;
     private Slime slime;
     private Man man;
+    private Ghost ghost;
 
     private Door door;
 
@@ -62,7 +63,7 @@ public class GameScreen implements Screen {
     Texture exitTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion exitTextureRegion = new TextureRegion(exitTexture, 0, 96, 16, 16);
 
-    //Placeholder Texture (dynamic enemy later, currently red Wall)
+    //Placeholder Texture (not currently used)
     Texture placeholderTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion placeholderTextureRegion = new TextureRegion(placeholderTexture, 64, 0, 16, 16);
 
@@ -96,6 +97,7 @@ public class GameScreen implements Screen {
         humanoid = new Humanoid(200,200,0);
         slime = new Slime(100, 100, 0);
         man = new Man(200, 100, 0);
+        ghost = new Ghost(0, 0, 0);
 
         door = new Door(100, 200, 0);
 
@@ -175,6 +177,8 @@ public class GameScreen implements Screen {
         TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion ghostFrame = ghost.getAnimation().getKeyFrame(elapsedTime, true);
+
 
         TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
@@ -209,8 +213,10 @@ public class GameScreen implements Screen {
                         game.getSpriteBatch().draw(spikeFrame, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 4:
-                        // Render Enemy (currently Placeholder) at position (x, y)
-                        game.getSpriteBatch().draw(placeholderTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        // Render Enemy (currently static Ghost) at position (x, y)
+                        // Grass temporary, ideally also random later
+                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(ghostFrame, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 5:
                         // Render Chest (for obtaining key) at position (x, y) on top of plain Grass
