@@ -18,25 +18,22 @@ import de.tum.cit.ase.maze.Entities.Things.*;
  * The GameScreen class is responsible for rendering the gameplay screen.
  * It handles the game logic and rendering of the game elements.
  */
-
-//gh pls work
 public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
 
-    private SpriteBatch batch, hudBatch;
+    public Maploader maploader;
+
+    private SpriteBatch batch;
 
     private final BitmapFont font;
-
-    public Maploader mapLoader;
 
     private float sinusInput = 0f;
 
     private float elapsedTime = 0f;
 
     private Player player;
-    private HUD hud;
     private Humanoid humanoid;
     private Slime slime;
     private Man man;
@@ -50,7 +47,12 @@ public class GameScreen implements Screen {
     private Fireplace fireplace;
     private Vase vase;
 
-    public Maploader mapLoader;
+    //Maybe put this somewhere else later
+    private Texture TextureRegion;
+
+    //Wall Texture
+    Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 0, 0, 16, 16);
 
     //Entry Point Texture
     Texture entryPointTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -72,18 +74,22 @@ public class GameScreen implements Screen {
     Texture lushGrassTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion lushGrassTextureRegion = new TextureRegion(lushGrassTexture, 16, 128, 16, 16);
 
+    // Plain Grass Texture
+    Texture plainGrassTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion plainGrassTextureRegion = new TextureRegion(plainGrassTexture, 48, 16, 16, 16);
+
+
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game, Maploader mapLoader) {
+    public GameScreen(MazeRunnerGame game, Maploader maploader) {
 
-        this.mapLoader = mapLoader;
+        this.maploader = maploader;
 
         this.game = game;
         batch = new SpriteBatch();
-        hudBatch = new SpriteBatch();
 
         player = new Player(0, 0, 0);
 
@@ -171,7 +177,6 @@ public class GameScreen implements Screen {
         TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
 
-        //For Maploader
         TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
 
@@ -181,20 +186,10 @@ public class GameScreen implements Screen {
 
         font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 0, 400);
 
-        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
-        game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
-        game.getSpriteBatch().draw(slimeFrame, slime.getX(), slime.getY(), 64, 64);
-        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getX(), man.getY(), 64, 64);
-        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getX(), door.getY(), 64, 64);
-
-
-
-
         //Renders the Map
-        System.out.println(mapLoader.getMapType());
-        for (int x = 0; x < mapLoader.getMapWidth(); x++) {
-            for (int y = 0; y < mapLoader.getMapHeight(); y++) {
-                int entityType = mapLoader.getMap()[x][y]; // Retrieves the object type
+        for (int x = 0; x < maploader.getMapWidth(); x++) {
+            for (int y = 0; y < maploader.getMapHeight(); y++) {
+                int entityType = maploader.getMap()[x][y]; // Retrieves the object type
                 // Render Objects based on their type
                 switch (entityType) {
                     case 0:
@@ -210,7 +205,8 @@ public class GameScreen implements Screen {
                         game.getSpriteBatch().draw(exitTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 3:
-                        // Render Trap at position (x, y)
+                        // Render Trap at position (x, y) on top of plain Grass
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         game.getSpriteBatch().draw(spikeFrame, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 4:
@@ -218,24 +214,28 @@ public class GameScreen implements Screen {
                         game.getSpriteBatch().draw(placeholderTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 5:
-                        // Render Chest (for obtaining key) at position (x, y)
+                        // Render Chest (for obtaining key) at position (x, y) on top of plain Grass
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         game.getSpriteBatch().draw(chestFrame, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 6:
-                        // Render Chest (for obtaining key) at position (x, y)
+                        // Render Grass at position (x, y) (filler)
                         game.getSpriteBatch().draw(grassTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 7:
-                        // Render Chest (for obtaining key) at position (x, y)
+                        // Render Lush Grass at position (x, y) (filler)
                         game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                 }
             }
         }
-        //TODO: Remove once I fix map selector
-        mapLoader.clearMap();
-        mapLoader.reader();
-        mapLoader.createMap();
+
+        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
+        game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
+        game.getSpriteBatch().draw(slimeFrame, slime.getX(), slime.getY(), 64, 64);
+        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getX(), man.getY(), 64, 64);
+        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getX(), door.getY(), 64, 64);
+
         camera.update(); // Update the camera
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }

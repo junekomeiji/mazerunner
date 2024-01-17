@@ -28,16 +28,16 @@ public class MenuScreen implements Screen {
 
     MazeRunnerGame game;
 
-    public Maploader mapLoader;
+    public Maploader maploader;
 
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(MazeRunnerGame game, Maploader mapLoader) {
+    public MenuScreen(MazeRunnerGame game, Maploader maploader) {
         this.game = game;
-        this.mapLoader = mapLoader;
+        this.maploader = maploader;
 
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
@@ -52,7 +52,7 @@ public class MenuScreen implements Screen {
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
 
-        mapLoader = new Maploader(game);
+        maploader = new Maploader(game);
     }
 
     @Override
@@ -67,24 +67,24 @@ public class MenuScreen implements Screen {
 
         //Map Selector
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            mapLoader.setMapType(1);
-            mapLoader.createMap();
+            maploader.setMapType(1);
+            maploader.createMap();
             game.goToGame();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            mapLoader.setMapType(2);
-            mapLoader.createMap();
+            maploader.setMapType(2);
+            maploader.createMap();
             game.goToGame();
          }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            mapLoader.setMapType(3);
-            mapLoader.createMap();
+            maploader.setMapType(3);
+            maploader.createMap();
             game.goToGame();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-            mapLoader.setMapType(4);
-            mapLoader.createMap();
+            maploader.setMapType(4);
+            maploader.createMap();
             game.goToGame();
          }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
-            mapLoader.setMapType(5);
-            mapLoader.createMap();
+            maploader.setMapType(5);
+            maploader.createMap();
             game.goToGame();
         }
 
