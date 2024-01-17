@@ -194,6 +194,26 @@ public class GameScreen implements Screen {
             }
         }
 
+        if(Gdx.graphics.getWidth() - player.getX() < 0){
+            camera.translate(10, 0);
+        }
+
+        if(Gdx.graphics.getWidth() - player.getX() > 0){
+            camera.translate(-10, 0);
+        }
+
+        if( - player.getY() < 0){
+            System.out.println();
+            camera.translate(0, 10);
+        }
+
+        if(Gdx.graphics.getHeight() - player.getY() > 0){
+            camera.translate(0, -10);
+        }
+
+        System.out.println(player.getX() + ", " + player.getY());
+        System.out.println(Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight());
+
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
 
@@ -202,6 +222,7 @@ public class GameScreen implements Screen {
     }
 
     private void handleInput(){
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
         }
