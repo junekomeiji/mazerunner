@@ -197,49 +197,45 @@ public class GameScreen implements Screen {
                 switch (entityType) {
                     case 0:
                         // Render Wall at position (x, y)
-                        game.getSpriteBatch().draw(wallTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(wallTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 1:
                         // Render Entry point at position (x, y)
-                        game.getSpriteBatch().draw(entryPointTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(entryPointTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 2:
                         // Render Exit at position (x, y)
-                        game.getSpriteBatch().draw(exitTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(exitTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 3:
                         // Render Trap at position (x, y) on top of plain Grass
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
-                        game.getSpriteBatch().draw(spikeFrame, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(spikeFrame, x * 64 , y * 64, 64, 64);
                         break;
                     case 4:
                         // Render Enemy (currently static Ghost) at position (x, y)
                         // Grass temporary, ideally also random later
-                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 + 400, y * 64, 64, 64);
-                        game.getSpriteBatch().draw(ghostFrame, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(ghostFrame, x * 64, y * 64, 64, 64);
                         break;
                     case 5:
                         // Render Chest (for obtaining key) at position (x, y) on top of plain Grass
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
-                        game.getSpriteBatch().draw(chestFrame, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(chestFrame, x * 64 , y * 64, 64, 64);
                         break;
                     case 6:
                         // Render Grass at position (x, y) (filler)
-                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 7:
                         // Render Lush Grass at position (x, y) (filler)
-                        game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                 }
             }
         }
 
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
-        game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
-        game.getSpriteBatch().draw(slimeFrame, slime.getX(), slime.getY(), 64, 64);
-        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getX(), man.getY(), 64, 64);
-        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getX(), door.getY(), 64, 64);
 
         camera.update(); // Update the camera
         game.getSpriteBatch().end(); // Important to call this after drawing everything
