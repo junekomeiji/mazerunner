@@ -19,6 +19,7 @@ public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
+    private TiledTest tiledTest;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -75,6 +76,14 @@ public class MazeRunnerGame extends Game {
 
     public void goToDebug(){
         this.setScreen(new DebugScreen(this));
+        if(menuScreen != null){
+            menuScreen.dispose();
+            menuScreen = null;
+        }
+    }
+
+    public void goToTiledTest(){
+        this.setScreen(new TiledTest(this));
         if(menuScreen != null){
             menuScreen.dispose();
             menuScreen = null;
