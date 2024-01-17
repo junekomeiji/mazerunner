@@ -2,8 +2,6 @@
 
 ## Backlog
 
-### Implement viewing of the maze
-#### learn tiled lol
 ### Implement HUD
 ### Implement main menu
 ### Implement sound effects
