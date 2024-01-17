@@ -6,22 +6,16 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
-import de.tum.cit.ase.maze.Entities.Entity;
 
 public class Maploader {
 
     private final MazeRunnerGame game;
 
-    int mapType; //Default Map type
+    int mapType; // Map type (1-5 for each of the Maps in /assets)
 
     int mapWidth;  // max Width of the map
-    int mapHeight; // max Height of the map ( both flexible)
+    int mapHeight; // max Height of the map
     int[][] map;
 
     Properties properties = new Properties();
@@ -30,8 +24,35 @@ public class Maploader {
     public Maploader(MazeRunnerGame game) {
         this.game = game;
         this.mapType = 1;
-        loadMapSize();
         map = new int[mapHeight][mapWidth];
+    }
+
+
+    //Fills out the Array
+    public void createMap() {
+        properties.clear(); // Necessary to delete old Map
+        reader();
+        setMapType(mapType);
+
+        //Randomly fills out the Map with Grass or Lush Grass (Case 6 or 7)
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                // Generate a random value (0 or 1) to decide between grass and lush grass
+                int randomValue = Math.random() < 0.6 ? 6 : 7; // For every 6 grass there is 4 lush grass
+
+                map[x][y] = randomValue; // Assigns the random Values to our Map
+            }
+        }
+
+        //Fills out the Array
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            String[] coordinates = entry.getKey().toString().split(",");
+            int x = Integer.parseInt(coordinates[0]);
+            int y = Integer.parseInt(coordinates[1]);
+            int entityType = Integer.parseInt(entry.getValue().toString());
+
+            map[x][y] = entityType;
+        }
     }
 
     //Reads the .properties file
@@ -43,32 +64,11 @@ public class Maploader {
         }
     }
 
-    //Fills out the Array
-    public void createMap() {
-        for (int x = 0; x < mapWidth; x++) {
-            for (int y = 0; y < mapHeight; y++) {
-                map[x][y] = 6; // Set default value for all positions
-            }
-        }
-
-        //Sets all unoccupied tiles to 6 (Ground)
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            String[] coordinates = entry.getKey().toString().split(",");
-            int x = Integer.parseInt(coordinates[0]);
-            int y = Integer.parseInt(coordinates[1]);
-            int entityType = Integer.parseInt(entry.getValue().toString());
-
-            map[x][y] = entityType;
-        }
-    }
-
-    //TODO: Doesnt work currently
-    public void clearMap() {
-        map = new int[mapHeight][mapWidth]; // Create a new array to initialize a fresh map
-    }
-
 
     public void loadMapSize() {
+        mapHeight = 0; // Reset mapHeight
+        mapWidth = 0; // Reset mapHeight
+
         try (InputStream input = Gdx.files.internal("maps/level-" + mapType + ".properties").read()) {
             properties.load(input);
             for (Object key : properties.keySet()) {

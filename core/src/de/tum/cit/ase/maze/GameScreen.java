@@ -74,6 +74,10 @@ public class GameScreen implements Screen {
     Texture lushGrassTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion lushGrassTextureRegion = new TextureRegion(lushGrassTexture, 16, 128, 16, 16);
 
+    //Plain Green Texture (for Chests/Vases to stand on)
+    Texture plainTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion plainTextureRegion = new TextureRegion(plainTexture, 48, 16, 16, 16);
+
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
@@ -172,27 +176,16 @@ public class GameScreen implements Screen {
         TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
 
-        //For Maploader
-        TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
-        TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
-
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
         game.getSpriteBatch().begin();
 
         font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 0, 400);
 
-        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
-        game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
-        game.getSpriteBatch().draw(slimeFrame, slime.getX(), slime.getY(), 64, 64);
-        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getX(), man.getY(), 64, 64);
-        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getX(), door.getY(), 64, 64);
-
-
-
+        TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
+        TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
 
         //Renders the Map
-        System.out.println(mapLoader.getMapType());
         for (int x = 0; x < mapLoader.getMapWidth(); x++) {
             for (int y = 0; y < mapLoader.getMapHeight(); y++) {
                 int entityType = mapLoader.getMap()[x][y]; // Retrieves the object type
@@ -219,24 +212,30 @@ public class GameScreen implements Screen {
                         game.getSpriteBatch().draw(placeholderTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 5:
-                        // Render Chest (for obtaining key) at position (x, y)
+                        // Render Chest (for obtaining key) at position (x, y) on top of a plain texture at the same position
+                        game.getSpriteBatch().draw(plainTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         game.getSpriteBatch().draw(chestFrame, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 6:
-                        // Render Chest (for obtaining key) at position (x, y)
+                        // Render Grass at position (x, y)
                         game.getSpriteBatch().draw(grassTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                     case 7:
-                        // Render Chest (for obtaining key) at position (x, y)
+                        // Render lush Grass at position (x, y)
                         game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 + 400, y * 64, 64, 64);
                         break;
                 }
             }
         }
-        //TODO: Remove once I fix map selector
-        mapLoader.clearMap();
-        mapLoader.reader();
-        mapLoader.createMap();
+
+
+        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
+        game.getSpriteBatch().draw(humanoidFrame, humanoid.getX(), humanoid.getY(), 64, 64);
+        game.getSpriteBatch().draw(slimeFrame, slime.getX(), slime.getY(), 64, 64);
+        game.getSpriteBatch().draw(man.getAnimation().getKeyFrame(elapsedTime, true), man.getX(), man.getY(), 64, 64);
+        game.getSpriteBatch().draw(door.getAnimation().getKeyFrame(elapsedTime, true), door.getX(), door.getY(), 64, 64);
+
+
         camera.update(); // Update the camera
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }

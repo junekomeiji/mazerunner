@@ -65,31 +65,25 @@ public class MenuScreen implements Screen {
             game.goToDebug();
         }
 
-        //First map gets cleared, then Map gets selected, then read and created
-        //TODO: Desnt work bc old map doesnt get deleted properly
+        //Map Selector
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             mapLoader.setMapType(1);
-            mapLoader.reader();
             mapLoader.createMap();
             game.goToGame();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
             mapLoader.setMapType(2);
-            mapLoader.reader();
             mapLoader.createMap();
             game.goToGame();
          }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
             mapLoader.setMapType(3);
-            mapLoader.reader();
             mapLoader.createMap();
             game.goToGame();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
             mapLoader.setMapType(4);
-            mapLoader.reader();
             mapLoader.createMap();
             game.goToGame();
          }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
             mapLoader.setMapType(5);
-            mapLoader.reader();
             mapLoader.createMap();
             game.goToGame();
         }
