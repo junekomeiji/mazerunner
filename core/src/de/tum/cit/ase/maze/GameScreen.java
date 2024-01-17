@@ -128,45 +128,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
 
-        //key press statements
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveUp();
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.moveLeft();
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.moveDown();
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight();
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.E)){
-            if(!player.isPickedUp()) {
-                elapsedTime = 0;
-                player.setPickingUp(true);
-                player.setPickedUp(true);
-            } else {
-                elapsedTime = 0;
-                player.setPickingUp(false);
-                player.setPickedUp(false);
-            }
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
-            elapsedTime = 0;
-            player.setSlashing(true);
-        }
-
-        //may refactor later ^^
+        handleInput();
 
         if(player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())){
             player.setPickingUp(false);
@@ -174,26 +136,8 @@ public class GameScreen implements Screen {
             elapsedTime = 0;
         }
 
-        //camera debug controls
-        if(Gdx.input.isKeyPressed(Input.Keys.L)){
-            camera.translate(50,0);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.J)){
-            camera.translate(-50,0);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.I)){
-            camera.translate(0,50);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.K)){
-            camera.translate(0,-50);
-        }
-
         TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
-        TextureRegion humanoidFrame = humanoid.getAnimation().getKeyFrame(elapsedTime, true);
-        TextureRegion slimeFrame = slime.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion ghostFrame = ghost.getAnimation().getKeyFrame(elapsedTime, true);
-
 
         TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
@@ -257,6 +201,60 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
+    private void handleInput(){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.goToMenu();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            player.moveUp();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            player.moveLeft();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            player.moveDown();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            player.moveRight();
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.E)){
+            if(!player.isPickedUp()) {
+                elapsedTime = 0;
+                player.setPickingUp(true);
+                player.setPickedUp(true);
+            } else {
+                elapsedTime = 0;
+                player.setPickingUp(false);
+                player.setPickedUp(false);
+            }
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
+            elapsedTime = 0;
+            player.setSlashing(true);
+        }
+
+        //camera debug controls
+        if(Gdx.input.isKeyPressed(Input.Keys.L)){
+            camera.translate(50,0);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.J)){
+            camera.translate(-50,0);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.I)){
+            camera.translate(0,50);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.K)){
+            camera.translate(0,-50);
+        }
+
+    }
 
 
     @Override
