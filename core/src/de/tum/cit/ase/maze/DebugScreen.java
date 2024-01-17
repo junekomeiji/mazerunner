@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.maze.Entities.Mobs.*;
 
+
 // a debug screen to draw all the sprites and soon, tiles
 public class DebugScreen implements Screen {
 
@@ -48,6 +49,8 @@ public class DebugScreen implements Screen {
 
         p = new Player(0,0,0);
 
+        
+
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
@@ -74,7 +77,11 @@ public class DebugScreen implements Screen {
 
         game.getSpriteBatch().begin();
 
-        font.draw(game.getSpriteBatch(), "Lives: " + p.getLives(), 400, 400);
+        font.draw(game.getSpriteBatch(), "debug screen!", 400, 400);
+
+        game.getSpriteBatch().draw(p.getAnimation().getKeyFrame(elapsedTime, true), p.getX(), p.getY(), 64, 128);
+
+
 
         camera.update(); // Update the camera
 
