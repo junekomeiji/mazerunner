@@ -20,7 +20,6 @@ public class Maploader {
 
     Properties properties = new Properties();
 
-    //Constructor
     public Maploader(MazeRunnerGame game) {
         this.game = game;
         this.mapType = 1;

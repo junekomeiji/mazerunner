@@ -65,7 +65,7 @@ public class MenuScreen implements Screen {
             game.goToDebug();
         }
 
-        //Map Selector
+        //Map Selector (needs to look better)
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             maploader.setMapType(1);
             maploader.createMap();
