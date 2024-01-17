@@ -21,7 +21,7 @@ import de.tum.cit.ase.maze.Entities.Things.*;
 public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
-    private final OrthographicCamera camera;
+    private OrthographicCamera camera;
 
     public Maploader maploader;
 
@@ -112,7 +112,7 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        camera.zoom = 0.75f;
+        camera.zoom = 1.5f;
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
@@ -172,6 +172,21 @@ public class GameScreen implements Screen {
             player.setPickingUp(false);
             player.setSlashing(false);
             elapsedTime = 0;
+        }
+
+        //camera debug controls
+        if(Gdx.input.isKeyPressed(Input.Keys.L)){
+            camera.translate(50,0);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.J)){
+            camera.translate(-50,0);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.I)){
+            camera.translate(0,50);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.K)){
+            camera.translate(0,-50);
         }
 
         TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
@@ -236,6 +251,7 @@ public class GameScreen implements Screen {
         }
 
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
+        game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
 
         camera.update(); // Update the camera
         game.getSpriteBatch().end(); // Important to call this after drawing everything
