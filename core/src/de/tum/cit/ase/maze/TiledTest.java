@@ -39,7 +39,7 @@ public class TiledTest implements Screen {
         p = new Player(0,0,0);
 
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
-        stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
+        stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements12321
 
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage

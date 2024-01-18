@@ -92,7 +92,15 @@ public class GameScreen implements Screen {
         this.game = game;
         batch = new SpriteBatch();
 
-        player = new Player(0, 0, 0);
+        // Sets player spawn point to the coordinates of the entry point (case 1)
+        for (int x = 0; x < maploader.getMapWidth(); x++) {
+            for (int y = 0; y < maploader.getMapHeight(); y++) {
+                if (maploader.getMap()[x][y] == 1) { // 1 is entry point
+                    player = new Player(x * 64, y * 64, 0);
+                    break;
+                }
+            }
+        }
 
         humanoid = new Humanoid(200,200,0);
         slime = new Slime(100, 100, 0);
@@ -194,6 +202,7 @@ public class GameScreen implements Screen {
             }
         }
 
+        /*
         if(Gdx.graphics.getWidth() - player.getX() < 0){
             camera.translate(10, 0);
         }
@@ -210,6 +219,8 @@ public class GameScreen implements Screen {
         if(Gdx.graphics.getHeight() - player.getY() > 0){
             camera.translate(0, -10);
         }
+         */
+
 
         System.out.println(player.getX() + ", " + player.getY());
         System.out.println(Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight());
@@ -274,7 +285,6 @@ public class GameScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.K)){
             camera.translate(0,-50);
         }
-
     }
 
 
