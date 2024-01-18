@@ -305,5 +305,4 @@ public class Player extends Entity {
                 default -> {return playerSlashUp; }
             }
     }
-
 }

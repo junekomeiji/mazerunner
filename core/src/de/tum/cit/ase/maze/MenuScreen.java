@@ -57,9 +57,6 @@ public class MenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToGame();
-        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F1)){
             game.goToDebug();
@@ -95,7 +92,6 @@ public class MenuScreen implements Screen {
 
         batch.begin();
         font.draw(batch, "Press 1-5 to select the according Map", 200, 300);
-        font.draw(batch, "Press ESC for default Map type (1)", 200, 250);
         batch.end();
     }
 

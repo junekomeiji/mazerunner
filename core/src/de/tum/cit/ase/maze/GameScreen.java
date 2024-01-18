@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
+import de.tum.cit.ase.maze.Entities.Entity;
 import de.tum.cit.ase.maze.Entities.Mobs.*;
 import de.tum.cit.ase.maze.Entities.Things.*;
 
@@ -202,6 +203,7 @@ public class GameScreen implements Screen {
             }
         }
 
+        //TODO: KEEP THIS, JUST COMMENTED OUT FOR TESTING
         /*
         if(Gdx.graphics.getWidth() - player.getX() < 0){
             camera.translate(10, 0);
@@ -234,24 +236,34 @@ public class GameScreen implements Screen {
 
     private void handleInput(){
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
-        }
+        // Redone for wall collision check
+        int nextX = player.getX();
+        int nextY = player.getY();
+
+        //TODO: Currently messes up Wall check if not 64
+        int movementSpeed = 64; // Speed at which the player moves
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveUp();
+            nextY += movementSpeed; // Move up
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.moveLeft();
+            nextX -= movementSpeed; // Move left
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.moveDown();
+            nextY -= movementSpeed; // Move down
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight();
+            nextX += movementSpeed; // Move right
+        }
+
+        // Check for collisions with walls
+        if (!isWallCollision(nextX, nextY)) {
+            // Convert so we can set position
+            player.setX((int)nextX);
+            player.setY((int)nextY);
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.E)){
@@ -264,6 +276,10 @@ public class GameScreen implements Screen {
                 player.setPickingUp(false);
                 player.setPickedUp(false);
             }
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.goToMenu();
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
@@ -285,6 +301,15 @@ public class GameScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.K)){
             camera.translate(0,-50);
         }
+    }
+
+    // Checks if we are about to run into a  wall
+    private boolean isWallCollision(float nextX, float nextY) {
+        int mapX = (int) (nextX / 64); // Convert to map coordinates
+        int mapY = (int) (nextY / 64);
+
+        // Check if the next position is a wall
+        return maploader.getMap()[mapX][mapY] == 0; // 0 represents a wall
     }
 
 
