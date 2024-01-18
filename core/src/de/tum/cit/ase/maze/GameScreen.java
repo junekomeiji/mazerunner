@@ -244,19 +244,23 @@ public class GameScreen implements Screen {
         int movementSpeed = 64; // Speed at which the player moves
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            nextY += movementSpeed; // Move up
+            player.moveUp(movementSpeed); // Move up
+            nextY += movementSpeed;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            nextX -= movementSpeed; // Move left
+            player.moveLeft(movementSpeed); // Move left
+            nextX -= movementSpeed;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            nextY -= movementSpeed; // Move down
+            player.moveDown(movementSpeed); // Move down
+            nextY -= movementSpeed;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            nextX += movementSpeed; // Move right
+            player.moveRight(movementSpeed); // Move right
+            nextX += movementSpeed;
         }
 
         // Check for collisions with walls

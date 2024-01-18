@@ -93,6 +93,45 @@ public abstract class Entity {
 
     public void loadAnimations(){}
 
+    public void moveUp() {
+        setDirection(this.UP);
+        this.y += 20;
+    }
+
+    public void moveDown() {
+        setDirection(this.DOWN);
+        this.y -= 20;
+    }
+
+    public void moveLeft() {
+        setDirection(this.LEFT);
+        this.x -= 20;
+    }
+
+    public void moveRight() {
+        setDirection(this.RIGHT);
+        this.x += 20;
+    }
+
+    public void moveUp(int movementSpeed) {
+        setDirection(this.UP);
+        this.y += movementSpeed;
+    }
+
+    public void moveDown(int movementSpeed) {
+        setDirection(this.DOWN);
+        this.y -= movementSpeed;
+    }
+
+    public void moveLeft(int movementSpeed) {
+        setDirection(this.LEFT);
+        this.x -= movementSpeed;
+    }
+
+    public void moveRight(int movementSpeed) {
+        setDirection(this.RIGHT);
+        this.x += movementSpeed;
+    }
 
     public Animation<TextureRegion> getAnimation() {
 
