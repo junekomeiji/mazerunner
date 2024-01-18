@@ -244,31 +244,31 @@ public class GameScreen implements Screen {
         int movementSpeed = 64; // Speed at which the player moves
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveUp(movementSpeed); // Move up
-            nextY += movementSpeed;
+            if(!isWallCollision(player.getX(), player.getY() + movementSpeed)) player.moveUp(movementSpeed);
+            player.moveUp(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.moveLeft(movementSpeed); // Move left
-            nextX -= movementSpeed;
+            if(!isWallCollision(player.getX() - movementSpeed, player.getY())) player.moveLeft(movementSpeed);
+            player.moveLeft(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.moveDown(movementSpeed); // Move down
-            nextY -= movementSpeed;
+            if(!isWallCollision(player.getX(), player.getY() - movementSpeed)) player.moveDown(movementSpeed);
+            player.moveDown(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight(movementSpeed); // Move right
-            nextX += movementSpeed;
+            if(!isWallCollision(player.getX() + movementSpeed, player.getY())) player.moveRight(movementSpeed);
+            player.moveRight(0);
         }
 
         // Check for collisions with walls
-        if (!isWallCollision(nextX, nextY)) {
+        /*if (!isWallCollision(nextX, nextY)) {
             // Convert so we can set position
             player.setX((int)nextX);
             player.setY((int)nextY);
-        }
+        }*/
 
         if(Gdx.input.isKeyPressed(Input.Keys.E)){
             if(!player.isPickedUp()) {
