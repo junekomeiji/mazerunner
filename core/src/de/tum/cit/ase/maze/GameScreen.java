@@ -248,7 +248,6 @@ public class GameScreen implements Screen {
             }
             if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
                 game.goToMenu();
-                System.out.println("ADOSHASOUIHDIUOASHDUIOASHDIUOASHDUIOASHDIUOASHDOIUH");
             }
         }
 
@@ -258,7 +257,6 @@ public class GameScreen implements Screen {
             }
             if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
                 game.goToMenu();
-                System.out.println("ADOSHASOUIHDIUOASHDUIOASHDIUOASHDUIOASHDIUOASHDOIUH");
             }
         }
 
@@ -268,7 +266,6 @@ public class GameScreen implements Screen {
             }
             if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
                 game.goToMenu();
-                System.out.println("ADOSHASOUIHDIUOASHDUIOASHDIUOASHDUIOASHDIUOASHDOIUH");
             }
         }
 
@@ -278,7 +275,6 @@ public class GameScreen implements Screen {
             }
             if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
                 game.goToMenu();
-                System.out.println("ADOSHASOUIHDIUOASHDUIOASHDIUOASHDUIOASHDIUOASHDOIUH");
             }
         }
 
