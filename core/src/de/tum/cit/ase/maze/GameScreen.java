@@ -52,6 +52,11 @@ public class GameScreen implements Screen {
     //Maybe put this somewhere else later
     private Texture TextureRegion;
 
+    private int translatedx = 0;
+    private int translatedy = 0;
+
+    private boolean once = false;
+
     //Wall Texture
     Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 0, 0, 16, 16);
@@ -98,17 +103,24 @@ public class GameScreen implements Screen {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
                 if (maploader.getMap()[x][y] == 1) { // 1 is entry point
                     player = new Player(x * 64, y * 64, 0);
+
                     break;
                 }
             }
         }
 
-        humanoid = new Humanoid(200,200,0);
-        slime = new Slime(100, 100, 0);
-        man = new Man(200, 100, 0);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false);
+        camera.zoom = 1.5f;
+
+
+
+        humanoid = new Humanoid(0,0,0);
+        slime = new Slime(0, 0, 0);
+        man = new Man(0, 0, 0);
         ghost = new Ghost(0, 0, 0);
 
-        door = new Door(100, 200, 0);
+        door = new Door(0, 0, 0);
 
         torch = new Torch(0, 0, 0);
         lever = new Lever(0, 0, 0);
@@ -116,12 +128,6 @@ public class GameScreen implements Screen {
         chest = new Chest(0, 0, 0);
         fireplace = new Fireplace(0, 0, 0);
         vase = new Vase(0, 0, 0);
-
-
-        // Create and configure the camera for the game view
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false);
-        camera.zoom = 1.5f;
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
@@ -133,6 +139,12 @@ public class GameScreen implements Screen {
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
+
+        if(!once) {
+            camera.position.x = player.getX();
+            camera.position.y = player.getY();
+            once = true;
+        }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
@@ -155,8 +167,6 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().begin();
 
-        font.draw(game.getSpriteBatch(), "Lives: " + player.getLives(), 0, 400);
-
         //Renders the Map
         for (int x = 0; x < maploader.getMapWidth(); x++) {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
@@ -172,8 +182,7 @@ public class GameScreen implements Screen {
                         game.getSpriteBatch().draw(entryPointTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 2:
-                        // Render Exit at position (x, y) on top of plain Grass
-                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
+                        // Render Exit at position (x, y)
                         game.getSpriteBatch().draw(exitTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 3:
@@ -182,7 +191,8 @@ public class GameScreen implements Screen {
                         game.getSpriteBatch().draw(spikeFrame, x * 64 , y * 64, 64, 64);
                         break;
                     case 4:
-                        // Render Enemy (currently static Ghost) at position (x, y) on top of plain Grass
+                        // Render Enemy (currently static Ghost) at position (x, y)
+                        // Grass temporary, ideally also random later
                         game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
                         game.getSpriteBatch().draw(ghostFrame, x * 64, y * 64, 64, 64);
                         break;
@@ -203,15 +213,74 @@ public class GameScreen implements Screen {
             }
         }
 
-        //TODO: KEEP THIS, JUST COMMENTED OUT FOR TESTING
-        /*
-        if(Gdx.graphics.getWidth() - player.getX() < 0){
-            camera.translate(10, 0);
+        System.out.println(Gdx.graphics.getWidth());
+
+        int transspeed = 64;
+
+        System.out.println(translatedx);
+
+        if((player.getX()) - translatedx + 256 > (Gdx.graphics.getWidth() * 0.8)){
+
+            camera.translate(transspeed, 0);
+            translatedx += transspeed;
+
         }
 
-        if(Gdx.graphics.getWidth() - player.getX() > 0){
-            camera.translate(-10, 0);
+        if((player.getX()) - translatedx - 256 < (Gdx.graphics.getWidth() * 0.2)){
+
+            camera.translate(-transspeed, 0);
+            translatedx -= transspeed;
+
         }
+
+        if((player.getY()) - translatedy + 256 > (Gdx.graphics.getHeight() * 0.8)){
+
+            camera.translate(0, transspeed);
+            translatedy += transspeed;
+
+        }
+
+        if((player.getY()) - translatedy + 256 < (Gdx.graphics.getHeight() * 0.2)){
+
+            camera.translate(0, -transspeed);
+            translatedy -= transspeed;
+
+        }
+
+        /*if((player.getX()) - translatedx > (Gdx.graphics.getWidth() * 0.9)){
+
+            camera.translate(-transspeed, 0);
+            translatedx -= transspeed;
+
+        }*/
+
+        /*if(Gdx.graphics.getWidth() + player.getX() - translatedx >= Gdx.graphics.getWidth() * 0.1){
+
+            camera.translate(-transspeed, 0);
+            translatedx -= transspeed;
+
+        }
+
+        if(Gdx.graphics.getHeight() - player.getY() + translatedy <= Gdx.graphics.getHeight() * 0.1){
+
+            camera.translate(0, transspeed);
+            translatedy += transspeed;
+
+        }
+
+        if(Gdx.graphics.getHeight() + player.getY() - translatedx >= Gdx.graphics.getHeight() * 0.1){
+
+            camera.translate(0, -transspeed);
+            translatedy -= transspeed;
+
+        }*/
+
+
+        //TODO: KEEP THIS, JUST COMMENTED OUT FOR TESTING
+        /*
+
+
+
 
         if( - player.getY() < 0){
             System.out.println();
@@ -221,10 +290,11 @@ public class GameScreen implements Screen {
         if(Gdx.graphics.getHeight() - player.getY() > 0){
             camera.translate(0, -10);
         }
-
-        System.out.println(player.getX() + ", " + player.getY());
-        System.out.println(Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight());
          */
+
+
+        //System.out.println(player.getX() + ", " + player.getY());
+        //System.out.println(Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight());
 
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
@@ -243,43 +313,33 @@ public class GameScreen implements Screen {
         int movementSpeed = 64; // Speed at which the player moves
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if (!isWallCollision(player.getX(), player.getY() + movementSpeed, 64)) {
-                player.moveUp(movementSpeed);
-            }
-            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
-                game.goToMenu();
-            }
+            if(!isWallCollision(player.getX(), player.getY() + movementSpeed)) player.moveUp(movementSpeed);
+            player.moveUp(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (!isWallCollision(player.getX() - movementSpeed, player.getY(), 64)) {
-                player.moveLeft(movementSpeed);
-            }
-            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
-                game.goToMenu();
-            }
+            if(!isWallCollision(player.getX() - movementSpeed, player.getY())) player.moveLeft(movementSpeed);
+            player.moveLeft(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if (!isWallCollision(player.getX(), player.getY() - movementSpeed, 64)) {
-                player.moveDown(movementSpeed);
-            }
-            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
-                game.goToMenu();
-            }
+            if(!isWallCollision(player.getX(), player.getY() - movementSpeed)) player.moveDown(movementSpeed);
+            player.moveDown(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (!isWallCollision(player.getX() + movementSpeed, player.getY(), 64)) {
-                player.moveRight(movementSpeed);
-            }
-            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
-                game.goToMenu();
-            }
+            if(!isWallCollision(player.getX() + movementSpeed, player.getY())) player.moveRight(movementSpeed);
+            player.moveRight(0);
         }
 
+        // Check for collisions with walls
+        /*if (!isWallCollision(nextX, nextY)) {
+            // Convert so we can set position
+            player.setX((int)nextX);
+            player.setY((int)nextY);
+        }*/
 
-        if(Gdx.input.isKeyPressed(Input.Keys.E)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
             if(!player.isPickedUp()) {
                 elapsedTime = 0;
                 player.setPickingUp(true);
@@ -300,6 +360,7 @@ public class GameScreen implements Screen {
             player.setSlashing(true);
         }
 
+
         //camera debug controls
         if(Gdx.input.isKeyPressed(Input.Keys.L)){
             camera.translate(50,0);
@@ -316,31 +377,14 @@ public class GameScreen implements Screen {
         }
     }
 
-    // Checks if we are about to run into a wall
-    private boolean isWallCollision(float nextX, float nextY, int tileSize) {
-        int mapX = (int) (nextX / tileSize);
-        int mapY = (int) (nextY / tileSize);
+    // Checks if we are about to run into a  wall
+    private boolean isWallCollision(float nextX, float nextY) {
+        int mapX = (int) (nextX / 64); // Convert to map coordinates
+        int mapY = (int) (nextY / 64);
 
-        // Checks if we are still within the bounds of the map
-        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
-            // Check if the next position is a wall
-            return maploader.getMap()[mapX][mapY] == 0;
-        }
-
-        // If we are out of bounds, consider it a wall collision
-        return true;
+        // Check if the next position is a wall
+        return maploader.getMap()[mapX][mapY] == 0; // 0 represents a wall
     }
-
-
-    // Checks if we are about to run into an exit
-    private boolean isExitCollision(float nextX, float nextY, int tileSize) {
-        int mapX = (int) (nextX / tileSize);
-        int mapY = (int) (nextY / tileSize);
-
-        // Checks if next position is an exit (case 2)
-        return maploader.getMap()[mapX][mapY] == 2;
-    }
-
 
 
     @Override
