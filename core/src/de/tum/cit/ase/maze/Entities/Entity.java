@@ -87,6 +87,7 @@ public abstract class Entity {
         this.x = x;
         this.y = ypos;
         this.direction = direction;
+        this.lives = 4;
 
         loadAnimations();
     }

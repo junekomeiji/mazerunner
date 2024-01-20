@@ -165,6 +165,12 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
+        //Draws the HUD for lives
+        batch.begin();
+        font.draw(batch, "Remaining Lives: " + player.getLives(), 1600, 1000);
+        batch.end();
+
+
         game.getSpriteBatch().begin();
 
         //Renders the Map
@@ -211,8 +217,13 @@ public class GameScreen implements Screen {
                         break;
                 }
             }
+            //Checks if we are out of lives
+            if(player.getLives() < 1) {
+                game.goToVDefeat();
+            }
         }
 
+        /*
         System.out.println(Gdx.graphics.getWidth());
 
         int transspeed = 64;
@@ -246,6 +257,8 @@ public class GameScreen implements Screen {
             translatedy -= transspeed;
 
         }
+
+         */
 
         /*if((player.getX()) - translatedx > (Gdx.graphics.getWidth() * 0.9)){
 
@@ -303,6 +316,7 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
+
     private void handleInput(){
 
         // Redone for wall collision check
@@ -313,31 +327,52 @@ public class GameScreen implements Screen {
         int movementSpeed = 64; // Speed at which the player moves
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if(!isWallCollision(player.getX(), player.getY() + movementSpeed)) player.moveUp(movementSpeed);
-            player.moveUp(0);
+            if (!isWallCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+                player.moveUp(movementSpeed);
+            }
+            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+                game.goToVictory();
+            }
+            if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+                player.setLives(player.getLives() - 1);
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if(!isWallCollision(player.getX() - movementSpeed, player.getY())) player.moveLeft(movementSpeed);
-            player.moveLeft(0);
+            if (!isWallCollision(player.getX() - movementSpeed, player.getY(), 64)) {
+                player.moveLeft(movementSpeed);
+            }
+            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+                game.goToVictory();
+            }
+            if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+                player.setLives(player.getLives() - 1);
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if(!isWallCollision(player.getX(), player.getY() - movementSpeed)) player.moveDown(movementSpeed);
-            player.moveDown(0);
+            if (!isWallCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+                player.moveDown(movementSpeed);
+            }
+            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+                game.goToVictory();
+            }
+            if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+                player.setLives(player.getLives() - 1);
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if(!isWallCollision(player.getX() + movementSpeed, player.getY())) player.moveRight(movementSpeed);
-            player.moveRight(0);
+            if (!isWallCollision(player.getX() + movementSpeed, player.getY(), 64)) {
+                player.moveRight(movementSpeed);
+            }
+            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+                game.goToVictory();
+            }
+            if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+                player.setLives(player.getLives() - 1);
+            }
         }
-
-        // Check for collisions with walls
-        /*if (!isWallCollision(nextX, nextY)) {
-            // Convert so we can set position
-            player.setX((int)nextX);
-            player.setY((int)nextY);
-        }*/
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
             if(!player.isPickedUp()) {
@@ -362,10 +397,9 @@ public class GameScreen implements Screen {
 
 
         //camera debug controls
-        if(Gdx.input.isKeyPressed(Input.Keys.L)){
-            camera.translate(50,0);
+        if(Gdx.input.isKeyPressed(Input.Keys.L)) {
+            camera.translate(50, 0);
         }
-
         if(Gdx.input.isKeyPressed(Input.Keys.J)){
             camera.translate(-50,0);
         }
@@ -378,12 +412,38 @@ public class GameScreen implements Screen {
     }
 
     // Checks if we are about to run into a  wall
-    private boolean isWallCollision(float nextX, float nextY) {
-        int mapX = (int) (nextX / 64); // Convert to map coordinates
-        int mapY = (int) (nextY / 64);
+    private boolean isWallCollision(float nextX, float nextY, int tileSize) {
+        int mapX = (int) (nextX / tileSize);
+        int mapY = (int) (nextY / tileSize);
 
-        // Check if the next position is a wall
-        return maploader.getMap()[mapX][mapY] == 0; // 0 represents a wall
+        // Checks if we are still within the bounds of the map
+        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
+            // Check if the next position is a wall
+            return maploader.getMap()[mapX][mapY] == 0;
+        }
+
+        // If we are out of bounds, consider it a wall collision
+        return true;
+    }
+
+    // Checks if we are about to run into an exit
+    private boolean isExitCollision(float nextX, float nextY, int tileSize) {
+        int mapX = (int) (nextX / tileSize);
+        int mapY = (int) (nextY / tileSize);
+
+        // Checks if next position is an exit (case 2)
+        return maploader.getMap()[mapX][mapY] == 2;
+    }
+
+    //Checks if we are about to run into a threat
+    private boolean isHostileCollision(float nextX, float nextY, int tileSize) {
+        int mapX = (int) (nextX / tileSize);
+        int mapY = (int) (nextY / tileSize);
+
+        int entityType = maploader.getMap()[mapX][mapY];
+
+        // Check if the next position is a trap or ghost (case 3 for trap, case 4 for ghost),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+        return entityType == 3 || entityType == 4;
     }
 
 

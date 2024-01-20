@@ -90,6 +90,22 @@ public class MazeRunnerGame extends Game {
         }
     }
 
+    public void goToVictory(){
+        this.setScreen(new VictoryScreen(this));
+        if(menuScreen != null){
+            menuScreen.dispose();
+            menuScreen = null;
+        }
+    }
+
+    public void goToVDefeat(){
+        this.setScreen(new DefeatScreen(this));
+        if(menuScreen != null){
+            menuScreen.dispose();
+            menuScreen = null;
+        }
+    }
+
     /**
      * Loads the character animation from the character.png file.
      */
