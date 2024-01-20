@@ -52,6 +52,8 @@ public class VictoryScreen implements Screen {
         batch.begin();
 
         font.draw(batch, "Victory Screen!", 400, 400);
+        font.draw(batch, "Press ESC to return to Menu", 400, 350);
+
 
         batch.end();
 

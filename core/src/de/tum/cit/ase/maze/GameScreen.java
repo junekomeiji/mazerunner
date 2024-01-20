@@ -165,7 +165,7 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
-        //Draws the HUD for lives
+        //Draws a temporary HUD for lives
         batch.begin();
         font.draw(batch, "Remaining Lives: " + player.getLives(), 1600, 1000);
         batch.end();
@@ -425,6 +425,7 @@ public class GameScreen implements Screen {
         // If we are out of bounds, consider it a wall collision
         return true;
     }
+
 
     // Checks if we are about to run into an exit
     private boolean isExitCollision(float nextX, float nextY, int tileSize) {
