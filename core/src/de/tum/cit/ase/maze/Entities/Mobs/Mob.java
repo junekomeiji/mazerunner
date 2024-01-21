@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import de.tum.cit.ase.maze.Entities.Entity;
 
+import java.awt.*;
+
 /* anything from the mobs.png folder is just an extension of a mob, individual behaviours can be implemented
 in subclasses
  */
@@ -14,12 +16,33 @@ public abstract class Mob extends Entity {
 
     int xoffset;
     int yoffset;
+
+    int upperleftcorner;
+    int upperrightcorner;
+    int lowerleftcorner;
+    int lowerrightcorner;
     public Mob(int xpos, int ypos, int direction, int xoffset, int yoffset) {
 
         super(xpos, ypos, direction);
         this.xoffset = xoffset;
         this.yoffset = yoffset;
         loadAnimations(xoffset, yoffset);
+    }
+
+    public Point getUpperleftcorner() {
+        return new Point(this.getX(), this.getY());
+    }
+
+    public Point getUpperrightcorner() {
+        return new Point(this.getX(), this.getY());
+    }
+
+    public Point getLowerleftcorner() {
+        return new Point(this.getX(), this.getY());
+    }
+
+    public Point getLowerrightcorner() {
+        return new Point(this.getX(), this.getY());
     }
 
     public void loadAnimations(int xoffset, int yoffset) {
@@ -63,5 +86,7 @@ public abstract class Mob extends Entity {
         characterUpAnimation = new Animation<TextureRegion>(0.1f, characterUpAnimationFrames);
 
     }
+
+
 
 }

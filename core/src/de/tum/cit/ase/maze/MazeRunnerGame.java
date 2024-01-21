@@ -29,13 +29,18 @@ public class MazeRunnerGame extends Game {
 
     private Maploader maploader;
 
+    public int height;
+    public int width;
+
     /**
      * Constructor for MazeRunnerGame.
      *
      * @param fileChooser The file chooser for the game, typically used in desktop environment.
      */
-    public MazeRunnerGame(NativeFileChooser fileChooser) {
+    public MazeRunnerGame(NativeFileChooser fileChooser, int height, int width) {
         super();
+        this.height = height;
+        this.width = width;
     }
 
     /**

@@ -23,10 +23,12 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private OrthographicCamera camera;
+    private OrthographicCamera hudCamera;
 
     public Maploader maploader;
 
     private SpriteBatch batch;
+    private SpriteBatch hudBatch;
 
     private final BitmapFont font;
 
@@ -52,10 +54,14 @@ public class GameScreen implements Screen {
     //Maybe put this somewhere else later
     private Texture TextureRegion;
 
+    private HUD hud;
+
     private int translatedx = 0;
     private int translatedy = 0;
 
     private boolean once = false;
+
+    private boolean paused = false;
 
     //Wall Texture
     Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -97,6 +103,9 @@ public class GameScreen implements Screen {
 
         this.game = game;
         batch = new SpriteBatch();
+        hudBatch = new SpriteBatch();
+        font = game.getSkin().getFont("font");
+
 
         // Sets player spawn point to the coordinates of the entry point (case 1)
         for (int x = 0; x < maploader.getMapWidth(); x++) {
@@ -113,7 +122,11 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false);
         camera.zoom = 1.5f;
 
+        hudCamera = new OrthographicCamera();
+        hudCamera.setToOrtho(false);
+        hudCamera.zoom = 1f;
 
+        //hud = new HUD(game.getSpriteBatch(), player, game.height, game.width);
 
         humanoid = new Humanoid(0,0,0);
         slime = new Slime(0, 0, 0);
@@ -130,7 +143,6 @@ public class GameScreen implements Screen {
         vase = new Vase(0, 0, 0);
 
         // Get the font from the game's skin
-        font = game.getSkin().getFont("font");
 
 
     }
@@ -144,11 +156,14 @@ public class GameScreen implements Screen {
             camera.position.x = player.getX();
             camera.position.y = player.getY();
             once = true;
+            translatedx = 0;
+            translatedy = 0;
         }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
 
+        //if(!paused) handleInput();
         handleInput();
 
         if(player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())){
@@ -166,9 +181,6 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
         //Draws a temporary HUD for lives
-        batch.begin();
-        font.draw(batch, "Remaining Lives: " + player.getLives(), 1600, 1000);
-        batch.end();
 
 
         game.getSpriteBatch().begin();
@@ -223,97 +235,68 @@ public class GameScreen implements Screen {
             }
         }
 
+        //for debug purposes
+        camera.position.x = player.getX();
+        camera.position.y = player.getY();
+
         /*
-        System.out.println(Gdx.graphics.getWidth());
+        int transspeed = 10;
 
-        int transspeed = 64;
-
-        System.out.println(translatedx);
-
-        if((player.getX()) - translatedx + 256 > (Gdx.graphics.getWidth() * 0.8)){
+        if((player.getX()) - translatedx + 256 > (Gdx.graphics.getWidth() * 0.75)){
 
             camera.translate(transspeed, 0);
             translatedx += transspeed;
+            //this.paused = true;
 
-        }
+        } //else this.paused = false;
 
-        if((player.getX()) - translatedx - 256 < (Gdx.graphics.getWidth() * 0.2)){
+        if((player.getX()) - translatedx - 256 < (Gdx.graphics.getWidth() * 0.25)){
 
             camera.translate(-transspeed, 0);
             translatedx -= transspeed;
+            //this.paused = true;
 
-        }
+        } //else this.paused = false;
 
-        if((player.getY()) - translatedy + 256 > (Gdx.graphics.getHeight() * 0.8)){
+        if((player.getY()) - translatedy + 256 > (Gdx.graphics.getHeight() * 0.75)){
 
             camera.translate(0, transspeed);
             translatedy += transspeed;
+            //this.paused = true;
 
-        }
+        } //else this.paused = false;
 
-        if((player.getY()) - translatedy + 256 < (Gdx.graphics.getHeight() * 0.2)){
-
-            camera.translate(0, -transspeed);
-            translatedy -= transspeed;
-
-        }
-
-         */
-
-        /*if((player.getX()) - translatedx > (Gdx.graphics.getWidth() * 0.9)){
-
-            camera.translate(-transspeed, 0);
-            translatedx -= transspeed;
-
-        }*/
-
-        /*if(Gdx.graphics.getWidth() + player.getX() - translatedx >= Gdx.graphics.getWidth() * 0.1){
-
-            camera.translate(-transspeed, 0);
-            translatedx -= transspeed;
-
-        }
-
-        if(Gdx.graphics.getHeight() - player.getY() + translatedy <= Gdx.graphics.getHeight() * 0.1){
-
-            camera.translate(0, transspeed);
-            translatedy += transspeed;
-
-        }
-
-        if(Gdx.graphics.getHeight() + player.getY() - translatedx >= Gdx.graphics.getHeight() * 0.1){
+        if((player.getY()) - translatedy - 256 < (Gdx.graphics.getHeight() * 0.25)){
 
             camera.translate(0, -transspeed);
             translatedy -= transspeed;
+            //this.paused = true;
 
-        }*/
-
-
-        //TODO: KEEP THIS, JUST COMMENTED OUT FOR TESTING
-        /*
-
-
-
-
-        if( - player.getY() < 0){
-            System.out.println();
-            camera.translate(0, 10);
-        }
-
-        if(Gdx.graphics.getHeight() - player.getY() > 0){
-            camera.translate(0, -10);
-        }
-         */
-
-
-        //System.out.println(player.getX() + ", " + player.getY());
-        //System.out.println(Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight());
+        } //else this.paused = false;
+        */
 
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
 
+        game.getSpriteBatch().end();
+
+        hudBatch.begin();
+
+        font.draw(hudBatch, "Lives: " + player.getLives(), 100, 800);
+        font.draw(hudBatch, player.getX() + ", " + player.getY(), 300, 800);
+
+        hudBatch.end();
+
+        /*game.getSpriteBatch().setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
+
+        hud.dispose();*/
+
+
+
         camera.update(); // Update the camera
-        game.getSpriteBatch().end(); // Important to call this after drawing everything
+        hudCamera.update();
+        //game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
 
