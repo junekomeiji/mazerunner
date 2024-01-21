@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.awt.*;
+
 public abstract class Entity {
     protected Texture texture;
     protected SpriteBatch spriteBatch;
@@ -59,6 +61,22 @@ public abstract class Entity {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public Point getUpperleftcorner() {
+        return new Point(this.getX(), this.getY() + 64);
+    }
+
+    public Point getUpperrightcorner() {
+        return new Point(this.getX() + 64, this.getY() + 64);
+    }
+
+    public Point getLowerleftcorner() {
+        return new Point(this.getX(), this.getY());
+    }
+
+    public Point getLowerrightcorner() {
+        return new Point(this.getX() + 64, this.getY());
     }
 
 

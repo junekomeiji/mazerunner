@@ -37,6 +37,9 @@ public class GameScreen implements Screen {
     private float elapsedTime = 0f;
 
     private Player player;
+
+    int movementSpeed = 16;
+
     private Humanoid humanoid;
     private Slime slime;
     private Man man;
@@ -53,6 +56,8 @@ public class GameScreen implements Screen {
 
     //Maybe put this somewhere else later
     private Texture TextureRegion;
+
+    private boolean collided;
 
     private HUD hud;
 
@@ -142,6 +147,7 @@ public class GameScreen implements Screen {
         fireplace = new Fireplace(0, 0, 0);
         vase = new Vase(0, 0, 0);
 
+        collided = false;
         // Get the font from the game's skin
 
 
@@ -283,7 +289,10 @@ public class GameScreen implements Screen {
         hudBatch.begin();
 
         font.draw(hudBatch, "Lives: " + player.getLives(), 100, 800);
-        font.draw(hudBatch, player.getX() + ", " + player.getY(), 300, 800);
+        font.draw(hudBatch, "Score: " + player.getScore(), 300, 800);
+        font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
+
+        font.draw(hudBatch, collided ? "collided" : "not collided", 100, 600);
 
         hudBatch.end();
 
@@ -291,8 +300,6 @@ public class GameScreen implements Screen {
         hud.stage.draw();
 
         hud.dispose();*/
-
-
 
         camera.update(); // Update the camera
         hudCamera.update();
@@ -307,10 +314,10 @@ public class GameScreen implements Screen {
         int nextY = player.getY();
 
         //TODO: Currently messes up Wall check if not 64
-        int movementSpeed = 64; // Speed at which the player moves
+         // Speed at which the player moves
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if (!isWallCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+            if (!isWallCollision(player.getX(), player.getY() + movementSpeed, 64, player)) {
                 player.moveUp(movementSpeed);
             }
             if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
@@ -318,11 +325,11 @@ public class GameScreen implements Screen {
             }
             if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64)) {
                 player.setLives(player.getLives() - 1);
-            }
+            } else player.moveUp(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (!isWallCollision(player.getX() - movementSpeed, player.getY(), 64)) {
+            if (!isWallCollision(player.getX() - movementSpeed, player.getY(), 64, player)) {
                 player.moveLeft(movementSpeed);
             }
             if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
@@ -330,11 +337,11 @@ public class GameScreen implements Screen {
             }
             if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64)) {
                 player.setLives(player.getLives() - 1);
-            }
+            } else player.moveLeft(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if (!isWallCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+            if (!isWallCollision(player.getX(), player.getY() - movementSpeed, 64, player)) {
                 player.moveDown(movementSpeed);
             }
             if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
@@ -342,11 +349,11 @@ public class GameScreen implements Screen {
             }
             if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64)) {
                 player.setLives(player.getLives() - 1);
-            }
+            } else player.moveDown(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (!isWallCollision(player.getX() + movementSpeed, player.getY(), 64)) {
+            if (!isWallCollision(player.getX() + movementSpeed, player.getY(), 64, player)) {
                 player.moveRight(movementSpeed);
             }
             if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
@@ -354,7 +361,7 @@ public class GameScreen implements Screen {
             }
             if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64)) {
                 player.setLives(player.getLives() - 1);
-            }
+            } else player.moveRight(0);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
@@ -381,32 +388,52 @@ public class GameScreen implements Screen {
 
         //camera debug controls
         if(Gdx.input.isKeyPressed(Input.Keys.L)) {
-            camera.translate(50, 0);
+            player.moveRight(movementSpeed);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.J)){
-            camera.translate(-50,0);
+            player.moveLeft(movementSpeed);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.I)){
-            camera.translate(0,50);
+            player.moveUp(movementSpeed);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.K)){
-            camera.translate(0,-50);
+            player.moveDown(movementSpeed);
         }
+
+        collided = isWallCollision(player.getX() + movementSpeed, player.getY(), 64, player);
+
     }
 
     // Checks if we are about to run into a  wall
-    private boolean isWallCollision(float nextX, float nextY, int tileSize) {
+    private boolean isWallCollision(float nextX, float nextY, int tileSize, Entity entity) {
+
+        boolean val = false;
+
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
-        // Checks if we are still within the bounds of the map
         if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
-            // Check if the next position is a wall
-            return maploader.getMap()[mapX][mapY] == 0;
+            if (maploader.getMap()[mapX][mapY] == 0) {
+                if (entity.getUpperleftcorner().x - movementSpeed < (mapX*tileSize) - 64 | entity.getLowerleftcorner().x - movementSpeed < (mapX*tileSize) - 64 ) {
+                    val = true;
+                } else if (entity.getUpperrightcorner().x + movementSpeed > (mapX*tileSize) - 64 | entity.getLowerrightcorner().x + movementSpeed > (mapX*tileSize) - 64) {
+                    val =  true;
+                } else if (entity.getUpperrightcorner().y + movementSpeed < (mapY*tileSize) - 64 | entity.getUpperleftcorner().y + movementSpeed< (mapY*tileSize) - 64) {
+                    val =  true;
+                } else if (entity.getLowerleftcorner().y - movementSpeed > (mapY*tileSize) - 64 | entity.getLowerrightcorner().y - movementSpeed > (mapY*tileSize) - 64 ) {
+                    val = true;
+                }
+            }
         }
 
-        // If we are out of bounds, consider it a wall collision
-        return true;
+        // Checks if we are still within the bounds of the map
+        /*if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
+            // Check if the next position is a wall
+            return maploader.getMap()[mapX][mapY] == 0;
+        }*/
+
+        // If we are out of bounds, consider it a wall collision6
+        return val;
     }
 
 

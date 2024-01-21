@@ -17,10 +17,6 @@ public abstract class Mob extends Entity {
     int xoffset;
     int yoffset;
 
-    int upperleftcorner;
-    int upperrightcorner;
-    int lowerleftcorner;
-    int lowerrightcorner;
     public Mob(int xpos, int ypos, int direction, int xoffset, int yoffset) {
 
         super(xpos, ypos, direction);
@@ -29,21 +25,6 @@ public abstract class Mob extends Entity {
         loadAnimations(xoffset, yoffset);
     }
 
-    public Point getUpperleftcorner() {
-        return new Point(this.getX(), this.getY());
-    }
-
-    public Point getUpperrightcorner() {
-        return new Point(this.getX(), this.getY());
-    }
-
-    public Point getLowerleftcorner() {
-        return new Point(this.getX(), this.getY());
-    }
-
-    public Point getLowerrightcorner() {
-        return new Point(this.getX(), this.getY());
-    }
 
     public void loadAnimations(int xoffset, int yoffset) {
         int frameWidth = 16;
