@@ -38,6 +38,38 @@ public class MenuScreen implements Screen {
      * @param game The main game class, used to access global resources and methods.
      */
     public MenuScreen(MazeRunnerGame game, Maploader maploader) {
+
+        /*var camera = new OrthographicCamera();
+        camera.zoom = 1.5f; // Set camera zoom for a closer view
+
+        maploader = new Maploader(game);
+
+        Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
+        stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
+
+        Table table = new Table(); // Create a table for layout
+        table.setFillParent(true); // Make the table fill the stage
+        stage.addActor(table); // Add the table to the stage
+
+        // Add a label as a title
+        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+
+        // Create and add a button to go to the game screen
+        TextButton g1 = new TextButton("Go To Game", game.getSkin());
+        table.add(g1).width(300).row();
+
+        TextButton g2 = new TextButton("Go to Debug Screen", game.getSkin());
+        table.add(g2).width(300).row();
+
+        g1.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToGame(); // Change to the game screen when button is pressed
+            }
+        });
+        batch = new SpriteBatch();
+        font = game.getSkin().getFont("font");*/
+
         this.game = game;
         this.maploader = maploader;
 
@@ -47,14 +79,27 @@ public class MenuScreen implements Screen {
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
-         table = new Table(); // Create a table for layout
+        table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
+
+        // Add a label as a title
+        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+
+        // Create and add a button to go to the game screen
+        TextButton g1 = new TextButton("Go To Game", game.getSkin());
+        table.add(g1).width(300).row();
+
+        TextButton g2 = new TextButton("Go to Debug Screen", game.getSkin());
+        table.add(g2).width(300).row();
+
 
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
 
         maploader = new Maploader(game);
+
+
     }
 
     @Override
@@ -85,6 +130,14 @@ public class MenuScreen implements Screen {
             maploader.setMapType(5);
             maploader.createMap();
             game.goToGame();
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+
         }
 
 

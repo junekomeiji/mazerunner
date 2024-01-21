@@ -111,7 +111,6 @@ public class GameScreen implements Screen {
         hudBatch = new SpriteBatch();
         font = game.getSkin().getFont("font");
 
-
         // Sets player spawn point to the coordinates of the entry point (case 1)
         for (int x = 0; x < maploader.getMapWidth(); x++) {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
