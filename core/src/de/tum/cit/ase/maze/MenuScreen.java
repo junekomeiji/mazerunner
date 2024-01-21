@@ -90,14 +90,28 @@ public class MenuScreen implements Screen {
         TextButton g1 = new TextButton("Go To Game", game.getSkin());
         table.add(g1).width(300).row();
 
+        g1.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(1);
+                maploader.createMap();
+                game.goToGame(); // Change to the game screen when button is pressed
+            }
+        });
+
         TextButton g2 = new TextButton("Go to Debug Screen", game.getSkin());
         table.add(g2).width(300).row();
+        g2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToDebug();
+            }
+        });
 
 
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
 
-        maploader = new Maploader(game);
 
 
     }
