@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.Entities.Entity;
 import de.tum.cit.ase.maze.Entities.Mobs.*;
 import de.tum.cit.ase.maze.Entities.Things.*;
-
+import java.util.ArrayList;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -44,6 +44,8 @@ public class GameScreen implements Screen {
     private Slime slime;
     private Man man;
     private Ghost ghost;
+
+    private ArrayList<Entity> enemies;
 
     private Door door;
 
@@ -137,6 +139,8 @@ public class GameScreen implements Screen {
         man = new Man(0, 0, 0);
         ghost = new Ghost(0, 0, 0);
 
+        enemies = new ArrayList<Entity>();
+
         door = new Door(0, 0, 0);
 
         torch = new Torch(0, 0, 0);
@@ -218,6 +222,7 @@ public class GameScreen implements Screen {
                         // Grass temporary, ideally also random later
                         game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
                         game.getSpriteBatch().draw(ghostFrame, x * 64, y * 64, 64, 64);
+                        enemies.add(new Ghost(x * 64, y * 64, 0));
                         break;
                     case 5:
                         // Render Chest (for obtaining key) at position (x, y) on top of plain Grass
@@ -281,7 +286,15 @@ public class GameScreen implements Screen {
         */
 
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
+
+        for(Entity e : enemies){
+            //e.moveUp();
+            game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
+        }
+
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
+
+
 
         game.getSpriteBatch().end();
 

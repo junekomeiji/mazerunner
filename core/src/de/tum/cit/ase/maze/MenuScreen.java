@@ -77,11 +77,8 @@ public class MenuScreen implements Screen {
             }
         });
 
-
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
-
-
 
     }
 
@@ -122,7 +119,6 @@ public class MenuScreen implements Screen {
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
 
         }
-
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
