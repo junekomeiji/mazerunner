@@ -288,13 +288,12 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
 
         for(Entity e : enemies){
-            //e.moveUp();
+            e.moveUp();
+            if(e.getX() == player.getX() && e.getY() == player.getY()) player.setLives(player.getLives() - 1);
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
 
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
-
-
 
         game.getSpriteBatch().end();
 
@@ -466,7 +465,7 @@ public class GameScreen implements Screen {
         int entityType = maploader.getMap()[mapX][mapY];
 
         // Check if the next position is a trap or ghost (case 3 for trap, case 4 for ghost),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-        return entityType == 3 || entityType == 4;
+        return entityType == 3;
     }
 
 
