@@ -418,24 +418,7 @@ public class GameScreen implements Screen {
     // Checks if we are about to run into a  wall
     private boolean isWallCollision(float nextX, float nextY, int tileSize, Entity entity) {
 
-        boolean val = false;
 
-        int mapX = (int) (nextX / tileSize);
-        int mapY = (int) (nextY / tileSize);
-
-        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
-            if (maploader.getMap()[mapX][mapY] == 0) {
-                if (entity.getUpperleftcorner().x - movementSpeed < (mapX*tileSize) - 64 | entity.getLowerleftcorner().x - movementSpeed < (mapX*tileSize) - 64 ) {
-                    val = true;
-                } else if (entity.getUpperrightcorner().x + movementSpeed > (mapX*tileSize) - 64 | entity.getLowerrightcorner().x + movementSpeed > (mapX*tileSize) - 64) {
-                    val =  true;
-                } else if (entity.getUpperrightcorner().y + movementSpeed < (mapY*tileSize) - 64 | entity.getUpperleftcorner().y + movementSpeed< (mapY*tileSize) - 64) {
-                    val =  true;
-                } else if (entity.getLowerleftcorner().y - movementSpeed > (mapY*tileSize) - 64 | entity.getLowerrightcorner().y - movementSpeed > (mapY*tileSize) - 64 ) {
-                    val = true;
-                }
-            }
-        }
 
         // Checks if we are still within the bounds of the map
         /*if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
@@ -443,8 +426,12 @@ public class GameScreen implements Screen {
             return maploader.getMap()[mapX][mapY] == 0;
         }*/
 
+        int mapX = (int) (nextX / tileSize);
+        int mapY = (int) (nextY / tileSize);
+
+        return (isCollision(nextX, nextY, tileSize, entity) & maploader.getMap()[mapX][mapY] == 0);
+
         // If we are out of bounds, consider it a wall collision6
-        return val;
     }
 
 
@@ -466,6 +453,30 @@ public class GameScreen implements Screen {
 
         // Check if the next position is a trap or ghost (case 3 for trap, case 4 for ghost),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
         return entityType == 3;
+    }
+
+    private boolean isCollision(float nextX, float nextY, int tileSize, Entity entity){
+        boolean val = false;
+
+        int mapX = (int) (nextX / tileSize);
+        int mapY = (int) (nextY / tileSize);
+
+        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
+
+                if (entity.getUpperleftcorner().x - movementSpeed < (mapX*tileSize) - 64 | entity.getLowerleftcorner().x - movementSpeed < (mapX*tileSize) - 64 ) {
+                    val = true;
+                } else if (entity.getUpperrightcorner().x + movementSpeed > (mapX*tileSize) - 64 | entity.getLowerrightcorner().x + movementSpeed > (mapX*tileSize) - 64) {
+                    val =  true;
+                } else if (entity.getUpperrightcorner().y + movementSpeed < (mapY*tileSize) - 64 | entity.getUpperleftcorner().y + movementSpeed< (mapY*tileSize) - 64) {
+                    val =  true;
+                } else if (entity.getLowerleftcorner().y - movementSpeed > (mapY*tileSize) - 64 | entity.getLowerrightcorner().y - movementSpeed > (mapY*tileSize) - 64 ) {
+                    val = true;
+                }
+
+        }
+
+        return val;
+
     }
 
 
