@@ -451,7 +451,7 @@ public class GameScreen implements Screen {
 
         int entityType = maploader.getMap()[mapX][mapY];
 
-        // Check if the next position is a trap or ghost (case 3 for trap, case 4 for ghost),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+        // Check if the next position is a trap or ghost (case 3 for trap)
         return entityType == 3;
     }
 
