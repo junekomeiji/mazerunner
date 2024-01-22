@@ -150,6 +150,7 @@ public class GameScreen implements Screen {
         fireplace = new Fireplace(0, 0, 0);
         vase = new Vase(0, 0, 0);
 
+        player.setLives(100);
         collided = false;
         // Get the font from the game's skin
 
@@ -288,7 +289,7 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
 
         for(Entity e : enemies){
-            e.moveUp();
+            e.moveUp(0);
             if(e.getX() == player.getX() && e.getY() == player.getY()) player.setLives(player.getLives() - 1);
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
@@ -302,6 +303,17 @@ public class GameScreen implements Screen {
         font.draw(hudBatch, "Lives: " + player.getLives(), 100, 800);
         font.draw(hudBatch, "Score: " + player.getScore(), 300, 800);
         font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
+        font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
+
+        int mapX = (int) (player.getX() / 64);
+        int mapY = (int) (player.getY() / 64);
+
+
+
+        font.draw(hudBatch, mapX + ", " + mapY + ", " + type(maploader.getMap()[mapX][mapY]), 500, 700);
+        font.draw(hudBatch, ((mapX*64) - 64) + ", " + ((mapY*64) - 64) , 500, 650);
+        //font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 650);
+
 
         font.draw(hudBatch, collided ? "collided" : "not collided", 100, 600);
 
@@ -315,6 +327,24 @@ public class GameScreen implements Screen {
         camera.update(); // Update the camera
         hudCamera.update();
         //game.getSpriteBatch().end(); // Important to call this after drawing everything
+    }
+
+    //debug function!
+    private String type(int t){
+        switch(t){
+            case 0 -> {
+                return "wall";
+            }
+            case 6 -> {
+                return "grass";
+            }
+            case 7 -> {
+                return "lush grass";
+            }
+            default -> {
+                return "something else";
+            }
+        }
     }
 
 
@@ -455,7 +485,7 @@ public class GameScreen implements Screen {
         return entityType == 3;
     }
 
-    private boolean isCollision(float nextX, float nextY, int tileSize, Entity entity){
+    public boolean isCollision(float nextX, float nextY, int tileSize, Entity entity){
         boolean val = false;
 
         int mapX = (int) (nextX / tileSize);
@@ -467,7 +497,7 @@ public class GameScreen implements Screen {
                     val = true;
                 } else if (entity.getUpperrightcorner().x + movementSpeed > (mapX*tileSize) - 64 | entity.getLowerrightcorner().x + movementSpeed > (mapX*tileSize) - 64) {
                     val =  true;
-                } else if (entity.getUpperrightcorner().y + movementSpeed < (mapY*tileSize) - 64 | entity.getUpperleftcorner().y + movementSpeed< (mapY*tileSize) - 64) {
+                } else if (entity.getUpperrightcorner().y + movementSpeed > (mapY*tileSize) + 64 | entity.getUpperleftcorner().y + movementSpeed > (mapY*tileSize) + 64) {
                     val =  true;
                 } else if (entity.getLowerleftcorner().y - movementSpeed > (mapY*tileSize) - 64 | entity.getLowerrightcorner().y - movementSpeed > (mapY*tileSize) - 64 ) {
                     val = true;
