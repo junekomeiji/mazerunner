@@ -45,7 +45,7 @@ public class GameScreen implements Screen {
     private Man man;
     private Ghost ghost;
 
-    private ArrayList<Entity> enemies;
+    private ArrayList<Mob> enemies;
 
     private Door door;
 
@@ -112,14 +112,17 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         hudBatch = new SpriteBatch();
         font = game.getSkin().getFont("font");
+        enemies = new ArrayList<Mob>();
+
 
         // Sets player spawn point to the coordinates of the entry point (case 1)
         for (int x = 0; x < maploader.getMapWidth(); x++) {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
                 if (maploader.getMap()[x][y] == 1) { // 1 is entry point
                     player = new Player(x * 64, y * 64, 0);
-
-                    break;
+                }
+                if (maploader.getMap()[x][y] == 4){
+                    enemies.add(new Ghost(x * 64, y * 64, 0));
                 }
             }
         }
@@ -139,7 +142,6 @@ public class GameScreen implements Screen {
         man = new Man(0, 0, 0);
         ghost = new Ghost(0, 0, 0);
 
-        enemies = new ArrayList<Entity>();
 
         door = new Door(0, 0, 0);
 
@@ -222,8 +224,6 @@ public class GameScreen implements Screen {
                         // Render Enemy (currently static Ghost) at position (x, y)
                         // Grass temporary, ideally also random later
                         game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
-                        game.getSpriteBatch().draw(ghostFrame, x * 64, y * 64, 64, 64);
-                        enemies.add(new Ghost(x * 64, y * 64, 0));
                         break;
                     case 5:
                         // Render Chest (for obtaining key) at position (x, y) on top of plain Grass
@@ -289,10 +289,12 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
 
         for(Entity e : enemies){
-            e.moveUp(0);
+            //e.moveUp(2);
             if(e.getX() == player.getX() && e.getY() == player.getY()) player.setLives(player.getLives() - 1);
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
+
+        enemies.removeIf(e -> e.getHealth() == 0);
 
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
 
@@ -424,6 +426,37 @@ public class GameScreen implements Screen {
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
             elapsedTime = 0;
             player.setSlashing(true);
+            switch(player.getDirection()){
+                //down
+                case 0 -> { for(Mob e: enemies){
+                        if(e.getY() < player.getY() && player.getY() - e.getY() < 64){
+                            e.setHealth(e.getHealth() - 1);
+                        }
+                    }
+                }
+                //right
+                case 1 -> {for(Mob e: enemies){
+                        if(e.getX() > player.getX() && e.getX() - player.getX() < 64){
+                            e.setHealth(e.getHealth() - 1);
+                        }
+                    }
+                }
+                //up
+                case 2 -> {for(Mob e: enemies){
+                        if(e.getY() > player.getY() && e.getY() - player.getY() < 64){
+                            e.setHealth(e.getHealth() - 1);
+                        }
+                    }
+                }
+                //left
+                case 3 -> {for(Mob e: enemies) {
+                        if (e.getX() < player.getX() && player.getX() - e.getX() < 64) {
+                           e.setHealth(e.getHealth() - 1);
+                        }
+                    }
+                }
+                default -> {return ; }
+            }
         }
 
 
