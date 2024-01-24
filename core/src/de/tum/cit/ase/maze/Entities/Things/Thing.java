@@ -60,6 +60,9 @@ public abstract class Thing extends Entity {
 
     }
 
+    public void open(){}
+
+
 
 
 }

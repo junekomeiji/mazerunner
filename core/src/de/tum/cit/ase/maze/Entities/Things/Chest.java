@@ -5,4 +5,9 @@ public class Chest extends Thing{
         super(xpos, ypos, direction, 96, 0);
     }
 
+    @Override
+    public void open(){
+        this.setDirection(1);
+    }
+
 }

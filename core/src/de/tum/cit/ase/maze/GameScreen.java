@@ -123,6 +123,9 @@ public class GameScreen implements Screen {
                 if (maploader.getMap()[x][y] == 1) { // 1 is entry point
                     player = new Player(x * 64, y * 64, 0);
                 }
+                if(maploader.getMap()[x][y] == 3){
+                    things.add(new Spike(x * 64, y * 64, 0));
+                }
                 if (maploader.getMap()[x][y] == 4){
                     enemies.add(new Ghost(x * 64, y * 64, 0));
                 }
@@ -223,7 +226,6 @@ public class GameScreen implements Screen {
                     case 3:
                         // Render Trap at position (x, y) on top of plain Grass
                         game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
-                        game.getSpriteBatch().draw(spikeFrame, x * 64 , y * 64, 64, 64);
                         break;
                     case 4:
                         // Render Enemy (currently static Ghost) at position (x, y)
@@ -299,7 +301,11 @@ public class GameScreen implements Screen {
         }
 
         for(Thing t : things){
-            game.getSpriteBatch().draw(chestFrame, t.getX(), t.getY(), 64, 64);
+            if(t instanceof Chest) game.getSpriteBatch().draw(chestFrame, t.getX(), t.getY(), 64, 64);
+            else if(t instanceof Spike){
+                if(t.getX() == player.getX() && t.getY() == player.getY()) player.setLives(player.getLives() - 1);
+                game.getSpriteBatch().draw(spikeFrame, t.getX(), t.getY(), 64, 64);
+            }
         }
 
         enemies.removeIf(e -> e.getHealth() == 0);
@@ -322,21 +328,13 @@ public class GameScreen implements Screen {
 
         font.draw(hudBatch, mapX + ", " + mapY + ", " + type(maploader.getMap()[mapX][mapY]), 500, 700);
         font.draw(hudBatch, ((mapX*64) - 64) + ", " + ((mapY*64) - 64) , 500, 650);
-        //font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 650);
-
 
         font.draw(hudBatch, collided ? "collided" : "not collided", 100, 600);
 
         hudBatch.end();
 
-        /*game.getSpriteBatch().setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
-
-        hud.dispose();*/
-
         camera.update(); // Update the camera
         hudCamera.update();
-        //game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
     //debug function!
@@ -373,14 +371,11 @@ public class GameScreen implements Screen {
                     !isWallCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
                 player.moveUp(movementSpeed);
             }
-            if (isExitCollision(player.getX(), player.getY() + 65, 64) ||
-                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() + 65, 64)) {
+            if (isExitCollision(player.getX(), player.getY() + 64, 64) ||
+                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX(), player.getY() + 1, 64) ||
-                    isHostileCollision(player.getX() + 64 - movementSpeed, player.getY() + 1, 64)) {
-                player.setLives(player.getLives() - 1);
-            } else player.moveUp(0);
+            else player.moveUp(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -388,14 +383,11 @@ public class GameScreen implements Screen {
                     !isWallCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveLeft(movementSpeed);
             }
-            if (isExitCollision(player.getX() - 1, player.getY(), 64) ||
-                    isExitCollision(player.getX() - 1, player.getY() + 64 - movementSpeed, 64)) {
+            if (isExitCollision(player.getX() - 64, player.getY(), 64) ||
+                    isExitCollision(player.getX() - 64, player.getY() + 64 - movementSpeed, 64)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX() - 8, player.getY(), 64) ||
-                    isHostileCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, 64)) {
-                player.setLives(player.getLives() - 1);
-            } else player.moveLeft(0);
+            else player.moveLeft(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
@@ -407,10 +399,7 @@ public class GameScreen implements Screen {
                     isExitCollision(player.getX() + 64 - movementSpeed, player.getY() - 1, 64)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX(), player.getY() - 8, 64) ||
-                    isHostileCollision(player.getX() + 64 - movementSpeed, player.getY() - 8, 64)) {
-                player.setLives(player.getLives() - 1);
-            } else player.moveDown(0);
+            else player.moveDown(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -418,14 +407,11 @@ public class GameScreen implements Screen {
                     !isWallCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveRight(movementSpeed);
             }
-            if (isExitCollision(player.getX() + 65, player.getY(), 64) ||
-                    isExitCollision(player.getX() + 65, player.getY() + 64 - movementSpeed, 64)) {
+            if (isExitCollision(player.getX() + 64, player.getY(), 64) ||
+                    isExitCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX() - 64, player.getY(), 64) ||
-                    isHostileCollision(player.getX() - 64, player.getY() + 64 - movementSpeed, 64)) {
-                player.setLives(player.getLives() - 1);
-            } else player.moveRight(0);
+            else player.moveRight(0);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
@@ -513,7 +499,7 @@ public class GameScreen implements Screen {
         int mapY = (int) (nextY / tileSize);
 
         //System.out.println(isCollision(nextX, nextY, tileSize, entity) & maploader.getMap()[mapX][mapY] == 0);
-        return (isCollision(nextX, nextY, tileSize, entity) & maploader.getMap()[mapX][mapY] == 0);
+        return (isCollision(nextX, nextY, tileSize, entity) & (maploader.getMap()[mapX][mapY] == 0 | maploader.getMap()[mapX][mapY] == 5));
     }
 
 
@@ -523,18 +509,7 @@ public class GameScreen implements Screen {
         int mapY = (int) (nextY / tileSize);
 
         // Checks if next position is an exit (case 2)
-        return maploader.getMap()[mapX][mapY] == 2;
-    }
-
-    //Checks if we are about to run into a threat
-    private boolean isHostileCollision(float nextX, float nextY, int tileSize) {
-        int mapX = (int) (nextX / tileSize);
-        int mapY = (int) (nextY / tileSize);
-
-        int entityType = maploader.getMap()[mapX][mapY];
-
-        // Check if the next position is a trap or ghost (case 3 for trap)
-        return entityType == 3;
+        return (isCollision(nextX, nextY, tileSize, player) & (maploader.getMap()[mapX][mapY] == 2));
     }
 
 
