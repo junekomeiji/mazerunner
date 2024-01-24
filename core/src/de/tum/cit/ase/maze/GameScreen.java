@@ -46,6 +46,7 @@ public class GameScreen implements Screen {
     private Ghost ghost;
 
     private ArrayList<Mob> enemies;
+    private ArrayList<Thing> things;
 
     private Door door;
 
@@ -113,6 +114,7 @@ public class GameScreen implements Screen {
         hudBatch = new SpriteBatch();
         font = game.getSkin().getFont("font");
         enemies = new ArrayList<Mob>();
+        things = new ArrayList<Thing>();
 
 
         // Sets player spawn point to the coordinates of the entry point (case 1)
@@ -123,6 +125,9 @@ public class GameScreen implements Screen {
                 }
                 if (maploader.getMap()[x][y] == 4){
                     enemies.add(new Ghost(x * 64, y * 64, 0));
+                }
+                if(maploader.getMap()[x][y] == 5){
+                    things.add(new Chest(x * 64, y * 64, 0));
                 }
             }
         }
@@ -228,7 +233,6 @@ public class GameScreen implements Screen {
                     case 5:
                         // Render Chest (for obtaining key) at position (x, y) on top of plain Grass
                         game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
-                        game.getSpriteBatch().draw(chestFrame, x * 64 , y * 64, 64, 64);
                         break;
                     case 6:
                         // Render Grass at position (x, y) (filler)
@@ -292,6 +296,10 @@ public class GameScreen implements Screen {
             //e.moveUp(2);
             if(e.getX() == player.getX() && e.getY() == player.getY()) player.setLives(player.getLives() - 1);
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
+        }
+
+        for(Thing t : things){
+            game.getSpriteBatch().draw(chestFrame, t.getX(), t.getY(), 64, 64);
         }
 
         enemies.removeIf(e -> e.getHealth() == 0);
@@ -438,28 +446,28 @@ public class GameScreen implements Screen {
             switch(player.getDirection()){
                 //down
                 case 0 -> { for(Mob e: enemies){
-                        if(e.getY() < player.getY() && player.getY() - e.getY() < 64){
+                        if(e.getY() < player.getY() && player.getY() - e.getY() < 64 && Math.abs(player.getX() - e.getX()) < 64){
                             e.setHealth(e.getHealth() - 1);
                         }
                     }
                 }
                 //right
                 case 1 -> {for(Mob e: enemies){
-                        if(e.getX() > player.getX() && e.getX() - player.getX() < 64){
+                        if(e.getX() > player.getX() && e.getX() - player.getX() < 64 && Math.abs(player.getY() - e.getY()) < 64){
                             e.setHealth(e.getHealth() - 1);
                         }
                     }
                 }
                 //up
                 case 2 -> {for(Mob e: enemies){
-                        if(e.getY() > player.getY() && e.getY() - player.getY() < 64){
+                        if(e.getY() > player.getY() && e.getY() - player.getY() < 64 && Math.abs(player.getX() - e.getX()) < 64){
                             e.setHealth(e.getHealth() - 1);
                         }
                     }
                 }
                 //left
                 case 3 -> {for(Mob e: enemies) {
-                        if (e.getX() < player.getX() && player.getX() - e.getX() < 64) {
+                        if (e.getX() < player.getX() && player.getX() - e.getX() < 64 && Math.abs(player.getY() - e.getY()) < 64) {
                            e.setHealth(e.getHealth() - 1);
                         }
                     }
