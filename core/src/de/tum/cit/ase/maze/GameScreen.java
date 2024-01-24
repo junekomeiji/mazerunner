@@ -365,10 +365,10 @@ public class GameScreen implements Screen {
                     !isWallCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
                 player.moveUp(movementSpeed);
             }
-            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64, player)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+            if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64, player)) {
                 player.setLives(player.getLives() - 1);
             } else player.moveUp(0);
         }
@@ -378,10 +378,10 @@ public class GameScreen implements Screen {
                     !isWallCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveLeft(movementSpeed);
             }
-            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+            if (isExitCollision(player.getX(), player.getY() + movementSpeed, 64, player)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64)) {
+            if (isHostileCollision(player.getX(), player.getY() + movementSpeed, 64, player)) {
                 player.setLives(player.getLives() - 1);
             } else player.moveLeft(0);
         }
@@ -391,10 +391,10 @@ public class GameScreen implements Screen {
                     !isWallCollision(player.getX() + 64 - movementSpeed, player.getY() - 8, 64, player)) {
                 player.moveDown(movementSpeed);
             }
-            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64, player)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+            if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64, player)) {
                 player.setLives(player.getLives() - 1);
             } else player.moveDown(0);
         }
@@ -404,10 +404,10 @@ public class GameScreen implements Screen {
                     !isWallCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveRight(movementSpeed);
             }
-            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+            if (isExitCollision(player.getX(), player.getY() - movementSpeed, 64, player)) {
                 game.goToVictory();
             }
-            if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64)) {
+            if (isHostileCollision(player.getX(), player.getY() - movementSpeed, 64, player)) {
                 player.setLives(player.getLives() - 1);
             } else player.moveRight(0);
         }
@@ -502,16 +502,16 @@ public class GameScreen implements Screen {
 
 
     // Checks if we are about to run into an exit
-    private boolean isExitCollision(float nextX, float nextY, int tileSize) {
+    private boolean isExitCollision(float nextX, float nextY, int tileSize, Player entity) {
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
         // Checks if next position is an exit (case 2)
-        return maploader.getMap()[mapX][mapY] == 2;
+        return (isCollision(nextX, nextY, tileSize, entity) & maploader.getMap()[mapX][mapY] == 2);
     }
 
     //Checks if we are about to run into a threat
-    private boolean isHostileCollision(float nextX, float nextY, int tileSize) {
+    private boolean isHostileCollision(float nextX, float nextY, int tileSize, Player entity) {
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
