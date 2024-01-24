@@ -292,7 +292,6 @@ public class GameScreen implements Screen {
         } //else this.paused = false;
         */
 
-        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
 
         for(Entity e : enemies){
             //e.moveUp(2);
@@ -307,6 +306,8 @@ public class GameScreen implements Screen {
                 game.getSpriteBatch().draw(spikeFrame, t.getX(), t.getY(), 64, 64);
             }
         }
+
+        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
 
         enemies.removeIf(e -> e.getHealth() == 0);
 
