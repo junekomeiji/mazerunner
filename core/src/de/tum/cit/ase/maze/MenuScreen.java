@@ -111,6 +111,12 @@ public class MenuScreen implements Screen {
             maploader.createMap();
             game.goToGame();
         }
+        // Debugging purpose
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
+            maploader.setMapType(6);
+            maploader.createMap();
+            game.goToGame();
+        }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 
