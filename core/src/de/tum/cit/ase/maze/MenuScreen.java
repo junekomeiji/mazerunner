@@ -55,10 +55,9 @@ public class MenuScreen implements Screen {
         // Add a label as a title
         table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
 
-        // Create and add a button to go to the game screen
-        TextButton g1 = new TextButton("Go To Game", game.getSkin());
+        // Create and add buttons to load maps and go to the game
+        TextButton g1 = new TextButton("Enter Map 1", game.getSkin());
         table.add(g1).width(300).row();
-
         g1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -68,9 +67,55 @@ public class MenuScreen implements Screen {
             }
         });
 
-        TextButton g2 = new TextButton("Go to Debug Screen", game.getSkin());
+
+        TextButton g2 = new TextButton("Enter Map 2", game.getSkin());
         table.add(g2).width(300).row();
         g2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+        TextButton g3 = new TextButton("Enter Map 3", game.getSkin());
+        table.add(g3).width(300).row();
+        g3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+        TextButton g4 = new TextButton("Enter Map 4", game.getSkin());
+        table.add(g4).width(300).row();
+        g4.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+        TextButton g5 = new TextButton("Enter Map 5", game.getSkin());
+        table.add(g5).width(300).row();
+        g5.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+
+        TextButton g6 = new TextButton("Go to Debug Screen", game.getSkin());
+        table.add(g6).width(300).row();
+        g6.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToDebug();
@@ -79,55 +124,14 @@ public class MenuScreen implements Screen {
 
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
-
     }
 
     @Override
     public void render(float delta) {
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)){
-            game.goToDebug();
-        }
-
-        //Map Selector (needs to look better)
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            maploader.setMapType(1);
-            maploader.createMap();
-            game.goToGame();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            maploader.setMapType(2);
-            maploader.createMap();
-            game.goToGame();
-         }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            maploader.setMapType(3);
-            maploader.createMap();
-            game.goToGame();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-            maploader.setMapType(4);
-            maploader.createMap();
-            game.goToGame();
-         }else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
-            maploader.setMapType(5);
-            maploader.createMap();
-            game.goToGame();
-        }
-
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
-
-        }
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
-
-        batch.begin();
-        font.draw(batch, "Press 1-5 to select the according Map", 200, 300);
-        batch.end();
     }
 
     @Override
