@@ -77,7 +77,7 @@ public class GameScreen implements Screen {
 
     //Entry Point Texture
     Texture entryPointTexture = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion entryPointTextureRegion = new TextureRegion(entryPointTexture, 64, 16, 16, 16);
+    TextureRegion entryPointTextureRegion = new TextureRegion(entryPointTexture, 16, 112, 16, 16);
 
     //Exit Texture (currently door)
     Texture exitTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -117,11 +117,12 @@ public class GameScreen implements Screen {
         things = new ArrayList<Thing>();
 
 
-        // Sets player spawn point to the coordinates of the entry point (case 1)
+        //Spawns in entities
         for (int x = 0; x < maploader.getMapWidth(); x++) {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
                 if (maploader.getMap()[x][y] == 1) { // 1 is entry point
-                    player = new Player(x * 64, y * 64, 0);
+                    player = new Player(x * 64 + 48, y * 64, 0);
+                    player.setDirection(1);
                 }
                 if(maploader.getMap()[x][y] == 3){
                     things.add(new Spike(x * 64, y * 64, 0));
@@ -307,7 +308,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        // Player gets drawn below where he "actually is", to make the game fell cleaner
+        // Player gets drawn below where he "actually is" to make up for empty space at the bottom of the skin
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY() - 16, 64, 128);
 
         enemies.removeIf(e -> e.getHealth() == 0);
@@ -361,8 +362,8 @@ public class GameScreen implements Screen {
     private void handleInput(){
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if (!isWallCollision(player.getX(), player.getY() + 64, 64, player) &&
-                    !isWallCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
+            if (!isObstacleCollision(player.getX(), player.getY() + 64, 64, player) &&
+                    !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
                 player.moveUp(movementSpeed);
             }
             if (isExitCollision(player.getX(), player.getY() + 64, 64) ||
@@ -373,8 +374,8 @@ public class GameScreen implements Screen {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (!isWallCollision(player.getX() - 8, player.getY(), 64, player) &&
-                    !isWallCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, 64, player)) {
+            if (!isObstacleCollision(player.getX() - 8, player.getY(), 64, player) &&
+                    !isObstacleCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveLeft(movementSpeed);
             }
             if (isExitCollision(player.getX() - 64, player.getY(), 64) ||
@@ -385,8 +386,8 @@ public class GameScreen implements Screen {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if (!isWallCollision(player.getX(), player.getY() - 8, 64, player) &&
-                    !isWallCollision(player.getX() + 64 - movementSpeed, player.getY() - 8, 64, player)) {
+            if (!isObstacleCollision(player.getX(), player.getY() - 8, 64, player) &&
+                    !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() - 8, 64, player)) {
                 player.moveDown(movementSpeed);
             }
             if (isExitCollision(player.getX(), player.getY() - 1, 64) ||
@@ -397,8 +398,8 @@ public class GameScreen implements Screen {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (!isWallCollision(player.getX() + 64, player.getY(), 64, player) &&
-                    !isWallCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64, player)) {
+            if (!isObstacleCollision(player.getX() + 64, player.getY(), 64, player) &&
+                    !isObstacleCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveRight(movementSpeed);
             }
             if (isExitCollision(player.getX() + 64, player.getY(), 64) ||
@@ -475,23 +476,23 @@ public class GameScreen implements Screen {
             player.moveDown(movementSpeed);
         }
 
-        collided = isWallCollision(player.getX() + movementSpeed, player.getY(), 64, player);
+        collided = isObstacleCollision(player.getX() + movementSpeed, player.getY(), 64, player);
 
     }
 
-    // Checks if we are about to run into a  wall
-    private boolean isWallCollision(float nextX, float nextY, int tileSize, Entity entity) {
+    // Checks if we are about to run into an obstacle (wall, entry point, chest)
+    private boolean isObstacleCollision(float nextX, float nextY, int tileSize, Entity entity) {
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
-        // Check if the next position is outside the map boundaries, then handles it like a wall
+        // Handles it so we cant just run outside of the map infinitly and bypass the Maze
         if (mapX < 0 || mapX >= maploader.getMapWidth() || mapY < 0 || mapY >= maploader.getMapHeight()) {
             return true;
         }
 
 
-        // Checks if the next position is a wall
-        return (isCollision(nextX, nextY, tileSize, entity) & (maploader.getMap()[mapX][mapY] == 0 | maploader.getMap()[mapX][mapY] == 5));
+        // Checks if the next position is a wall, entry or chest
+        return (isCollision(nextX, nextY, tileSize, entity) & (maploader.getMap()[mapX][mapY] == 0 | maploader.getMap()[mapX][mapY] == 1) | maploader.getMap()[mapX][mapY] == 5);
     }
 
 
@@ -501,9 +502,16 @@ public class GameScreen implements Screen {
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
-        // Checks if next position is an exit (case 2)
-        return (isCollision(nextX, nextY, tileSize, player) & (maploader.getMap()[mapX][mapY] == 2));
+        // Checks for out of bounds to prevent crashes
+        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
+            // Checks if next position is an exit (case 2)
+            return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
+        } else {
+            // In case we are out of bounds of the map
+            return false;
+        }
     }
+
 
 
     public boolean isCollision(float nextX, float nextY, int tileSize, Entity entity){
