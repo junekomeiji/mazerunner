@@ -56,6 +56,7 @@ public class MenuScreen implements Screen {
         table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add buttons to load maps and go to the game
+        // Needs to be its own menu later
         TextButton g1 = new TextButton("Enter Map 1", game.getSkin());
         table.add(g1).width(300).row();
         g1.addListener(new ChangeListener() {

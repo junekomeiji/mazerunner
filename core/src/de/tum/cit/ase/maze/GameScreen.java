@@ -73,7 +73,7 @@ public class GameScreen implements Screen {
 
     //Wall Texture
     Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 0, 0, 16, 16);
+    TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 32, 0, 16, 16);
 
     //Entry Point Texture
     Texture entryPointTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -82,10 +82,6 @@ public class GameScreen implements Screen {
     //Exit Texture (currently door)
     Texture exitTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion exitTextureRegion = new TextureRegion(exitTexture, 0, 96, 16, 16);
-
-    //Placeholder Texture (not currently used)
-    Texture placeholderTexture = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion placeholderTextureRegion = new TextureRegion(placeholderTexture, 64, 0, 16, 16);
 
     //Grass Texture
     Texture grassTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -98,6 +94,10 @@ public class GameScreen implements Screen {
     // Plain Grass Texture
     Texture plainGrassTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion plainGrassTextureRegion = new TextureRegion(plainGrassTexture, 48, 16, 16, 16);
+
+    // Wall Filler Texture
+    Texture WallTextureShadowless = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion WallTextureShadowlessRegion = new TextureRegion(WallTextureShadowless, 16, 0, 16, 16);
 
 
     /**
@@ -238,13 +238,18 @@ public class GameScreen implements Screen {
                         game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 6:
-                        // Render Grass at position (x, y) (filler)
+                        // Render Grass at position (x, y)
                         game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 7:
-                        // Render Lush Grass at position (x, y) (filler)
+                        // Render Lush Grass at position (x, y)
                         game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
+                    case 8:
+                        // Render wall Filler at position (x, y)
+                        game.getSpriteBatch().draw(WallTextureShadowlessRegion, x * 64 , y * 64, 64, 64);
+                        break;
+
                 }
             }
             //Checks if we are out of lives
@@ -492,7 +497,7 @@ public class GameScreen implements Screen {
 
 
         // Checks if the next position is a wall, entry or chest
-        return (isCollision(nextX, nextY, tileSize, entity) & (maploader.getMap()[mapX][mapY] == 0 | maploader.getMap()[mapX][mapY] == 1) | maploader.getMap()[mapX][mapY] == 5);
+        return (isCollision(nextX, nextY, tileSize, entity) & (maploader.getMap()[mapX][mapY] == 0 | maploader.getMap()[mapX][mapY] == 1) | maploader.getMap()[mapX][mapY] == 5 | maploader.getMap()[mapX][mapY] == 8);
     }
 
 

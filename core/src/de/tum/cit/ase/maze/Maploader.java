@@ -27,7 +27,7 @@ public class Maploader {
     }
 
 
-    // Fills out the Array
+    // Fills out the Array from the file and adds a bit of extras to make it look good
     public void createMap() {
         properties.clear(); // Necessary to delete old Map
         reader();
@@ -51,6 +51,16 @@ public class Maploader {
             int entityType = Integer.parseInt(entry.getValue().toString());
 
             map[x][y] = entityType;
+        }
+
+        // Replaces Walls not adjusted to grass with another wall texture
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                // Check if the wall is not adjacent to grass/lush grass
+                if (isAboveWall(x, y)) {
+                    map[x][y] = 8; // 8 is the filler wall (shadowless)
+                }
+            }
         }
     }
 
@@ -86,6 +96,29 @@ public class Maploader {
             mapHeight = 99;
         }
     }
+
+    // Helper method to flag all coordinates that are Walls with Shadows
+    //TODO: Maybe use sth like this later for a fog of war?
+    private boolean isAboveWall(int x, int y) {
+        // Check if the current position is a wall
+        if (map[x][y] == 0) {
+            int rowAbove = y - 1;
+
+            // Check if the row above is within bounds
+            if (rowAbove >= 0 && rowAbove < mapHeight) {
+                // Check if there is a wall or another specified case above the current position
+                return map[x][rowAbove] == 0 || map[x][rowAbove] == 8;
+            }
+
+            // If the wall is at the bottom edge of the Map, keep it
+            return false;
+        }
+
+        // If the wall is a bottom, keep it
+        return false;
+    }
+
+
 
     public int getMapType() {
         return mapType;
