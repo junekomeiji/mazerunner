@@ -307,7 +307,8 @@ public class GameScreen implements Screen {
             }
         }
 
-        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY(), 64, 128);
+        // Player gets drawn below where he "actually is", to make the game fell cleaner
+        game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY() - 16, 64, 128);
 
         enemies.removeIf(e -> e.getHealth() == 0);
 
@@ -359,15 +360,7 @@ public class GameScreen implements Screen {
 
     private void handleInput(){
 
-        // Redone for wall collision check
-        int nextX = player.getX();
-        int nextY = player.getY();
-
-        //TODO: Currently messes up Wall check if not 64
-         // Speed at which the player moves
-
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            //System.out.println(isWallCollision(player.getX() + 63, player.getY() + 64, 64, player));
             if (!isWallCollision(player.getX(), player.getY() + 64, 64, player) &&
                     !isWallCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
                 player.moveUp(movementSpeed);
@@ -488,20 +481,19 @@ public class GameScreen implements Screen {
 
     // Checks if we are about to run into a  wall
     private boolean isWallCollision(float nextX, float nextY, int tileSize, Entity entity) {
-
-        // Checks if we are still within the bounds of the map
-        //TODO: Wall collision code that I have to implement
-        /*if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
-            // Check if the next position is a wall
-            return maploader.getMap()[mapX][mapY] == 0;
-        }*/
-
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
-        //System.out.println(isCollision(nextX, nextY, tileSize, entity) & maploader.getMap()[mapX][mapY] == 0);
+        // Check if the next position is outside the map boundaries, then handles it like a wall
+        if (mapX < 0 || mapX >= maploader.getMapWidth() || mapY < 0 || mapY >= maploader.getMapHeight()) {
+            return true;
+        }
+
+
+        // Checks if the next position is a wall
         return (isCollision(nextX, nextY, tileSize, entity) & (maploader.getMap()[mapX][mapY] == 0 | maploader.getMap()[mapX][mapY] == 5));
     }
+
 
 
     // Checks if we are about to run into an exit
