@@ -16,13 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.Map;
-
 /**
- * The MenuScreen class is responsible for displaying the main menu of the game.
- * It extends the LibGDX Screen class and sets up the UI components for the menu.
+ * The MapSelectorScreen class is responsible for displaying the map selector of the game.
+ * It extends the LibGDX Screen class and sets up the UI components for the map selector.
  */
-public class MenuScreen implements Screen {
+public class MapSelectorScreen implements Screen {
 
     private final Stage stage;
     SpriteBatch batch;
@@ -30,17 +28,18 @@ public class MenuScreen implements Screen {
 
     MazeRunnerGame game;
 
+    Maploader maploader;
 
     Table table;
 
     /**
-     * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
+     * Constructor for MapSelectorScreen. Sets up the camera, viewport, stage, and UI elements.
      *
-     * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(MazeRunnerGame game) {
+    public MapSelectorScreen(MazeRunnerGame game, Maploader maploader) {
 
         this.game = game;
+        this.maploader = maploader;
 
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
@@ -52,26 +51,74 @@ public class MenuScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
-        // Add a label as a title
-        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+        // Lable as basic instructions
+        table.add(new Label("Please select the map you want to play", game.getSkin(), "title")).padBottom(80).row();
 
-        // Buttons to enter Map selector / debug screen
-        TextButton g1 = new TextButton("Go to Map Selector", game.getSkin());
+
+        // Buttons to select and load maps
+        TextButton g1 = new TextButton("Enter Map 1", game.getSkin());
         table.add(g1).width(300).row();
         g1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToMapSelector();
+                maploader.setMapType(1);
+                maploader.createMap();
+                game.goToGame(); // Change to the game screen when button is pressed
             }
         });
 
 
-        TextButton g2 = new TextButton("Go to Debug Screen", game.getSkin());
+        TextButton g2 = new TextButton("Enter Map 2", game.getSkin());
         table.add(g2).width(300).row();
         g2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToDebug();
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+        TextButton g3 = new TextButton("Enter Map 3", game.getSkin());
+        table.add(g3).width(300).row();
+        g3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+        TextButton g4 = new TextButton("Enter Map 4", game.getSkin());
+        table.add(g4).width(300).row();
+        g4.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+        TextButton g5 = new TextButton("Enter Map 5", game.getSkin());
+        table.add(g5).width(300).row();
+        g5.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                maploader.setMapType(2);
+                maploader.createMap();
+                game.goToGame();
+            }
+        });
+
+        //Back to menu button
+        TextButton g6 = new TextButton("Back to Menu", game.getSkin());
+        table.add(g6).width(300).row();
+        g6.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToMenu();
             }
         });
 

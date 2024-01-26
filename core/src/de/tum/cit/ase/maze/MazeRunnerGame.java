@@ -51,8 +51,8 @@ public class MazeRunnerGame extends Game {
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
 
-        maploader = new Maploader(this); // Initialize mapLoader
-        setScreen(new MenuScreen(this, maploader)); // Pass mapLoader instance to MenuScreen
+        maploader = new Maploader(this);
+        setScreen(new MenuScreen(this));
 
         goToMenu(); // Navigate to the menu screen
     }
@@ -61,7 +61,7 @@ public class MazeRunnerGame extends Game {
      * Switches to the menu screen.
      */
     public void goToMenu() {
-        this.setScreen(new MenuScreen(this, maploader)); // Set the current screen to MenuScreen
+        this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
             gameScreen = null;
@@ -73,6 +73,14 @@ public class MazeRunnerGame extends Game {
      */
     public void goToGame() {
         this.setScreen(new GameScreen(this, maploader)); // Set the current screen to GameScreen
+        if (menuScreen != null) {
+            menuScreen.dispose(); // Dispose the menu screen if it exists
+            menuScreen = null;
+        }
+    }
+
+    public void goToMapSelector() {
+        this.setScreen(new MapSelectorScreen(this, maploader)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
