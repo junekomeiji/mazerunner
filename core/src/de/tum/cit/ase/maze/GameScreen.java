@@ -205,7 +205,6 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
-        //Draws a temporary HUD for lives
 
 
         game.getSpriteBatch().begin();
@@ -217,44 +216,36 @@ public class GameScreen implements Screen {
                 // Render Objects based on their type
                 switch (entityType) {
                     case 0:
-                        // Render Wall at position (x, y)
+                        // Render Wall
                         game.getSpriteBatch().draw(wallTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 1:
-                        // Render Entry point at position (x, y)
+                        // Render Entry
                         game.getSpriteBatch().draw(entryPointTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 2:
-                        // Render Exit at position (x, y)
+                        // Render Exit on top of plain Grass
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
                         game.getSpriteBatch().draw(exitTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
-                    case 3:
-                        // Render Trap at position (x, y) on top of plain Grass
+                    case 3, 5:
+                        // Render plain grass below all Traps and Chests
                         game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
-                    case 4:
-                        // Render Enemy (currently static Ghost) at position (x, y)
-                        // Grass temporary, ideally also random later
-                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
-                        break;
-                    case 5:
-                        // Render Chest (for obtaining key) at position (x, y) on top of plain Grass
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
-                        break;
-                    case 6:
-                        // Render Grass at position (x, y)
+                    case 4, 6:
+                        // Render grass below all Enemies and randomly on the floor
                         game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 7:
-                        // Render Lush Grass at position (x, y)
+                        // Render Lush Grass randomly on the floor
                         game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 8:
-                        // Render wall Filler at position (x, y)
+                        // Render shadowless Walls
                         game.getSpriteBatch().draw(wallTextureShadowlessRegion, x * 64 , y * 64, 64, 64);
                         break;
                     case 9:
-                        // Render wall Filler at position (x, y)
+                        // Render bushes on top of plain Grass
                         game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
                         game.getSpriteBatch().draw(bushTextureRegion, x * 64 , y * 64, 64, 64);
                         break;

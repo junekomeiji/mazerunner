@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -18,43 +18,43 @@ public class DefeatScreen implements Screen {
 
     private final Stage stage;
 
-    private final OrthographicCamera camera;
-
     SpriteBatch batch;
     BitmapFont font;
-    private float elapsedTime = 0;
 
     MazeRunnerGame game;
 
+    Table table;
+
     public DefeatScreen(MazeRunnerGame game){
         this.game = game;
-        batch = new SpriteBatch();
 
-        camera = new OrthographicCamera();
+        var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
-
 
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
-        Table table = new Table(); // Create a table for layout
+        table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
+        // Add a label as a title
+        table.add(new Label("You Lost", game.getSkin(), "title")).padBottom(80).row();
+
+        batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        ScreenUtils.clear(0, 0, 0, 1);
+
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
+
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
+        stage.draw(); // Draw the stage
 
         batch.begin();
-
-        font.draw(batch, "Defeat Screen!", 400, 400);
-        font.draw(batch, "Press ESC to return to Menu", 400, 350);
-
-
+        font.draw(batch, "Press ESC to return to Menu", 800, 400);
         batch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
