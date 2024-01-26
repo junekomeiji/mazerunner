@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -27,10 +28,12 @@ public class MapSelectorScreen implements Screen {
     BitmapFont font;
 
     MazeRunnerGame game;
-
     Maploader maploader;
 
     Table table;
+
+    private final Texture backgroundTexture;
+
 
     /**
      * Constructor for MapSelectorScreen. Sets up the camera, viewport, stage, and UI elements.
@@ -50,6 +53,8 @@ public class MapSelectorScreen implements Screen {
         table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
+
+        backgroundTexture = new Texture(Gdx.files.internal("backgrounds/menu.png")); // Background texture
 
         // Lable as basic instructions
         table.add(new Label("Please select the map you want to play", game.getSkin(), "title")).padBottom(80).row();
@@ -128,8 +133,12 @@ public class MapSelectorScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
+
+        batch.begin();
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
     }

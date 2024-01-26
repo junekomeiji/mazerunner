@@ -125,7 +125,7 @@ public class GameScreen implements Screen {
         for (int x = 0; x < maploader.getMapWidth(); x++) {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
                 if (maploader.getMap()[x][y] == 1) { // 1 is entry point
-                    player = new Player(x * 64 + 48, y * 64, 0);
+                    player = new Player(x * 64 + 64, y * 64, 0);
                     player.setDirection(1);
                 }
                 if(maploader.getMap()[x][y] == 3){
@@ -165,7 +165,7 @@ public class GameScreen implements Screen {
         fireplace = new Fireplace(0, 0, 0);
         vase = new Vase(0, 0, 0);
 
-        player.setLives(100);
+        player.setLives(1);
         collided = false;
         // Get the font from the game's skin
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,13 +14,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-
+/**
+ * The DefeatScreen class is responsible for displaying the defeat screen of the game.
+ * It extends the LibGDX Screen class and sets up the UI components for the defeat screen.
+ */
 public class DefeatScreen implements Screen {
 
     private final Stage stage;
 
     SpriteBatch batch;
     BitmapFont font;
+
+    private final Texture backgroundTexture;
 
     MazeRunnerGame game;
 
@@ -34,11 +40,13 @@ public class DefeatScreen implements Screen {
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
+        backgroundTexture = new Texture(Gdx.files.internal("backgrounds/defeat.png")); // Background texture
+
         table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
-        // Add a label as a title
+        // Add a label to inform the player they lost
         table.add(new Label("You Lost", game.getSkin(), "title")).padBottom(80).row();
 
         batch = new SpriteBatch();
@@ -47,20 +55,23 @@ public class DefeatScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
+
+        batch.begin();
+
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        font.draw(batch, "Press ESC to return to the main menu", 100, 100);
+
+        batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
-
-        batch.begin();
-        font.draw(batch, "Press ESC to return to Menu", 800, 400);
-        batch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
         }
     }
+
 
     @Override
     public void resize(int width, int height) {

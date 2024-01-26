@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,7 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-
+/**
+ * The VictoryScreen class is responsible for displaying the victory screen of the game.
+ * It extends the LibGDX Screen class and sets up the UI components for the victory screen.
+ */
 public class VictoryScreen implements Screen {
 
     private final Stage stage;
@@ -22,6 +26,8 @@ public class VictoryScreen implements Screen {
     BitmapFont font;
 
     MazeRunnerGame game;
+
+    private final Texture backgroundTexture;
 
     Table table;
 
@@ -38,7 +44,9 @@ public class VictoryScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
-        // Add a label as a title
+        backgroundTexture = new Texture(Gdx.files.internal("backgrounds/victory.png")); // Background texture
+
+        // Add a label to inform the player they won
         table.add(new Label("Congratulations, you won!", game.getSkin(), "title")).padBottom(80).row();
 
         batch = new SpriteBatch();
@@ -47,20 +55,23 @@ public class VictoryScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
+
+        batch.begin();
+
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        font.draw(batch, "Press ESC to return to the main menu", 100, 100);
+
+        batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
-
-        batch.begin();
-        font.draw(batch, "Press ESC to return to Menu", 800, 400);
-        batch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
         }
     }
+
 
     @Override
     public void resize(int width, int height) {

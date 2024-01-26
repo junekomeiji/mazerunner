@@ -15,8 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.Texture;
 
-import java.util.Map;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -30,6 +30,7 @@ public class MenuScreen implements Screen {
 
     MazeRunnerGame game;
 
+    private final Texture backgroundTexture;
 
     Table table;
 
@@ -48,12 +49,14 @@ public class MenuScreen implements Screen {
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
+        backgroundTexture = new Texture(Gdx.files.internal("backgrounds/menu.png")); // Background texture
+
         table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("MAZERUNNER", game.getSkin(), "title")).padBottom(80).row();
 
         // Buttons to enter Map selector / debug screen
         TextButton g1 = new TextButton("Map Selector", game.getSkin());
@@ -77,12 +80,16 @@ public class MenuScreen implements Screen {
 
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
-    }
+            }
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
+
+        batch.begin(); // Use the batch variable
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
     }
