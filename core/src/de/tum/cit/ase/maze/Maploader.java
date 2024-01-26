@@ -53,15 +53,26 @@ public class Maploader {
             map[x][y] = entityType;
         }
 
-        // Replaces Walls not adjusted to grass with another wall texture
+        // Replaces Walls that are flagged by isAboveWall with a clean Wall (case 8)
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
-                // Check if the wall is not adjacent to grass/lush grass
-                if (isAboveWall(x, y)) {
+                if (isOuterWall(x, y)) {
                     map[x][y] = 8; // 8 is the filler wall (shadowless)
                 }
             }
         }
+
+        // Replaces Walls that are flagged by isInnerWall with a bush (case 9)
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                if (isInnerWall(x, y)) {
+                    map[x][y] = 9; // 9 is the bush
+                }
+            }
+        }
+
+
+
     }
 
     // Reads the .properties file
@@ -97,26 +108,45 @@ public class Maploader {
         }
     }
 
-    // Helper method to flag all coordinates that are Walls with Shadows
+    // Helper method to flag all coordinates that are on the far left/right edges of the Map, except for the most bottom one
     //TODO: Maybe use sth like this later for a fog of war?
-    private boolean isAboveWall(int x, int y) {
-        // Check if the current position is a wall
+    private boolean isOuterWall(int x, int y) {
         if (map[x][y] == 0) {
-            int rowAbove = y - 1;
-
-            // Check if the row above is within bounds
-            if (rowAbove >= 0 && rowAbove < mapHeight) {
-                // Check if there is a wall or another specified case above the current position
-                return map[x][rowAbove] == 0 || map[x][rowAbove] == 8;
+            // Check if the wall is at the left or right edge of the map
+            if (x == 0 || x == mapWidth - 1) {
+                // Check if the wall is not at the bottom
+                if (y != 0) {
+                    // Check if the wall is at the top
+                    if (y == mapHeight - 1) {
+                        return true; // Wall flagged for replacement
+                    }
+                    // Check if the wall is not at the far bottom
+                    else if (y != mapHeight - 1) {
+                        return true; // Wall flagged for replacement
+                    }
+                }
             }
-
-            // If the wall is at the bottom edge of the Map, keep it
-            return false;
         }
 
-        // If the wall is a bottom, keep it
+        return false; // Wall can stay
+    }
+
+    // Helper method to flag all coordinates that are inner Walls
+    private boolean isInnerWall(int x, int y) {
+        if (map[x][y] == 0) {
+            // Check if the wall is not at the left or right edge of the map
+            if (x > 0 && x < mapWidth - 1) {
+                // Check if the wall is not at the top or bottom edge of the map
+                if (y > 0 && y < mapHeight - 1) {
+                    return true; // Wall flagged for replacement
+                }
+            }
+        }
         return false;
     }
+
+
+
 
 
 

@@ -96,8 +96,12 @@ public class GameScreen implements Screen {
     TextureRegion plainGrassTextureRegion = new TextureRegion(plainGrassTexture, 48, 16, 16, 16);
 
     // Wall Filler Texture
-    Texture WallTextureShadowless = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion WallTextureShadowlessRegion = new TextureRegion(WallTextureShadowless, 16, 0, 16, 16);
+    Texture wallTextureShadowless = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion wallTextureShadowlessRegion = new TextureRegion(wallTextureShadowless, 16, 0, 16, 16);
+
+    // Bush Texture
+    Texture bushTexture = new Texture(Gdx.files.internal("basictiles.png"));
+    TextureRegion bushTextureRegion = new TextureRegion(bushTexture, 64, 144, 16, 16);
 
 
     /**
@@ -247,7 +251,12 @@ public class GameScreen implements Screen {
                         break;
                     case 8:
                         // Render wall Filler at position (x, y)
-                        game.getSpriteBatch().draw(WallTextureShadowlessRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(wallTextureShadowlessRegion, x * 64 , y * 64, 64, 64);
+                        break;
+                    case 9:
+                        // Render wall Filler at position (x, y)
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(bushTextureRegion, x * 64 , y * 64, 64, 64);
                         break;
 
                 }
@@ -496,8 +505,13 @@ public class GameScreen implements Screen {
         }
 
 
-        // Checks if the next position is a wall, entry or chest
-        return (isCollision(nextX, nextY, tileSize, entity) & (maploader.getMap()[mapX][mapY] == 0 | maploader.getMap()[mapX][mapY] == 1) | maploader.getMap()[mapX][mapY] == 5 | maploader.getMap()[mapX][mapY] == 8);
+        // Checks if the next position is a tile with collision
+        return (isCollision(nextX, nextY, tileSize, entity) & (
+                maploader.getMap()[mapX][mapY] == 0
+                | maploader.getMap()[mapX][mapY] == 1)
+                | maploader.getMap()[mapX][mapY] == 5
+                | maploader.getMap()[mapX][mapY] == 8
+                | maploader.getMap()[mapX][mapY] == 9);
     }
 
 
