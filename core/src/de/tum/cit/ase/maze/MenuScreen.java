@@ -56,7 +56,7 @@ public class MenuScreen implements Screen {
         table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
 
         // Buttons to enter Map selector / debug screen
-        TextButton g1 = new TextButton("Go to Map Selector", game.getSkin());
+        TextButton g1 = new TextButton("Map Selector", game.getSkin());
         table.add(g1).width(300).row();
         g1.addListener(new ChangeListener() {
             @Override
@@ -66,7 +66,7 @@ public class MenuScreen implements Screen {
         });
 
 
-        TextButton g2 = new TextButton("Go to Debug Screen", game.getSkin());
+        TextButton g2 = new TextButton("Debug Screen", game.getSkin());
         table.add(g2).width(300).row();
         g2.addListener(new ChangeListener() {
             @Override
