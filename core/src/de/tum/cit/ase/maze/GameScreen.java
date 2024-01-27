@@ -38,6 +38,9 @@ public class GameScreen implements Screen {
 
     private Player player;
 
+    private boolean isInvulnerable = false;
+    private int invulnerabilityTime = 0;
+
     int movementSpeed = 8;
 
     private Humanoid humanoid;
@@ -165,7 +168,6 @@ public class GameScreen implements Screen {
         fireplace = new Fireplace(0, 0, 0);
         vase = new Vase(0, 0, 0);
 
-        player.setLives(1);
         collided = false;
         // Get the font from the game's skin
     }
@@ -301,16 +303,41 @@ public class GameScreen implements Screen {
         } //else this.paused = false;
         */
 
+
+        // Updates invulnerability and sets it to false after given amount of time
+        if (isInvulnerable) {
+            invulnerabilityTime--;
+            if (invulnerabilityTime <= 0) {
+                isInvulnerable = false;
+            }
+        }
+
+
+
         for(Entity e : enemies){
-            //e.moveUp(2);
-            if(e.getX() == player.getX() && e.getY() == player.getY()) player.setLives(player.getLives() - 1);
+            //e.moveUp(2)
+
+            // Checks if player is colliding with a ghost + checks for invulnerability
+            if(e.getX() == player.getX() && e.getY() == player.getY() && !isInvulnerable) {
+
+                    player.setLives(player.getLives() - 1);
+                    isInvulnerable = true; // Temporary invulnerability granted
+                    invulnerabilityTime = 20;
+            }
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
 
         for(Thing t : things){
             if(t instanceof Chest) game.getSpriteBatch().draw(chestFrame, t.getX(), t.getY(), 64, 64);
             else if(t instanceof Spike){
-                if(t.getX() == player.getX() && t.getY() == player.getY()) player.setLives(player.getLives() - 1);
+
+                // Checks if player is colliding with a trap + checks for invulnerability
+                if(t.getX() == player.getX() && t.getY() == player.getY() && !isInvulnerable) {
+
+                        player.setLives(player.getLives() - 1);
+                        isInvulnerable = true; // Temporary invulnerability granted
+                        invulnerabilityTime = 2;
+                }
                 game.getSpriteBatch().draw(spikeFrame, t.getX(), t.getY(), 64, 64);
             }
         }
