@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import com.badlogic.gdx.Gdx;
+import de.tum.cit.ase.maze.Entities.Mobs.Player;
 
 public class Maploader {
 
@@ -18,12 +19,15 @@ public class Maploader {
     int mapHeight; // max Height of the map
     int[][] map;
 
+    private Player player;
+
     Properties properties = new Properties();
 
-    public Maploader(MazeRunnerGame game) {
+    public Maploader(MazeRunnerGame game, Player player) {
         this.game = game;
         this.mapType = 1;
         map = new int[mapHeight][mapWidth];
+        this.player = player;
     }
 
 
@@ -70,9 +74,6 @@ public class Maploader {
                 }
             }
         }
-
-
-
     }
 
     // Reads the .properties file
@@ -145,7 +146,22 @@ public class Maploader {
         return false;
     }
 
-
+    //TODO: FINISH
+    public boolean fogOfWar(int radius) {
+        // Iterate through all tiles in the map
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                // Calculate the distance between the current tile and the player
+                int distance = Math.abs(player.getX() - x) + Math.abs(player.getY() - y);
+                // Check if the distance is greater than the radius
+                if (distance > radius) {
+                    // Replace the tile with plain grass (case 10)
+                    return true; // Set the flag to true since a tile was updated
+                }
+            }
+        }
+        return false;
+    }
 
 
 

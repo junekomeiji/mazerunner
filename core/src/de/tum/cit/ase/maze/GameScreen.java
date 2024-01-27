@@ -168,8 +168,6 @@ public class GameScreen implements Screen {
         player.setLives(1);
         collided = false;
         // Get the font from the game's skin
-
-
     }
 
 
@@ -255,6 +253,11 @@ public class GameScreen implements Screen {
             //Checks if we are out of lives
             if(player.getLives() < 1) {
                 game.goToVDefeat();
+            }
+
+            //TODO: FINISH
+            if (maploader.fogOfWar(5) == true) {
+                System.out.println("");
             }
         }
 
@@ -482,7 +485,6 @@ public class GameScreen implements Screen {
         }
 
         collided = isObstacleCollision(player.getX() + movementSpeed, player.getY(), 64, player);
-
     }
 
     // Checks if we are about to run into an obstacle (wall, entry point, chest)

@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 
 
+
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
@@ -49,7 +50,8 @@ public class MenuScreen implements Screen {
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
-        backgroundTexture = new Texture(Gdx.files.internal("backgrounds/menu.png")); // Background texture
+        // Loading background texture
+        backgroundTexture = new Texture(Gdx.files.internal("backgrounds/menu.png"));
 
         table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
@@ -68,7 +70,6 @@ public class MenuScreen implements Screen {
             }
         });
 
-
         TextButton g2 = new TextButton("Debug Screen", game.getSkin());
         table.add(g2).width(300).row();
         g2.addListener(new ChangeListener() {
@@ -80,7 +81,7 @@ public class MenuScreen implements Screen {
 
         batch = new SpriteBatch();
         font = game.getSkin().getFont("font");
-            }
+    }
 
     @Override
     public void render(float delta) {
@@ -101,8 +102,9 @@ public class MenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        // Dispose of the stage when screen is disposed
+        // Dispose of the stage / background texture / music when screen is disposed
         stage.dispose();
+        backgroundTexture.dispose();
     }
 
     @Override
