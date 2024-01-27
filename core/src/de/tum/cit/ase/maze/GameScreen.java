@@ -301,7 +301,6 @@ public class GameScreen implements Screen {
         } //else this.paused = false;
         */
 
-
         for(Entity e : enemies){
             //e.moveUp(2);
             if(e.getX() == player.getX() && e.getY() == player.getY()) player.setLives(player.getLives() - 1);
