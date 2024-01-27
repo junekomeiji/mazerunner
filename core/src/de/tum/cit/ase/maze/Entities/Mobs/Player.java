@@ -81,7 +81,7 @@ public class Player extends Entity {
 
     public Player(int xpos, int ypos, int direction) {
         super(xpos, ypos, direction);
-        this.lives = 100;
+        this.lives = 3;
     }
 
     @Override

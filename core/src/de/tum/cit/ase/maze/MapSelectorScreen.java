@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.audio.Sound;
+
 
 /**
  * The MapSelectorScreen class is responsible for displaying the map selector of the game.
@@ -29,6 +31,8 @@ public class MapSelectorScreen implements Screen {
 
     MazeRunnerGame game;
     Maploader maploader;
+
+    private Sound clickSound;
 
     Table table;
 
@@ -56,6 +60,9 @@ public class MapSelectorScreen implements Screen {
 
         backgroundTexture = new Texture(Gdx.files.internal("backgrounds/menu.png")); // Background texture
 
+        // Soundeffect for clicking a button
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/click.mp3"));
+
         // Lable as basic instructions
         table.add(new Label("Please select the map you want to play", game.getSkin(), "title")).padBottom(80).row();
 
@@ -66,6 +73,7 @@ public class MapSelectorScreen implements Screen {
         g1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 maploader.setMapType(1);
                 maploader.createMap();
                 game.goToGame(); // Change to the game screen when button is pressed
@@ -78,6 +86,7 @@ public class MapSelectorScreen implements Screen {
         g2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 maploader.setMapType(2);
                 maploader.createMap();
                 game.goToGame();
@@ -89,6 +98,7 @@ public class MapSelectorScreen implements Screen {
         g3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 maploader.setMapType(2);
                 maploader.createMap();
                 game.goToGame();
@@ -100,6 +110,7 @@ public class MapSelectorScreen implements Screen {
         g4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 maploader.setMapType(2);
                 maploader.createMap();
                 game.goToGame();
@@ -111,6 +122,7 @@ public class MapSelectorScreen implements Screen {
         g5.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 maploader.setMapType(2);
                 maploader.createMap();
                 game.goToGame();
@@ -123,6 +135,7 @@ public class MapSelectorScreen implements Screen {
         g6.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 game.goToMenu();
             }
         });

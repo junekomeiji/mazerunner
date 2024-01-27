@@ -143,6 +143,8 @@ public class MazeRunnerGame extends Game {
 
     public void goToVictory(){
         menuMusic.stop();
+        victoryMusic1.setVolume(0.75f);
+        victoryMusicLooped.setVolume(0.75f);
         victoryMusic1.play();
         this.setScreen(new VictoryScreen(this));
         if(menuScreen != null){
@@ -181,9 +183,12 @@ public class MazeRunnerGame extends Game {
         return skin;
     }
 
-
-
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
+
+    public void setMusicVolume(float volume) {
+        menuMusic.setVolume(volume);
+    }
+
 }

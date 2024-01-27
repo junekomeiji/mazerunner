@@ -14,6 +14,7 @@ import de.tum.cit.ase.maze.Entities.Entity;
 import de.tum.cit.ase.maze.Entities.Mobs.*;
 import de.tum.cit.ase.maze.Entities.Things.*;
 import java.util.ArrayList;
+import com.badlogic.gdx.audio.Sound;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -40,6 +41,23 @@ public class GameScreen implements Screen {
 
     private boolean isInvulnerable = false;
     private int invulnerabilityTime = 0;
+
+    // Necessary for handling walking sounds
+    private boolean walkingSoundDelay = true;
+    private int walkingSoundDelayTime = 0;
+    private int walkingSoundDelayTimeTicks = 20;
+
+    // All sound effects used in this class
+    private Sound damageGhostSound;
+    private Sound damageTrapSound;
+    private Sound ghostSound;
+    private Sound swingSound;
+    private Sound walkingSound;
+    private Sound keySound;
+    private Sound birdSound;
+    private Sound chestSound;
+    private Sound lowHealthSound;
+
 
     int movementSpeed = 8;
 
@@ -122,6 +140,17 @@ public class GameScreen implements Screen {
         font = game.getSkin().getFont("font");
         enemies = new ArrayList<Mob>();
         things = new ArrayList<Thing>();
+
+        // Loads all the sounds that can be played in the game screen and sets them to an appropriate volume
+
+        //TODO: Make setVolume work
+        walkingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/Footstep_Dirt_00.mp3"));
+        keySound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/key.mp3"));
+        swingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/swing.mp3"));
+        birdSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/bird.mp3"));
+        ghostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/ghost.mp3"));
+        damageGhostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageGhost.mp3"));
+        damageTrapSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageTrap.mp3"));
 
 
         //Spawns in entities
@@ -320,9 +349,10 @@ public class GameScreen implements Screen {
             // Checks if player is colliding with a ghost + checks for invulnerability
             if(e.getX() == player.getX() && e.getY() == player.getY() && !isInvulnerable) {
 
-                    player.setLives(player.getLives() - 1);
-                    isInvulnerable = true; // Temporary invulnerability granted
-                    invulnerabilityTime = 20;
+                player.setLives(player.getLives() - 1);
+                damageGhostSound.setVolume(damageGhostSound.play(), 0.3f);
+                isInvulnerable = true; // Temporary invulnerability granted
+                invulnerabilityTime = 20;
             }
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
@@ -334,9 +364,10 @@ public class GameScreen implements Screen {
                 // Checks if player is colliding with a trap + checks for invulnerability
                 if(t.getX() == player.getX() && t.getY() == player.getY() && !isInvulnerable) {
 
-                        player.setLives(player.getLives() - 1);
-                        isInvulnerable = true; // Temporary invulnerability granted
-                        invulnerabilityTime = 2;
+                    player.setLives(player.getLives() - 1);
+                    damageTrapSound.setVolume(damageTrapSound.play(), 0.3f);
+                    isInvulnerable = true; // Temporary invulnerability granted
+                    invulnerabilityTime = 2;
                 }
                 game.getSpriteBatch().draw(spikeFrame, t.getX(), t.getY(), 64, 64);
             }
@@ -392,13 +423,27 @@ public class GameScreen implements Screen {
         }
     }
 
-
+    // Handles inputs of the player
     private void handleInput(){
 
+        // Restricts walking sound from being played every framce
+        if (walkingSoundDelay) {
+            walkingSoundDelayTime--;
+            if (walkingSoundDelayTime <= 0) {
+                walkingSoundDelay = false;
+            }
+        }
+
+        // Handles WASD inputs
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             if (!isObstacleCollision(player.getX(), player.getY() + 64, 64, player) &&
                     !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
                 player.moveUp(movementSpeed);
+                if (!walkingSoundDelay) {
+                    walkingSound.setVolume(walkingSound.play(), 0.75f);
+                    walkingSoundDelay = true;
+                    walkingSoundDelayTime = walkingSoundDelayTimeTicks;
+                }
             }
             if (isExitCollision(player.getX(), player.getY() + 64, 64) ||
                     isExitCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64)) {
@@ -411,6 +456,11 @@ public class GameScreen implements Screen {
             if (!isObstacleCollision(player.getX() - 8, player.getY(), 64, player) &&
                     !isObstacleCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveLeft(movementSpeed);
+                if (!walkingSoundDelay) {
+                    walkingSound.setVolume(walkingSound.play(), 0.75f);
+                    walkingSoundDelay = true;
+                    walkingSoundDelayTime = walkingSoundDelayTimeTicks;
+                }
             }
             if (isExitCollision(player.getX() - 64, player.getY(), 64) ||
                     isExitCollision(player.getX() - 64, player.getY() + 64 - movementSpeed, 64)) {
@@ -423,6 +473,11 @@ public class GameScreen implements Screen {
             if (!isObstacleCollision(player.getX(), player.getY() - 8, 64, player) &&
                     !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() - 8, 64, player)) {
                 player.moveDown(movementSpeed);
+                if (!walkingSoundDelay) {
+                    walkingSound.setVolume(walkingSound.play(), 0.75f);
+                    walkingSoundDelay = true;
+                    walkingSoundDelayTime = walkingSoundDelayTimeTicks;
+                }
             }
             if (isExitCollision(player.getX(), player.getY() - 1, 64) ||
                     isExitCollision(player.getX() + 64 - movementSpeed, player.getY() - 1, 64)) {
@@ -435,6 +490,11 @@ public class GameScreen implements Screen {
             if (!isObstacleCollision(player.getX() + 64, player.getY(), 64, player) &&
                     !isObstacleCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64, player)) {
                 player.moveRight(movementSpeed);
+                if (!walkingSoundDelay) {
+                    walkingSound.setVolume(walkingSound.play(), 0.75f);
+                    walkingSoundDelay = true;
+                    walkingSoundDelayTime = walkingSoundDelayTimeTicks;
+                }
             }
             if (isExitCollision(player.getX() + 64, player.getY(), 64) ||
                     isExitCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64)) {
@@ -462,6 +522,7 @@ public class GameScreen implements Screen {
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
             elapsedTime = 0;
             player.setSlashing(true);
+            swingSound.setVolume(swingSound.play(), 0.25f);
             switch(player.getDirection()){
                 //down
                 case 0 -> { for(Mob e: enemies){

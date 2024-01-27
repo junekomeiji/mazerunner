@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
-
+import com.badlogic.gdx.audio.Sound;
 
 
 /**
@@ -28,6 +28,8 @@ public class MenuScreen implements Screen {
     private final Stage stage;
     SpriteBatch batch;
     BitmapFont font;
+
+    private Sound clickSound;
 
     MazeRunnerGame game;
 
@@ -57,6 +59,9 @@ public class MenuScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
+        // Soundeffect for clicking a button
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/click.mp3"));
+
         // Add a label as a title
         table.add(new Label("MAZERUNNER", game.getSkin(), "title")).padBottom(80).row();
 
@@ -66,6 +71,7 @@ public class MenuScreen implements Screen {
         g1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 game.goToMapSelector();
             }
         });
@@ -75,6 +81,7 @@ public class MenuScreen implements Screen {
         g2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
                 game.goToDebug();
             }
         });
