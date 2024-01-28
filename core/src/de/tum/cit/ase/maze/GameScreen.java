@@ -376,28 +376,36 @@ public class GameScreen implements Screen {
         // Player gets drawn below where he "actually is" to make up for empty space at the bottom of the skin
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY() - 16, 64, 128);
 
-        enemies.removeIf(e -> e.getHealth() == 0);
+        // Removes and plays sound effect whenever a ghost reaches 0 lives
+        enemies.removeIf(e -> {
+            if (e.getHealth() == 0) {
+                ghostSound.setVolume(ghostSound.play(), 0.1f);
+                return true;
+            }
+            return false;
+        });
 
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
 
         game.getSpriteBatch().end();
 
+
+        // Renders the HUD for the game
         hudBatch.begin();
+
+
+
+
+
 
         font.draw(hudBatch, "Lives: " + player.getLives(), 100, 800);
         font.draw(hudBatch, "Score: " + player.getScore(), 300, 800);
         font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
         font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
-
         int mapX = (int) (player.getX() / 64);
         int mapY = (int) (player.getY() / 64);
-
-
-
         font.draw(hudBatch, mapX + ", " + mapY + ", " + type(maploader.getMap()[mapX][mapY]), 500, 700);
         font.draw(hudBatch, ((mapX*64) - 64) + ", " + ((mapY*64) - 64) , 500, 650);
-
-        font.draw(hudBatch, collided ? "collided" : "not collided", 100, 600);
 
         hudBatch.end();
 
