@@ -174,13 +174,13 @@ public class GameScreen implements Screen {
                     player = new Player(x * 64 + 64, y * 64, 0);
                     player.setDirection(1);
                 }
-                if(maploader.getMap()[x][y] == 3){
+                if (maploader.getMap()[x][y] == 3) {
                     things.add(new Spike(x * 64, y * 64, 0));
                 }
-                if (maploader.getMap()[x][y] == 4){
+                if (maploader.getMap()[x][y] == 4) {
                     enemies.add(new Ghost(x * 64, y * 64, 0));
                 }
-                if(maploader.getMap()[x][y] == 5){
+                if (maploader.getMap()[x][y] == 5) {
                     things.add(new Chest(x * 64, y * 64, 0));
                 }
             }
@@ -196,7 +196,7 @@ public class GameScreen implements Screen {
 
         //hud = new HUD(game.getSpriteBatch(), player, game.height, game.width);
 
-        humanoid = new Humanoid(0,0,0);
+        humanoid = new Humanoid(0, 0, 0);
         slime = new Slime(0, 0, 0);
         man = new Man(0, 0, 0);
         ghost = new Ghost(0, 0, 0);
@@ -222,8 +222,10 @@ public class GameScreen implements Screen {
 
         // Updates timer
         timeCount += delta;
+        int mapX = (int) (player.getX() / 64);
+        int mapY = (int) (player.getY() / 64);
 
-        if(!once) {
+        if (!once) {
             camera.position.x = player.getX();
             camera.position.y = player.getY();
             once = true;
@@ -237,7 +239,7 @@ public class GameScreen implements Screen {
         //if(!paused) handleInput();
         handleInput();
 
-        if(player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())){
+        if (player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())) {
             player.setPickingUp(false);
             player.setSlashing(false);
             elapsedTime = 0;
@@ -252,7 +254,6 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
 
-
         game.getSpriteBatch().begin();
 
         //Renders the Map
@@ -263,43 +264,43 @@ public class GameScreen implements Screen {
                 switch (entityType) {
                     case 0:
                         // Render Wall
-                        game.getSpriteBatch().draw(wallTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(wallTextureRegion, x * 64, y * 64, 64, 64);
                         break;
                     case 1:
                         // Render Entry
-                        game.getSpriteBatch().draw(entryPointTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(entryPointTextureRegion, x * 64, y * 64, 64, 64);
                         break;
                     case 2:
                         // Render Exit on top of plain Grass
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
-                        game.getSpriteBatch().draw(exitTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(exitTextureRegion, x * 64, y * 64, 64, 64);
                         break;
                     case 3, 5:
                         // Render plain grass below all Traps and Chests
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64, y * 64, 64, 64);
                         break;
                     case 4, 6:
                         // Render grass below all Enemies and randomly on the floor
-                        game.getSpriteBatch().draw(grassTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(grassTextureRegion, x * 64, y * 64, 64, 64);
                         break;
                     case 7:
                         // Render Lush Grass randomly on the floor
-                        game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64, y * 64, 64, 64);
                         break;
                     case 8:
                         // Render shadowless Walls
-                        game.getSpriteBatch().draw(wallTextureShadowlessRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(wallTextureShadowlessRegion, x * 64, y * 64, 64, 64);
                         break;
                     case 9:
                         // Render bushes on top of plain Grass
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64 , y * 64, 64, 64);
-                        game.getSpriteBatch().draw(bushTextureRegion, x * 64 , y * 64, 64, 64);
+                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(bushTextureRegion, x * 64, y * 64, 64, 64);
                         break;
 
                 }
             }
             //Checks if we are out of lives
-            if(player.getLives() < 1) {
+            if (player.getLives() < 1) {
                 game.goToVDefeat();
             }
         }
@@ -354,32 +355,31 @@ public class GameScreen implements Screen {
         }
 
 
-
-        for(Entity e : enemies){
+        for (Entity e : enemies) {
             //e.moveUp(2)
 
             // Checks if player is colliding with a ghost + checks for invulnerability
-            if(e.getX() == player.getX() && e.getY() == player.getY() && !isInvulnerable) {
+            if (e.getMapX() == player.getMapX() && e.getMapY() == player.getMapY() && !isInvulnerable) {
 
                 player.setLives(player.getLives() - 1);
                 damageGhostSound.setVolume(damageGhostSound.play(), 0.3f);
                 isInvulnerable = true; // Temporary invulnerability granted
-                invulnerabilityTime = 20;
+                invulnerabilityTime = 50;
             }
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
 
-        for(Thing t : things){
-            if(t instanceof Chest) game.getSpriteBatch().draw(chestFrame, t.getX(), t.getY(), 64, 64);
-            else if(t instanceof Spike){
+        for (Thing t : things) {
+            if (t instanceof Chest) game.getSpriteBatch().draw(chestFrame, t.getX(), t.getY(), 64, 64);
+            else if (t instanceof Spike) {
 
                 // Checks if player is colliding with a trap + checks for invulnerability
-                if(t.getX() == player.getX() && t.getY() == player.getY() && !isInvulnerable) {
+                if (t.getMapX() == player.getMapX() && t.getMapY() == player.getMapY() && !isInvulnerable) {
 
                     player.setLives(player.getLives() - 1);
                     damageTrapSound.setVolume(damageTrapSound.play(), 0.3f);
                     isInvulnerable = true; // Temporary invulnerability granted
-                    invulnerabilityTime = 2;
+                    invulnerabilityTime = 50;
                 }
                 game.getSpriteBatch().draw(spikeFrame, t.getX(), t.getY(), 64, 64);
             }
@@ -417,14 +417,14 @@ public class GameScreen implements Screen {
         font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 400, centerY - 100);
 
 
-
         // Debug stuff
         font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
         font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
-        int mapX = (int) (player.getX() / 64);
-        int mapY = (int) (player.getY() / 64);
-        font.draw(hudBatch, mapX + ", " + mapY + ", " + type(maploader.getMap()[mapX][mapY]), 500, 700);
-        font.draw(hudBatch, ((mapX*64) - 64) + ", " + ((mapY*64) - 64) , 500, 650);
+
+        font.draw(hudBatch, mapX + 1+ ", " + mapY + ", " + type(maploader.getMap()[mapX + 1][mapY]), 500, 700);
+        font.draw(hudBatch, ((mapX * 64) - 64) + ", " + ((mapY * 64) - 64), 500, 650);
+        font.draw(hudBatch, invulnerabilityTime + ", " + player.hasKey(), 500, 600);
+
 
         hudBatch.end();
 
@@ -437,15 +437,17 @@ public class GameScreen implements Screen {
         // Draw Key if obtained
         game.getSpriteBatch().begin();
 
-        if(player.getLives() == 3) {
+        if (player.getLives() == 3) {
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
-        } if(player.getLives() == 2) {
+        }
+        if (player.getLives() == 2) {
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
-        } if(player.getLives() == 1) {
+        }
+        if (player.getLives() == 1) {
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
@@ -459,10 +461,13 @@ public class GameScreen implements Screen {
     }
 
     //debug function!
-    private String type(int t){
-        switch(t){
+    private String type(int t) {
+        switch (t) {
             case 0 -> {
                 return "wall";
+            }
+            case 5 -> {
+                return "chest";
             }
             case 6 -> {
                 return "grass";
@@ -477,7 +482,7 @@ public class GameScreen implements Screen {
     }
 
     // Handles inputs of the player
-    private void handleInput(){
+    private void handleInput() {
 
         // Restricts walking sound from being played every framce
         if (walkingSoundDelay) {
@@ -498,11 +503,10 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (isExitCollision(player.getX(), player.getY() + 64, 64) ||
-                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64)) {
+            if (player.hasKey() & (isExitCollision(player.getX(), player.getY() + 64, 64) ||
+                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64))) {
                 game.goToVictory();
-            }
-            else player.moveUp(0);
+            } else player.moveUp(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -515,11 +519,10 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (isExitCollision(player.getX() - 64, player.getY(), 64) ||
-                    isExitCollision(player.getX() - 64, player.getY() + 64 - movementSpeed, 64)) {
+            if (player.hasKey() & (isExitCollision(player.getX() - 64, player.getY(), 64) ||
+                    isExitCollision(player.getX() - 64, player.getY() + 64 - movementSpeed, 64))) {
                 game.goToVictory();
-            }
-            else player.moveLeft(0);
+            } else player.moveLeft(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
@@ -532,11 +535,10 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (isExitCollision(player.getX(), player.getY() - 1, 64) ||
-                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() - 1, 64)) {
+            if (player.hasKey() & (isExitCollision(player.getX(), player.getY() - 1, 64) ||
+                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() - 1, 64))) {
                 game.goToVictory();
-            }
-            else player.moveDown(0);
+            } else player.moveDown(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -549,20 +551,21 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (isExitCollision(player.getX() + 64, player.getY(), 64) ||
-                    isExitCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64)) {
+            if (player.hasKey() & (isExitCollision(player.getX() + 64, player.getY(), 64) ||
+                    isExitCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64))) {
                 game.goToVictory();
-            }
-            else player.moveRight(0);
+            } else player.moveRight(0);
         }
 
         // Press E to pick up a key from a chest
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-            if(!player.isPickedUp()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            if(chestProximity(player.getX(), player.getY())){
+                chest.open();
+                player.setKey(true);
+            } else if (!player.isPickedUp()) {
                 elapsedTime = 0;
                 player.setPickingUp(true);
                 player.setPickedUp(true);
-                player.setKey(true);
             } else {
                 elapsedTime = 0;
                 player.setPickingUp(false);
@@ -574,56 +577,47 @@ public class GameScreen implements Screen {
             game.goToMenu();
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             elapsedTime = 0;
             player.setSlashing(true);
             swingSound.setVolume(swingSound.play(), 0.25f);
-            switch(player.getDirection()){
+            switch (player.getDirection()) {
                 //down
-                case 0 -> { for(Mob e: enemies){
-                        if(e.getY() < player.getY() && player.getY() - e.getY() < 64 && Math.abs(player.getX() - e.getX()) < 64){
+                case 0 -> {
+                    for (Mob e : enemies) {
+                        if (e.getY() < player.getY() && player.getY() - e.getY() < 64 && Math.abs(player.getX() - e.getX()) < 64) {
                             e.setHealth(e.getHealth() - 1);
                         }
                     }
                 }
                 //right
-                case 1 -> {for(Mob e: enemies){
-                        if(e.getX() > player.getX() && e.getX() - player.getX() < 64 && Math.abs(player.getY() - e.getY()) < 64){
+                case 1 -> {
+                    for (Mob e : enemies) {
+                        if (e.getX() > player.getX() && e.getX() - player.getX() < 64 && Math.abs(player.getY() - e.getY()) < 64) {
                             e.setHealth(e.getHealth() - 1);
                         }
                     }
                 }
                 //up
-                case 2 -> {for(Mob e: enemies){
-                        if(e.getY() > player.getY() && e.getY() - player.getY() < 64 && Math.abs(player.getX() - e.getX()) < 64){
+                case 2 -> {
+                    for (Mob e : enemies) {
+                        if (e.getY() > player.getY() && e.getY() - player.getY() < 64 && Math.abs(player.getX() - e.getX()) < 64) {
                             e.setHealth(e.getHealth() - 1);
                         }
                     }
                 }
                 //left
-                case 3 -> {for(Mob e: enemies) {
+                case 3 -> {
+                    for (Mob e : enemies) {
                         if (e.getX() < player.getX() && player.getX() - e.getX() < 64 && Math.abs(player.getY() - e.getY()) < 64) {
-                           e.setHealth(e.getHealth() - 1);
+                            e.setHealth(e.getHealth() - 1);
                         }
                     }
                 }
-                default -> {return ; }
+                default -> {
+                    return;
+                }
             }
-        }
-
-
-        //camera debug controls
-        if(Gdx.input.isKeyPressed(Input.Keys.L)) {
-            player.moveRight(movementSpeed);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.J)){
-            player.moveLeft(movementSpeed);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.I)){
-            player.moveUp(movementSpeed);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.K)){
-            player.moveDown(movementSpeed);
         }
 
         collided = isObstacleCollision(player.getX() + movementSpeed, player.getY(), 64, player);
@@ -643,12 +637,12 @@ public class GameScreen implements Screen {
         // Checks if the next position is a tile with collision
         return (isCollision(nextX, nextY, tileSize, entity) & (
                 maploader.getMap()[mapX][mapY] == 0
-                | maploader.getMap()[mapX][mapY] == 1)
+                        | maploader.getMap()[mapX][mapY] == 1)
+                | maploader.getMap()[mapX][mapY] == 2
                 | maploader.getMap()[mapX][mapY] == 5
                 | maploader.getMap()[mapX][mapY] == 8
                 | maploader.getMap()[mapX][mapY] == 9);
     }
-
 
 
     // Checks if we are about to run into an exit
@@ -667,41 +661,49 @@ public class GameScreen implements Screen {
     }
 
 
-
-    public boolean isCollision(float nextX, float nextY, int tileSize, Entity entity){
+    public boolean isCollision(float nextX, float nextY, int tileSize, Entity entity) {
         boolean val = false;
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
         if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
 
-                if (entity.getUpperleftcorner().x - movementSpeed < (mapX*tileSize) - 64 & entity.getLowerleftcorner().x - movementSpeed < (mapX*tileSize) - 64 ) {
-                    val = true;
-                } else if (entity.getUpperrightcorner().x + movementSpeed > (mapX*tileSize) - 64 & entity.getLowerrightcorner().x + movementSpeed > (mapX*tileSize) - 64) {
-                    val =  true;
-                } else if (entity.getUpperrightcorner().y + movementSpeed > (mapY*tileSize) + 64 & entity.getUpperleftcorner().y + movementSpeed > (mapY*tileSize) + 64) {
-                    val =  true;
-                } else if (entity.getLowerleftcorner().y - movementSpeed > (mapY*tileSize) - 64 & entity.getLowerrightcorner().y - movementSpeed > (mapY*tileSize) - 64 ) {
-                    val = true;
-                }
+            if (entity.getUpperleftcorner().x - movementSpeed < (mapX * tileSize) - 64 & entity.getLowerleftcorner().x - movementSpeed < (mapX * tileSize) - 64) {
+                val = true;
+            } else if (entity.getUpperrightcorner().x + movementSpeed > (mapX * tileSize) - 64 & entity.getLowerrightcorner().x + movementSpeed > (mapX * tileSize) - 64) {
+                val = true;
+            } else if (entity.getUpperrightcorner().y + movementSpeed > (mapY * tileSize) + 64 & entity.getUpperleftcorner().y + movementSpeed > (mapY * tileSize) + 64) {
+                val = true;
+            } else if (entity.getLowerleftcorner().y - movementSpeed > (mapY * tileSize) - 64 & entity.getLowerrightcorner().y - movementSpeed > (mapY * tileSize) - 64) {
+                val = true;
+            }
         }
         return val;
     }
 
     // Assuming you have a method to get the player's coordinates and a list of chest coordinates
 
-    private boolean chestProximity(float nextX, float nextY, int tileSize) {
-        int mapX = (int) (nextX / tileSize);
-        int mapY = (int) (nextY / tileSize);
+    private boolean chestProximity(float x, float y) {
 
-        // Checks for out of bounds to prevent crashes
+        int mapX = (int) (x / 64);
+        int mapY = (int) (y / 64);
+
+        //as always, down, right, up, left
         if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
-            // Checks if next position is a chest (case 2)
-            return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
-        } else {
-            // In case we are out of bounds of the map
-            return false;
+            if (player.getDirection() == 0 & maploader.getMap()[player.getMapX()][player.getMapY() - 1] == 5) {
+                return true;
+            } else if (player.getDirection() == 1 & maploader.getMap()[player.getMapX() + 1][player.getMapY()] == 5) {
+                return true;
+            } else if (player.getDirection() == 2 & maploader.getMap()[player.getMapX()][player.getMapY() + 1] == 5) {
+                return true;
+            } else if (player.getDirection() == 3 & maploader.getMap()[player.getMapX() - 1][player.getMapY()] == 5) {
+                return true;
+            }
         }
+
+        return false;
     }
+
+
 
 
 

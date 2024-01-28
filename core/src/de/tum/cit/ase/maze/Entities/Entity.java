@@ -47,6 +47,14 @@ public abstract class Entity {
         this.y = y;
     }
 
+    public int getMapX(){
+        return (int) (this.getX() / 64);
+    }
+
+    public int getMapY(){
+        return (int) (this.getY() / 64);
+    }
+
     public int getDirection() {
         return direction;
     }
