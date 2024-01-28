@@ -394,12 +394,16 @@ public class GameScreen implements Screen {
             if (e.getHealth() == 0) {
                 ghostSound.setVolume(ghostSound.play(), 0.1f);
                 player.setScore(player.getScore() + 10);
+
+
+                // Killing ghosts gives you one lost life back
+                if(player.getLives() < 3) {
+                    player.setLives(player.getLives() + 1);
+                }
+
                 return true;
             }
-            // Killing ghosts gives you one lost life back
-            if(player.getLives() <= 3) {
-                player.setLives(player.getLives() + 1);
-            }
+
 
             return false;
         });
