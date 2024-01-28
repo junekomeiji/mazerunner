@@ -389,9 +389,11 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY() - 16, 64, 128);
 
         // Removes and plays sound effect whenever a ghost reaches 0 lives
+        // Adds 10 score for every ghots killed
         enemies.removeIf(e -> {
             if (e.getHealth() == 0) {
                 ghostSound.setVolume(ghostSound.play(), 0.1f);
+                player.setScore(player.getScore() + 10);
                 return true;
             }
             return false;
@@ -412,6 +414,8 @@ public class GameScreen implements Screen {
         font.draw(hudBatch, "Score: " + player.getScore(), centerX + 200, centerY - 100);
         int hearthX = Gdx.graphics.getWidth();
         font.draw(hudBatch, String.format("Time : %.1f", timeCount), centerX - 300, centerY - 100);
+        font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 400, centerY - 100);
+
 
 
         // Debug stuff
@@ -430,21 +434,23 @@ public class GameScreen implements Screen {
         camera.unproject(worldCoordinates);
 
         // Draw the hearts at the calculated world coordinates + logic for when a live is lost
+        // Draw Key if obtained
         game.getSpriteBatch().begin();
 
         if(player.getLives() == 3) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
         } if(player.getLives() == 2) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
-            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
+            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
         } if(player.getLives() == 1) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
-            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
-            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
+            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
+            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
         }
+
 
         game.getSpriteBatch().end();
 
@@ -550,11 +556,13 @@ public class GameScreen implements Screen {
             else player.moveRight(0);
         }
 
+        // Press E to pick up a key from a chest
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
             if(!player.isPickedUp()) {
                 elapsedTime = 0;
                 player.setPickingUp(true);
                 player.setPickedUp(true);
+                player.setKey(true);
             } else {
                 elapsedTime = 0;
                 player.setPickingUp(false);
@@ -678,6 +686,23 @@ public class GameScreen implements Screen {
         }
         return val;
     }
+
+    // Assuming you have a method to get the player's coordinates and a list of chest coordinates
+
+    private boolean chestProximity(float nextX, float nextY, int tileSize) {
+        int mapX = (int) (nextX / tileSize);
+        int mapY = (int) (nextY / tileSize);
+
+        // Checks for out of bounds to prevent crashes
+        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
+            // Checks if next position is a chest (case 2)
+            return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
+        } else {
+            // In case we are out of bounds of the map
+            return false;
+        }
+    }
+
 
 
     @Override
