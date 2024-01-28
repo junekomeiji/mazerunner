@@ -134,8 +134,7 @@ public class MapSelectorScreen implements Screen {
             }
         });
 
-        // Opens a filechooser so you can select a map file
-        // Opens a filechooser so you can select a map file
+        // Opens a Filechooser so you can select a map file
         TextButton g6 = new TextButton("Filechooser", game.getSkin());
         table.add(g6).width(300).row();
         g6.addListener(new ChangeListener() {
@@ -143,15 +142,7 @@ public class MapSelectorScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 clickSound.play();
 
-                // Create a file chooser
                 JFileChooser fileChooser = new JFileChooser();
-
-                // Set the initial directory
-                fileChooser.setCurrentDirectory(new File("path/to/your/directory"));
-
-                // Set a filter to only show specific file types
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("Properties Files", "properties");
-                fileChooser.setFileFilter(filter);
 
                 // Show the file chooser
                 int returnValue = fileChooser.showOpenDialog(null);
