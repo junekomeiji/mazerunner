@@ -99,7 +99,7 @@ public class MapSelectorScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 clickSound.play();
-                maploader.setMapType(2);
+                maploader.setMapType(3);
                 maploader.createMap();
                 game.goToGame();
             }
@@ -111,7 +111,7 @@ public class MapSelectorScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 clickSound.play();
-                maploader.setMapType(2);
+                maploader.setMapType(4);
                 maploader.createMap();
                 game.goToGame();
             }
@@ -123,7 +123,7 @@ public class MapSelectorScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 clickSound.play();
-                maploader.setMapType(2);
+                maploader.setMapType(5);
                 maploader.createMap();
                 game.goToGame();
             }

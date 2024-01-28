@@ -57,10 +57,7 @@ public class GameScreen implements Screen {
     private Sound ghostSound;
     private Sound swingSound;
     private Sound walkingSound;
-    private Sound keySound;
-    private Sound birdSound;
     private Sound chestSound;
-    private Sound lowHealthSound;
 
 
     int movementSpeed = 8;
@@ -156,15 +153,12 @@ public class GameScreen implements Screen {
         things = new ArrayList<Thing>();
 
         // Loads all the sounds that can be played in the game screen and sets them to an appropriate volume
-
-        //TODO: Make setVolume work
         walkingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/Footstep_Dirt_00.mp3"));
-        keySound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/key.mp3"));
         swingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/swing.mp3"));
-        birdSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/bird.mp3"));
         ghostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/ghost.mp3"));
         damageGhostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageGhost.mp3"));
         damageTrapSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageTrap.mp3"));
+        // chestSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/chest.mp3"));
 
 
         //Spawns in entities
@@ -394,6 +388,11 @@ public class GameScreen implements Screen {
             if (e.getHealth() == 0) {
                 ghostSound.setVolume(ghostSound.play(), 0.1f);
                 player.setScore(player.getScore() + 10);
+
+                // Killing ghosts gives you one lost life back
+                if(player.getLives() <= 3) {
+                    player.setLives(player.getLives() + 1);
+                }
                 return true;
             }
             return false;
@@ -437,16 +436,15 @@ public class GameScreen implements Screen {
         // Draw Key if obtained
         game.getSpriteBatch().begin();
 
+        game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
+
         if(player.getLives() == 3) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
         } if(player.getLives() == 2) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
         } if(player.getLives() == 1) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
             game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
         }
@@ -562,7 +560,7 @@ public class GameScreen implements Screen {
                 elapsedTime = 0;
                 player.setPickingUp(true);
                 player.setPickedUp(true);
-                player.setKey(true);
+                keyPickup(player.getX() + 32, player.getY(), 64);
             } else {
                 elapsedTime = 0;
                 player.setPickingUp(false);
@@ -644,6 +642,7 @@ public class GameScreen implements Screen {
         return (isCollision(nextX, nextY, tileSize, entity) & (
                 maploader.getMap()[mapX][mapY] == 0
                 | maploader.getMap()[mapX][mapY] == 1)
+                | maploader.getMap()[mapX][mapY] == 2
                 | maploader.getMap()[mapX][mapY] == 5
                 | maploader.getMap()[mapX][mapY] == 8
                 | maploader.getMap()[mapX][mapY] == 9);
@@ -656,14 +655,17 @@ public class GameScreen implements Screen {
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
-        // Checks for out of bounds to prevent crashes
-        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
-            // Checks if next position is an exit (case 2)
-            return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
-        } else {
-            // In case we are out of bounds of the map
-            return false;
+        if (player.hasKey()) {
+
+            // Checks for out of bounds to prevent crashes
+            if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
+                // Checks if next position is an exit (case 2)
+                return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
+            } else {
+                // In case we are out of bounds of the map
+            }
         }
+        return false;
     }
 
 
@@ -672,6 +674,7 @@ public class GameScreen implements Screen {
         boolean val = false;
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
+
         if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
 
                 if (entity.getUpperleftcorner().x - movementSpeed < (mapX*tileSize) - 64 & entity.getLowerleftcorner().x - movementSpeed < (mapX*tileSize) - 64 ) {
@@ -689,19 +692,23 @@ public class GameScreen implements Screen {
 
     // Assuming you have a method to get the player's coordinates and a list of chest coordinates
 
-    private boolean chestProximity(float nextX, float nextY, int tileSize) {
+    private void keyPickup(float nextX, float nextY, int tileSize) {
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
-        // Checks for out of bounds to prevent crashes
-        if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
-            // Checks if next position is a chest (case 2)
-            return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
-        } else {
-            // In case we are out of bounds of the map
-            return false;
+
+        // Check if the player is adjacent to the chest in any direction
+        boolean adjacentLeft = maploader.getMap()[mapX - 1][mapY] == 5;
+        boolean adjacentRight = maploader.getMap()[mapX + 1][mapY] == 5;
+        boolean adjacentUp = maploader.getMap()[mapX][mapY + 1] == 5;
+        boolean adjacentDown = maploader.getMap()[mapX][mapY - 1] == 5;
+
+        if (adjacentLeft || adjacentRight || adjacentUp || adjacentDown) {
+            player.setKey(true);
         }
     }
+
+
 
 
 
