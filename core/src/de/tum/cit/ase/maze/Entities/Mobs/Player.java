@@ -63,7 +63,7 @@ public class Player extends Entity {
         this.score = score;
     }
 
-    public boolean isKey() {
+    public boolean hasKey() {
         return key;
     }
 
