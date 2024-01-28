@@ -412,6 +412,7 @@ public class GameScreen implements Screen {
 
         font.draw(hudBatch, "Score: " + player.getScore(), centerX + 200, centerY - 100);
         int hearthX = Gdx.graphics.getWidth();
+
         font.draw(hudBatch, String.format("Time : %.1f", timeCount), centerX - 300, centerY - 100);
         font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 400, centerY - 100);
 

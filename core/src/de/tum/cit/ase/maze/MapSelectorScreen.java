@@ -1,7 +1,6 @@
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,6 +16,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.audio.Sound;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 
 
 /**
@@ -129,10 +134,59 @@ public class MapSelectorScreen implements Screen {
             }
         });
 
-        //Back to menu button
-        TextButton g6 = new TextButton("Back to Menu", game.getSkin());
+        // Opens a filechooser so you can select a map file
+        // Opens a filechooser so you can select a map file
+        TextButton g6 = new TextButton("Filechooser", game.getSkin());
         table.add(g6).width(300).row();
         g6.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                clickSound.play();
+
+                // Create a file chooser
+                JFileChooser fileChooser = new JFileChooser();
+
+                // Set the initial directory
+                fileChooser.setCurrentDirectory(new File("path/to/your/directory"));
+
+                // Set a filter to only show specific file types
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Properties Files", "properties");
+                fileChooser.setFileFilter(filter);
+
+                // Show the file chooser
+                int returnValue = fileChooser.showOpenDialog(null);
+
+                // Check if the user selected a file
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    String fileName = selectedFile.getName();
+
+                    // Extract the level number using regular expression
+                    String regex = "level-(\\d+)\\.properties";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(fileName);
+
+                    // Check if the file name matches the pattern
+                    if (matcher.matches()) {
+                        // Extract the level number from the file name
+                        int level = Integer.parseInt(matcher.group(1));
+
+                        // Set the map type and create the map
+                        maploader.setMapType(level);
+                        maploader.createMap();
+                        game.goToGame();
+                    } else {
+                        System.out.println("File could not be loaded");
+                    }
+                }
+            }
+        });
+
+
+        //Back to menu button
+        TextButton g7 = new TextButton("Back to Menu", game.getSkin());
+        table.add(g7).width(300).row();
+        g7.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 clickSound.play();
