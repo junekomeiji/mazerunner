@@ -15,6 +15,8 @@ import de.tum.cit.ase.maze.Entities.Mobs.*;
 import de.tum.cit.ase.maze.Entities.Things.*;
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.Vector3;
+
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -34,6 +36,8 @@ public class GameScreen implements Screen {
     private final BitmapFont font;
 
     private float sinusInput = 0f;
+
+    private float timeCount;
 
     private float elapsedTime = 0f;
 
@@ -83,14 +87,14 @@ public class GameScreen implements Screen {
 
     private boolean collided;
 
-    private HUD hud;
-
     private int translatedx = 0;
     private int translatedy = 0;
 
     private boolean once = false;
 
     private boolean paused = false;
+
+    // All the textures for the gameScreen are here
 
     //Wall Texture
     Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -124,6 +128,14 @@ public class GameScreen implements Screen {
     Texture bushTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion bushTextureRegion = new TextureRegion(bushTexture, 64, 144, 16, 16);
 
+    // Full heart Texture
+    Texture fullHearthTexture = new Texture(Gdx.files.internal("objects.png"));
+    TextureRegion fullHearthTextureRegion = new TextureRegion(fullHearthTexture, 64, 0, 16, 16);
+
+    // Empty heart Texture
+    Texture emptyHearthTexture = new Texture(Gdx.files.internal("objects.png"));
+    TextureRegion emptyHearthTextureRegion = new TextureRegion(emptyHearthTexture, 128, 0, 16, 16);
+
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -133,6 +145,8 @@ public class GameScreen implements Screen {
     public GameScreen(MazeRunnerGame game, Maploader maploader) {
 
         this.maploader = maploader;
+
+        timeCount = 0;
 
         this.game = game;
         batch = new SpriteBatch();
@@ -205,6 +219,9 @@ public class GameScreen implements Screen {
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
+
+        // Updates timer
+        timeCount += delta;
 
         if(!once) {
             camera.position.x = player.getX();
@@ -284,11 +301,6 @@ public class GameScreen implements Screen {
             //Checks if we are out of lives
             if(player.getLives() < 1) {
                 game.goToVDefeat();
-            }
-
-            //TODO: FINISH
-            if (maploader.fogOfWar(5) == true) {
-                System.out.println("");
             }
         }
 
@@ -390,16 +402,19 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().end();
 
 
-        // Renders the HUD for the game
+        // Renders the HUD for the game at the top of the screen
+        int centerX = Gdx.graphics.getWidth() / 2;
+        int centerY = Gdx.graphics.getHeight();
+
+
         hudBatch.begin();
 
+        font.draw(hudBatch, "Score: " + player.getScore(), centerX + 200, centerY - 100);
+        int hearthX = Gdx.graphics.getWidth();
+        font.draw(hudBatch, String.format("Time : %.1f", timeCount), centerX - 300, centerY - 100);
 
 
-
-
-
-        font.draw(hudBatch, "Lives: " + player.getLives(), 100, 800);
-        font.draw(hudBatch, "Score: " + player.getScore(), 300, 800);
+        // Debug stuff
         font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
         font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
         int mapX = (int) (player.getX() / 64);
@@ -408,6 +423,30 @@ public class GameScreen implements Screen {
         font.draw(hudBatch, ((mapX*64) - 64) + ", " + ((mapY*64) - 64) , 500, 650);
 
         hudBatch.end();
+
+
+        // Convert screen coordinates to world coordinates using the camera's projection matrix
+        Vector3 worldCoordinates = new Vector3(centerX, centerY / 8, 0);
+        camera.unproject(worldCoordinates);
+
+        // Draw the hearts at the calculated world coordinates + logic for when a live is lost
+        game.getSpriteBatch().begin();
+
+        if(player.getLives() == 3) {
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
+        } if(player.getLives() == 2) {
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
+        } if(player.getLives() == 1) {
+            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
+            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
+        }
+
+        game.getSpriteBatch().end();
 
         camera.update(); // Update the camera
         hudCamera.update();
@@ -656,7 +695,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
     }
 
     @Override
@@ -666,6 +704,4 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
     }
-
-    // Additional methods and logic can be added as needed for the game screen
 }
