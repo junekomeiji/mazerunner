@@ -396,8 +396,14 @@ public class GameScreen implements Screen {
                 player.setScore(player.getScore() + 10);
                 return true;
             }
+            // Killing ghosts gives you one lost life back
+            if(player.getLives() <= 3) {
+                player.setLives(player.getLives() + 1);
+            }
+
             return false;
         });
+
 
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
 
