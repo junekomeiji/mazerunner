@@ -10,6 +10,7 @@
 ### Implement music
 ### Implement sound effects
 ### Implement resume game
+### Transfer walls etc to their own class
 
 
 ## Doing
