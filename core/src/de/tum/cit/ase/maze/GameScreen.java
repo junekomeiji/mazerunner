@@ -57,6 +57,7 @@ public class GameScreen implements Screen {
 
     private boolean isInvulnerable = false;
     private int invulnerabilityTime = 0;
+    private int movementTime = 0;
 
     // Necessary for handling walking sounds
     private boolean walkingSoundDelay = true;
@@ -336,40 +337,43 @@ public class GameScreen implements Screen {
         camera.position.y = player.getY();
 
         /*
-        int transspeed = 10;
+        int visWidth = (Gdx.graphics.getWidth() + translatedx)/ 64;
+        int visHeight = (Gdx.graphics.getHeight() + translatedy)/ 64;
 
-        if((player.getX()) - translatedx + 256 > (Gdx.graphics.getWidth() * 0.75)){
+        if(player.getMapX() > visWidth * 0.75){
 
-            camera.translate(transspeed, 0);
-            translatedx += transspeed;
+            camera.translate(+movementSpeed, 0);
+            translatedx += movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
 
-        if((player.getX()) - translatedx - 256 < (Gdx.graphics.getWidth() * 0.25)){
+        if(player.getMapX() < visWidth * 0.25){
 
-            camera.translate(-transspeed, 0);
-            translatedx -= transspeed;
+            camera.translate(-movementSpeed, 0);
+            translatedx -= movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
 
-        if((player.getY()) - translatedy + 256 > (Gdx.graphics.getHeight() * 0.75)){
+        if(player.getMapY() > visHeight * 0.75){
 
-            camera.translate(0, transspeed);
-            translatedy += transspeed;
+            camera.translate(0, -movementSpeed);
+            translatedy -= movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
 
-        if((player.getY()) - translatedy - 256 < (Gdx.graphics.getHeight() * 0.25)){
+        if(player.getMapY() < visHeight * 0.25){
 
-            camera.translate(0, -transspeed);
-            translatedy -= transspeed;
+            camera.translate(0, movementSpeed);
+            translatedy += movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
-        */
+
+         */
+
 
 
         // Updates invulnerability and sets it to false after given amount of time
@@ -380,9 +384,20 @@ public class GameScreen implements Screen {
             }
         }
 
+        if(true){
+            movementTime--;
+            if(movementTime <= 0){
+                movementTime = 50;
+            }
+        }
+
 
         for (Entity e : enemies) {
             //e.moveUp(2)
+
+            if(movementTime < 50){
+                int randDir = (int) (4 * Math.random());
+            }
 
             // Checks if player is colliding with a ghost + checks for invulnerability
             if (e.getMapX() == player.getMapX() && e.getMapY() == player.getMapY() && !isInvulnerable) {
@@ -391,6 +406,8 @@ public class GameScreen implements Screen {
                 damageGhostSound.setVolume(damageGhostSound.play(), 0.3f);
                 isInvulnerable = true; // Temporary invulnerability granted
                 invulnerabilityTime = 50;
+
+
             }
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
@@ -605,8 +622,9 @@ public class GameScreen implements Screen {
 
         // Press E to pick up a key from a chest (only works when player is not in pick-Up animation
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            if(chestProximity(player.getX(), player.getY()) && !player.isPickedUp()){
-                keyCollected();
+            if(chestProximity(player.getX(), player.getY())){
+                chest.open();
+                player.setKey(true);
             } else if (!player.isPickedUp()) {
                 elapsedTime = 0;
                 player.setPickingUp(true);
