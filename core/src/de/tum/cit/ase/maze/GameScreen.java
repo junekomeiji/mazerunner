@@ -18,6 +18,9 @@ import de.tum.cit.ase.maze.Entities.Things.*;
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -48,6 +51,7 @@ public class GameScreen implements Screen {
     private float elapsedTime = 0f;
 
     private boolean paused;
+    private boolean openingChest;
 
     private Player player;
 
@@ -152,6 +156,7 @@ public class GameScreen implements Screen {
         this.maploader = maploader;
 
         this.paused = false;
+        this.openingChest = false;
 
         timeCount = 0;
 
@@ -168,9 +173,7 @@ public class GameScreen implements Screen {
         ghostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/ghost.mp3"));
         damageGhostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageGhost.mp3"));
         damageTrapSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageTrap.mp3"));
-
-        //TODO: Implement
-        keySound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/key.mp3"));
+        keySound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/ding.mp3"));
         chestSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/chest.mp3"));
 
 
@@ -257,11 +260,10 @@ public class GameScreen implements Screen {
         }
 
         // If the game is not paused, handle inputs (aside from ESC) and update timer
-        if (!isPaused()) {
+        if (!isPaused() && !openingChest) {
             handleInput();
             timeCount += delta;
         }
-
 
         if (player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())) {
             player.setPickingUp(false);
@@ -601,10 +603,10 @@ public class GameScreen implements Screen {
             } else player.moveRight(0);
         }
 
-        // Press E to pick up a key from a chest
+        // Press E to pick up a key from a chest (only works when player is not in pick-Up animation
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            if(chestProximity(player.getX(), player.getY())){
-                player.setKey(true);
+            if(chestProximity(player.getX(), player.getY()) && !player.isPickedUp()){
+                keyCollected();
             } else if (!player.isPickedUp()) {
                 elapsedTime = 0;
                 player.setPickingUp(true);
@@ -741,6 +743,26 @@ public class GameScreen implements Screen {
         return false;
     }
 
+    // Logic for everything that happens after a key is collected
+    // Chest is opened, game is "paused". After 3 seconds game is resumed
+    public void keyCollected() {
+        setOpeningChest(true);
+        player.setPickingUp(true);
+        player.setPickedUp(true);
+        chestSound.setVolume(chestSound.play(), 0.5f);
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.schedule(() -> {
+            // After 1 second, chestOpening is done and the key is collected
+            keySound.play();
+            player.setKey(true);
+            setOpeningChest(false);
+            player.setPickingUp(false);
+            player.setPickedUp(false);
+        }, 1, TimeUnit.SECONDS);
+        executor.shutdown();
+    }
+
 
     private void pauseGame() {
         paused = true;
@@ -751,6 +773,14 @@ public class GameScreen implements Screen {
     }
 
     public boolean isPaused() {
+        return paused;
+    }
+
+    public void setOpeningChest(boolean openingChest) {
+        this.openingChest = openingChest;
+    }
+
+    public boolean isOpeningChest() {
         return paused;
     }
 

@@ -10,8 +10,6 @@
 
 ## Doing
 
-### Implement sound effects
-
 ## Review
 
 ## Done
@@ -23,3 +21,4 @@
 ### Implement main menu
 ### Implement file reading
 ### Implement custom window sizes
+### Implement sound effects
