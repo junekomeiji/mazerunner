@@ -26,7 +26,9 @@ public class MazeRunnerGame extends Game {
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
+
     private Music menuMusic;
+    private Music inGameMusic;
     private Music victoryMusic1;
     private Music victoryMusicLooped;
     private Music defeatMusic;
@@ -64,7 +66,10 @@ public class MazeRunnerGame extends Game {
         maploader = new Maploader(this, new Player(1, 1, 1));
 
         // Sets up all music for the game
-        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("music/menu.wav"));
+        inGameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/game.wav"));
+        inGameMusic.setLooping(true);
+
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("music/menu.mp3"));
         menuMusic.setLooping(true);
 
         victoryMusic1 = Gdx.audio.newMusic(Gdx.files.internal("music/victory1.wav"));
@@ -109,7 +114,9 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
-        menuMusic.setVolume(0.25f); // Sets volume of the music for gameplay
+        menuMusic.stop(); // Sets volume of the music for gameplay
+        inGameMusic.setVolume(0.5f);
+        inGameMusic.play();
         this.setScreen(new GameScreen(this, maploader)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists

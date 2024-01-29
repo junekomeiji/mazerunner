@@ -484,9 +484,9 @@ public class GameScreen implements Screen {
 
             hudBatch.begin();
 
-            font.draw(hudBatch, "GAME PAUSED", centerX - 100, centerY - 100);
-            font.draw(hudBatch, "Press ESC to resume game", centerX - 200, centerY - 200);
-            font.draw(hudBatch, "Press M to access main menu", centerX - 200, centerY - 300);
+            font.draw(hudBatch, "GAME PAUSED", centerX - 100, centerY - 150);
+            font.draw(hudBatch, "Press ESC to resume game", centerX - 200, centerY - 250);
+            font.draw(hudBatch, "Press M to access main menu", centerX - 200, centerY - 350);
             hudBatch.end();
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {

@@ -7,7 +7,6 @@
 ### Implement scrolling
 ### Implement enemy behaviour
 ### Implement custom window sizes
-### Implement music
 ### Implement sound effects
 ### Transfer walls etc to their own class
 
@@ -21,5 +20,6 @@
 ### Implement player animation
 ### Implement win condition and screen
 ### Implement HUD
+### Implement music
 ### Implement main menu
 ### Implement file reading
