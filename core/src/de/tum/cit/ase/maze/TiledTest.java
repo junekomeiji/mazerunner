@@ -1,3 +1,5 @@
+//TODO: REMOVE
+
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
@@ -13,7 +15,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.maze.Entities.Mobs.Player;
-import de.tum.cit.ase.maze.MazeRunnerGame;
 
 public class TiledTest implements Screen {
 

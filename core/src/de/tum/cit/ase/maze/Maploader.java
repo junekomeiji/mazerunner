@@ -1,9 +1,7 @@
 package de.tum.cit.ase.maze;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import com.badlogic.gdx.Gdx;
@@ -11,17 +9,16 @@ import de.tum.cit.ase.maze.Entities.Mobs.Player;
 
 public class Maploader {
 
+    private Player player;
     private final MazeRunnerGame game;
 
-    int mapType; // Map type (1-5 for each of the Maps in /assets)
-
-    int mapWidth;  // max Width of the map
-    int mapHeight; // max Height of the map
-    int[][] map;
-
-    private Player player;
-
     Properties properties = new Properties();
+
+    int mapType; // Number of the map we want to load (1,2,3...)
+
+    int mapWidth;
+    int mapHeight;
+    int[][] map;
 
     public Maploader(MazeRunnerGame game, Player player) {
         this.game = game;
@@ -30,20 +27,16 @@ public class Maploader {
         this.player = player;
     }
 
-
-    // Fills out the Array from the file and adds a bit of extras to make it look good
+    // Creates and changes the map to make it look better
     public void createMap() {
-        properties.clear(); // Necessary to delete old Map
-        reader();
+        properties.clear(); // Clears out the old map
         setMapType(mapType);
 
-        // Randomly fills out the Map with Grass or Lush Grass (Case 6 or 7)
+        // Randomly fills out empty tiles with Grass or Lush Grass (Case 6 or 7)
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
-                // Generate a random value (0 or 1) to decide between grass and lush grass
                 int randomValue = Math.random() < 0.6 ? 6 : 7; // For every 6 grass there is 4 lush grass
-
-                map[x][y] = randomValue; // Assigns the random Values to our Map
+                map[x][y] = randomValue;
             }
         }
 
@@ -57,11 +50,11 @@ public class Maploader {
             map[x][y] = entityType;
         }
 
-        // Replaces Walls that are flagged by isAboveWall with a clean Wall (case 8)
+        // Replaces Walls that are flagged by isAboveWall with a shadowless Wall (case 8)
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
-                if (isOuterWall(x, y)) {
-                    map[x][y] = 8; // 8 is the filler wall (shadowless)
+                if (wallReplacement(x, y)) {
+                    map[x][y] = 8;
                 }
             }
         }
@@ -70,26 +63,17 @@ public class Maploader {
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
                 if (isInnerWall(x, y)) {
-                    map[x][y] = 9; // 9 is the bush
+                    map[x][y] = 9;
                 }
             }
         }
     }
 
-    // Reads the .properties file
-    public void reader() {
-        try (InputStream input = Gdx.files.internal("maps/level-" + mapType + ".properties").read()) {
-            properties.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void loadMapSize() {
+    public void loadMap() {
         mapHeight = 0; // Reset mapHeight
-        mapWidth = 0; // Reset mapHeight
+        mapWidth = 0; // Reset mapWidth
 
+        // Loads up the map from the .properties file by extracting coordinates and type
         try (InputStream input = Gdx.files.internal("maps/level-" + mapType + ".properties").read()) {
             properties.load(input);
             for (Object key : properties.keySet()) {
@@ -109,9 +93,8 @@ public class Maploader {
         }
     }
 
-    // Helper method to flag all coordinates that are on the far left/right edges of the Map, except for the most bottom one
-    //TODO: Maybe use sth like this later for a fog of war?
-    private boolean isOuterWall(int x, int y) {
+    // Helper method to flag all walls to be replaced by shadowless wall
+    private boolean wallReplacement(int x, int y) {
         if (map[x][y] == 0) {
             // Check if the wall is at the left or right edge of the map
             if (x == 0 || x == mapWidth - 1) {
@@ -119,11 +102,11 @@ public class Maploader {
                 if (y != 0) {
                     // Check if the wall is at the top
                     if (y == mapHeight - 1) {
-                        return true; // Wall flagged for replacement
+                        return true;
                     }
                     // Check if the wall is not at the far bottom
                     else if (y != mapHeight - 1) {
-                        return true; // Wall flagged for replacement
+                        return true;
                     }
                 }
             }
@@ -139,32 +122,12 @@ public class Maploader {
             if (x > 0 && x < mapWidth - 1) {
                 // Check if the wall is not at the top or bottom edge of the map
                 if (y > 0 && y < mapHeight - 1) {
-                    return true; // Wall flagged for replacement
+                    return true;
                 }
             }
         }
         return false;
     }
-
-    //TODO: FINISH
-    public boolean fogOfWar(int radius) {
-        // Iterate through all tiles in the map
-        for (int x = 0; x < mapWidth; x++) {
-            for (int y = 0; y < mapHeight; y++) {
-                // Calculate the distance between the current tile and the player
-                int distance = Math.abs(player.getX() - x) + Math.abs(player.getY() - y);
-                // Check if the distance is greater than the radius
-                if (distance > radius) {
-                    // Replace the tile with plain grass (case 10)
-                    return true; // Set the flag to true since a tile was updated
-                }
-            }
-        }
-        return false;
-    }
-
-
-
 
     public int getMapType() {
         return mapType;
@@ -172,7 +135,7 @@ public class Maploader {
 
     public void setMapType(int mapType) {
         this.mapType = mapType;
-        loadMapSize(); // Updates map size when Map changes
+        loadMap(); // Updates map size when Map changes
         map = new int[mapHeight][mapWidth];
     }
 

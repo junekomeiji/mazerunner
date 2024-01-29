@@ -1,7 +1,6 @@
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,8 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.audio.Sound;
@@ -26,6 +23,9 @@ import com.badlogic.gdx.audio.Sound;
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
  */
 public class MenuScreen implements Screen {
+    MazeRunnerGame game;
+
+    Table table;
 
     private final Stage stage;
     SpriteBatch batch;
@@ -36,11 +36,8 @@ public class MenuScreen implements Screen {
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    MazeRunnerGame game;
-
     private final Texture backgroundTexture;
 
-    Table table;
 
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
@@ -48,7 +45,6 @@ public class MenuScreen implements Screen {
      * @param game The main game class, used to access global resources and methods.
      */
     public MenuScreen(MazeRunnerGame game) {
-
         this.game = game;
 
         camera = new OrthographicCamera();
@@ -82,6 +78,7 @@ public class MenuScreen implements Screen {
             }
         });
 
+        //TODO: REMOVE
         TextButton g2 = new TextButton("Debug Screen", game.getSkin());
         table.add(g2).width(300).row();
         g2.addListener(new ChangeListener() {

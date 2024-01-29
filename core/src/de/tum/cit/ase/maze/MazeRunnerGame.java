@@ -19,21 +19,20 @@ import com.badlogic.gdx.audio.Music;
  * It manages the screens and global resources like SpriteBatch and Skin.
  */
 public class MazeRunnerGame extends Game {
-    // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
+
+    //TODO: REMOVE
     private TiledTest tiledTest;
 
-    // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
 
+    // All music used during the game
     private Music menuMusic;
     private Music inGameMusic;
     private Music victoryMusic1;
     private Music victoryMusicLooped;
     private Music defeatMusic;
-
-
 
     // UI Skin
     private Skin skin;
@@ -62,7 +61,6 @@ public class MazeRunnerGame extends Game {
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
 
-        // Required for fog of war
         maploader = new Maploader(this, new Player(1, 1, 1));
 
         // Sets up all music for the game
@@ -80,7 +78,7 @@ public class MazeRunnerGame extends Game {
         defeatMusic = Gdx.audio.newMusic(Gdx.files.internal("music/defeat.ogg"));
         defeatMusic.setLooping(true);
 
-        // On completion of victoryMusic1, victoryMusicLooped is playd
+        // On completion of victoryMusic1, victoryMusicLooped is played
         victoryMusic1.setOnCompletionListener(new Music.OnCompletionListener() {
             @Override
             public void onCompletion(Music music) {
@@ -89,11 +87,12 @@ public class MazeRunnerGame extends Game {
         });
 
         setScreen(new MenuScreen(this)); // Set the initial screen
-        goToMenu(); // Navigate to the menu screen
+        goToMenu();
     }
 
     /**
-     * Switches to the menu screen.
+     * Methods to switch screens
+     * Stop and play music as needed for each screen
      */
     public void goToMenu() {
         // Stops old Music
@@ -111,9 +110,6 @@ public class MazeRunnerGame extends Game {
         }
     }
 
-    /**
-     * Switches to the game screen.
-     */
     public void goToGame() {
         menuMusic.stop(); // Sets volume of the music for gameplay
         inGameMusic.setVolume(0.5f);
@@ -171,13 +167,7 @@ public class MazeRunnerGame extends Game {
         }
     }
 
-    /**
-     * Loads the character animation from the character.png file.
-     */
-
-    /**
-     * Cleans up resources when the game is disposed.
-     */
+    // Cleans up resources when the game is disposed.
     @Override
     public void dispose() {
         getScreen().hide(); // Hide the current screen
@@ -186,7 +176,6 @@ public class MazeRunnerGame extends Game {
         skin.dispose(); // Dispose the skin
     }
 
-    // Getter methods
     public Skin getSkin() {
         return skin;
     }
@@ -198,5 +187,4 @@ public class MazeRunnerGame extends Game {
     public void setMusicVolume(float volume) {
         menuMusic.setVolume(volume);
     }
-
 }

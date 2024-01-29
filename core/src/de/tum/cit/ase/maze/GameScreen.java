@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
  * It handles the game logic and rendering of the game elements.
  */
 public class GameScreen implements Screen {
+    public Maploader maploader;
+    private Player player;
 
     private final MazeRunnerGame game;
     private OrthographicCamera camera;
@@ -36,14 +38,11 @@ public class GameScreen implements Screen {
     private Viewport viewport;
     private Viewport hudViewport;
 
-
-    public Maploader maploader;
-
-    private SpriteBatch batch;
     private SpriteBatch hudBatch;
 
     private final BitmapFont font;
 
+    //TODO: REMOVE
     private float sinusInput = 0f;
 
     private float timeCount;
@@ -53,8 +52,7 @@ public class GameScreen implements Screen {
     private boolean paused;
     private boolean openingChest;
 
-    private Player player;
-
+    // Temporary invulnerability to prevent losing all lives at once
     private boolean isInvulnerable = false;
     private int invulnerabilityTime = 0;
 
@@ -70,42 +68,27 @@ public class GameScreen implements Screen {
     private Sound swingSound;
     private Sound walkingSound;
     private Sound keySound;
-    private Sound birdSound;
     private Sound chestSound;
 
-
     int movementSpeed = 8;
-
-    private Humanoid humanoid;
-    private Slime slime;
-    private Man man;
-    private Ghost ghost;
 
     private ArrayList<Mob> enemies;
     private ArrayList<Thing> things;
 
-    private Door door;
-
-    private Lever lever;
-    private Torch torch;
+    private Ghost ghost;
     private Spike spike;
     private Chest chest;
-    private Fireplace fireplace;
-    private Vase vase;
 
-    //Maybe put this somewhere else later
+    //TODO: DELETE
     private Texture TextureRegion;
-
     private boolean collided;
-
-    private int translatedx = 0;
-    private int translatedy = 0;
 
     private boolean once = false;
 
 
     // All the textures for the gameScreen are here
-    //Wall Texture
+    //TODO: MOVE
+    // Wall Texture
     Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 32, 0, 16, 16);
 
@@ -147,27 +130,37 @@ public class GameScreen implements Screen {
 
 
     /**
-     * Constructor for GameScreen. Sets up the camera and font.
+     * Constructor for GameScreen. Sets up the camera, audio, enteties and font.
      *
      * @param game The main game class, used to access global resources and methods.
      */
     public GameScreen(MazeRunnerGame game, Maploader maploader) {
-
+        this.game = game;
         this.maploader = maploader;
-
         this.paused = false;
         this.openingChest = false;
 
         timeCount = 0;
 
-        this.game = game;
-        batch = new SpriteBatch();
+        //Cameras for the game itself and a seperate one for the HUD
+        camera = new OrthographicCamera();
+        camera.zoom = 1.5f;
+
+        hudCamera = new OrthographicCamera();
+        hudCamera.zoom = 1f;
+
+        // For changing window size without stretching everything
+        viewport = new ScreenViewport(camera);
+        hudViewport = new ScreenViewport(camera);
+
+
         hudBatch = new SpriteBatch();
         font = game.getSkin().getFont("font");
+
         enemies = new ArrayList<Mob>();
         things = new ArrayList<Thing>();
 
-        // Loads all the sounds that can be played in the game screen and sets them to an appropriate volume
+        // Loads all the sounds that can be played in the game screen
         walkingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/walking.mp3"));
         swingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/swing.mp3"));
         ghostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/ghost.mp3"));
@@ -175,7 +168,6 @@ public class GameScreen implements Screen {
         damageTrapSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageTrap.mp3"));
         keySound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/ding.mp3"));
         chestSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/chest.mp3"));
-
 
 
         //Spawns in entities
@@ -197,38 +189,11 @@ public class GameScreen implements Screen {
             }
         }
 
-        camera = new OrthographicCamera();
-        camera.zoom = 1.5f;
-
-        hudCamera = new OrthographicCamera();
-        hudCamera.zoom = 1f;
-
-        // For changing window size without stretching everything
-        viewport = new ScreenViewport(camera);
-        hudViewport = new ScreenViewport(camera);
-
-
-
-        //hud = new HUD(game.getSpriteBatch(), player, game.height, game.width);
-
-        humanoid = new Humanoid(0, 0, 0);
-        slime = new Slime(0, 0, 0);
-        man = new Man(0, 0, 0);
         ghost = new Ghost(0, 0, 0);
-
-
-        door = new Door(0, 0, 0);
-
-        torch = new Torch(0, 0, 0);
-        lever = new Lever(0, 0, 0);
         spike = new Spike(0, 0, 0);
-        fireplace = new Fireplace(0, 0, 0);
-        vase = new Vase(0, 0, 0);
         chest = new Chest(0, 0, 0);
 
-
         collided = false;
-        // Get the font from the game's skin
     }
 
 
@@ -236,16 +201,10 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
+        //TODO: DELETE
         int mapX = (int) (player.getX() / 64);
         int mapY = (int) (player.getY() / 64);
 
-        if (!once) {
-            camera.position.x = player.getX();
-            camera.position.y = player.getY();
-            once = true;
-            translatedx = 0;
-            translatedy = 0;
-        }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
@@ -265,6 +224,7 @@ public class GameScreen implements Screen {
             timeCount += delta;
         }
 
+        // Ends Picking up / Slashing animations once finished
         if (player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())) {
             player.setPickingUp(false);
             player.setSlashing(false);
@@ -273,16 +233,15 @@ public class GameScreen implements Screen {
 
         TextureRegion playerFrame = player.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion ghostFrame = ghost.getAnimation().getKeyFrame(elapsedTime, true);
-
         TextureRegion spikeFrame = spike.getAnimation().getKeyFrame(elapsedTime, true);
         TextureRegion chestFrame = chest.getAnimation().getKeyFrame(elapsedTime, true);
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
-
+        // Draws the Map aside from Enteties (ghosts and spikes)
         game.getSpriteBatch().begin();
 
-        //Renders the Map
+        // Loop goes through every coordinate in the grid and draws appropriate texture according to its case
         for (int x = 0; x < maploader.getMapWidth(); x++) {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
                 int entityType = maploader.getMap()[x][y]; // Retrieves the object type
@@ -319,22 +278,24 @@ public class GameScreen implements Screen {
                         break;
                     case 9:
                         // Render bushes on top of plain Grass
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64, y * 64, 64, 64);
+                        game.getSpriteBatch().draw(grassTextureRegion, x * 64, y * 64, 64, 64);
                         game.getSpriteBatch().draw(bushTextureRegion, x * 64, y * 64, 64, 64);
                         break;
 
                 }
             }
-            //Checks if we are out of lives
-            if (player.getLives() < 1) {
-                game.goToVDefeat();
-            }
         }
 
-        //for debug purposes
+        //Checks if we are out of lives
+        if (player.getLives() < 1) {
+            game.goToVDefeat();
+        }
+
+        // Centers camera around the player
         camera.position.x = player.getX();
         camera.position.y = player.getY();
 
+        //TODO: REMOVE
         /*
         int transspeed = 10;
 
@@ -372,7 +333,7 @@ public class GameScreen implements Screen {
         */
 
 
-        // Updates invulnerability and sets it to false after given amount of time
+        // Updates invulnerability and sets it to false after wearing of (reaching 0)
         if (isInvulnerable) {
             invulnerabilityTime--;
             if (invulnerabilityTime <= 0) {
@@ -380,7 +341,7 @@ public class GameScreen implements Screen {
             }
         }
 
-
+        //Draws Ghosts and handles losing lives to them
         for (Entity e : enemies) {
             //e.moveUp(2)
 
@@ -390,11 +351,12 @@ public class GameScreen implements Screen {
                 player.setLives(player.getLives() - 1);
                 damageGhostSound.setVolume(damageGhostSound.play(), 0.3f);
                 isInvulnerable = true; // Temporary invulnerability granted
-                invulnerabilityTime = 50;
+                invulnerabilityTime = 30;
             }
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
 
+        //Draws Spikes and handles losing lives to them
         for (Thing t : things) {
             if (t instanceof Chest) game.getSpriteBatch().draw(chestFrame, t.getX(), t.getY(), 64, 64);
             else if (t instanceof Spike) {
@@ -405,7 +367,7 @@ public class GameScreen implements Screen {
                     player.setLives(player.getLives() - 1);
                     damageTrapSound.setVolume(damageTrapSound.play(), 0.3f);
                     isInvulnerable = true; // Temporary invulnerability granted
-                    invulnerabilityTime = 50;
+                    invulnerabilityTime = 30;
                 }
                 game.getSpriteBatch().draw(spikeFrame, t.getX(), t.getY(), 64, 64);
             }
@@ -414,17 +376,13 @@ public class GameScreen implements Screen {
         // Player gets drawn below where he "actually is" to make up for empty space at the bottom of the skin
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY() - 16, 64, 128);
 
-        // Removes and plays sound effect whenever a ghost reaches 0 lives
-        // Adds 10 score for every ghots killed
+        // Logic for when ghost dies
         enemies.removeIf(e -> {
             if (e.getHealth() == 0) {
                 ghostSound.setVolume(ghostSound.play(), 0.1f);
-                player.setScore(player.getScore() + 10);
-
-
-                // Killing ghosts gives you one lost life back
+                player.setScore(player.getScore() + 10); // Adds 10 score for every ghost killed
                 if(player.getLives() < 3) {
-                    player.setLives(player.getLives() + 1);
+                    player.setLives(player.getLives() + 1); // Killing ghosts gives you one lost life back
                 }
 
                 return true;
@@ -432,6 +390,7 @@ public class GameScreen implements Screen {
 
             return false;
         });
+
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
         game.getSpriteBatch().end();
 
@@ -444,7 +403,6 @@ public class GameScreen implements Screen {
 
         // Renders the HUD for the game at the top of the screen, unless the game is paused
         // If game is paused, render a pause menu
-
         if (!isPaused()) {
 
             hudBatch.setProjectionMatrix(hudCamera.combined); // Set the projection matrix
@@ -452,10 +410,14 @@ public class GameScreen implements Screen {
 
             font.draw(hudBatch, "Score: " + player.getScore(), centerX + 150, centerY - 100);
             font.draw(hudBatch, String.format("Time : %.1f", timeCount), centerX - 300, centerY - 100);
-            font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 350, centerY - 100);
+            if(player.hasKey()) {
+                font.draw(hudBatch, "Key obtained", centerX + 350, centerY - 100);
+            } else {
+                font.draw(hudBatch, "Key not found", centerX + 350, centerY - 100);
+            }
 
             hudBatch.end();
-
+            //TODO: REMOVE
             /*
             // Debug stuff
             font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
@@ -467,7 +429,6 @@ public class GameScreen implements Screen {
              */
 
             // Draw the hearts at the calculated world coordinates + updates for when a live is lost
-            //TODO Draw Key if obtained
             game.getSpriteBatch().begin();
 
             if (player.getLives() == 3) {
@@ -487,9 +448,7 @@ public class GameScreen implements Screen {
             }
 
             game.getSpriteBatch().end();
-        } else {
-            // Handles the pause menu
-
+        } else {  // Handles the pause menu
             hudBatch.begin();
 
             font.draw(hudBatch, "GAME PAUSED", centerX - 100, centerY - 150);
@@ -506,7 +465,7 @@ public class GameScreen implements Screen {
         hudCamera.update();
     }
 
-    //debug function!
+    //TODO: REMOVE
     private String type(int t) {
         switch (t) {
             case 0 -> {
@@ -527,10 +486,10 @@ public class GameScreen implements Screen {
         }
     }
 
-    // Handles inputs of the player
+    // Handles inputs from the player
     private void handleInput() {
 
-        // Plays walking sound at a reasonable pace
+        // Limits walking sound from being spammed
         if (walkingSoundDelay) {
             walkingSoundDelayTime--;
             if (walkingSoundDelayTime <= 0) {
@@ -538,7 +497,8 @@ public class GameScreen implements Screen {
             }
         }
 
-        // Handles WASD inputs
+        // Handles WASD inputs and corresponding situations
+        // Collision with impassable objects and exits
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             if (!isObstacleCollision(player.getX(), player.getY() + 64, 64, player) &&
                     !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
@@ -603,7 +563,7 @@ public class GameScreen implements Screen {
             } else player.moveRight(0);
         }
 
-        // Press E to pick up a key from a chest (only works when player is not in pick-Up animation
+        // Press E to pick up a key from a chest (only works when player is not in pick-Up animation)
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             if(chestProximity(player.getX(), player.getY()) && !player.isPickedUp()){
                 keyCollected();
@@ -618,6 +578,7 @@ public class GameScreen implements Screen {
             }
         }
 
+        // Press F to attack a ghost
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             elapsedTime = 0;
             player.setSlashing(true);
@@ -664,18 +625,19 @@ public class GameScreen implements Screen {
         collided = isObstacleCollision(player.getX() + movementSpeed, player.getY(), 64, player);
     }
 
-    // Checks if we are about to run into an obstacle (wall, entry point, chest)
+    // Checks if we are about to run into an obstacle
     private boolean isObstacleCollision(float nextX, float nextY, int tileSize, Entity entity) {
+
+        // Converting tiles to coordinates
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
-        // Handles it so we cant just run outside of the map infinitly and bypass the Maze
+        // Handles it so we cant just run outside of the map and bypass the Maze
         if (mapX < 0 || mapX >= maploader.getMapWidth() || mapY < 0 || mapY >= maploader.getMapHeight()) {
             return true;
         }
 
-
-        // Checks if the next position is a tile with collision
+        // Checks if the next position is a tile with collision (wall, entry point, chest, bush, exit)
         return (isCollision(nextX, nextY, tileSize, entity) & (
                 maploader.getMap()[mapX][mapY] == 0
                         | maploader.getMap()[mapX][mapY] == 1)
@@ -688,6 +650,8 @@ public class GameScreen implements Screen {
 
     // Checks if we are about to run into an exit
     private boolean isExitCollision(float nextX, float nextY, int tileSize) {
+
+        // Converting tiles to coordinates
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
 
@@ -696,16 +660,20 @@ public class GameScreen implements Screen {
             // Checks if next position is an exit (case 2)
             return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
         } else {
-            // In case we are out of bounds of the map
+            // In case we are out of bounds
             return false;
         }
     }
 
-
+    // Helper method for collision detection
     public boolean isCollision(float nextX, float nextY, int tileSize, Entity entity) {
         boolean val = false;
+
+        // Converting tiles to coordinates
         int mapX = (int) (nextX / tileSize);
         int mapY = (int) (nextY / tileSize);
+
+        // checks for tiles, down, right, up, left
         if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
 
             if (entity.getUpperleftcorner().x - movementSpeed < (mapX * tileSize) - 64 & entity.getLowerleftcorner().x - movementSpeed < (mapX * tileSize) - 64) {
@@ -721,13 +689,14 @@ public class GameScreen implements Screen {
         return val;
     }
 
-    // Assuming you have a method to get the player's coordinates and a list of chest coordinates
+    // Checks if a chest is in a neighbouring tile
     private boolean chestProximity(float x, float y) {
 
+        // Converting tiles to coordinates
         int mapX = (int) (x / 64);
         int mapY = (int) (y / 64);
 
-        //as always, down, right, up, left
+        // checks for tiles, down, right, up, left
         if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
             if (player.getDirection() == 0 & maploader.getMap()[player.getMapX()][player.getMapY() - 1] == 5) {
                 return true;
