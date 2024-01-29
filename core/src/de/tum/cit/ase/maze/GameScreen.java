@@ -514,7 +514,7 @@ public class GameScreen implements Screen {
     // Handles inputs of the player
     private void handleInput() {
 
-        // Restricts walking sound from being played every framce
+        // Plays walking sound at a reasonable pace
         if (walkingSoundDelay) {
             walkingSoundDelayTime--;
             if (walkingSoundDelayTime <= 0) {
