@@ -238,7 +238,7 @@ public class GameScreen implements Screen {
         elapsedTime += Gdx.graphics.getDeltaTime();
 
         // If p is pressed, either pause or unpause the game
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (isPaused()) {
                 resumeGame();
             } else {
@@ -457,8 +457,8 @@ public class GameScreen implements Screen {
             Vector3 worldCoordinates = new Vector3(centerX, centerY / 8, 0);
             camera.unproject(worldCoordinates);
 
-            // Draw the hearts at the calculated world coordinates + logic for when a live is lost
-            // Draw Key if obtained
+            // Draw the hearts at the calculated world coordinates + updates for when a live is lost
+            //TODO Draw Key if obtained
             game.getSpriteBatch().begin();
 
             if (player.getLives() == 3) {
@@ -479,11 +479,18 @@ public class GameScreen implements Screen {
 
             game.getSpriteBatch().end();
         } else {
+            // Handles the pause menu
+
             hudBatch.begin();
 
-            font.draw(hudBatch, "GAME PAUSED", centerX - 100, centerY - 200);
-            font.draw(hudBatch, "Press P to resume game", centerX - 200, centerY - 300);
+            font.draw(hudBatch, "GAME PAUSED", centerX - 100, centerY - 100);
+            font.draw(hudBatch, "Press ESC to resume game", centerX - 200, centerY - 200);
+            font.draw(hudBatch, "Press M to access main menu", centerX - 200, centerY - 300);
             hudBatch.end();
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+                game.goToMenu();
+            }
         }
 
         camera.update(); // Update the camera
@@ -600,10 +607,6 @@ public class GameScreen implements Screen {
                 player.setPickingUp(false);
                 player.setPickedUp(false);
             }
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {

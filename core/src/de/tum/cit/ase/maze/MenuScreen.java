@@ -76,19 +76,9 @@ public class MenuScreen implements Screen {
             }
         });
 
-        TextButton g2 = new TextButton("Resume game", game.getSkin());
+        TextButton g2 = new TextButton("Debug Screen", game.getSkin());
         table.add(g2).width(300).row();
         g2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                clickSound.play();
-                //game.resumeGame();
-            }
-        });
-
-        TextButton g3 = new TextButton("Debug Screen", game.getSkin());
-        table.add(g3).width(300).row();
-        g3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 clickSound.play();
