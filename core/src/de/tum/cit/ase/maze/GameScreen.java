@@ -56,6 +56,9 @@ public class GameScreen implements Screen {
     private boolean isInvulnerable = false;
     private int invulnerabilityTime = 0;
 
+    //TODO: ADD COMMENT
+    private int movementTime = 0;
+
     // Necessary for handling walking sounds
     private boolean walkingSoundDelay = true;
     private int walkingSoundDelayTime = 0;
@@ -296,41 +299,44 @@ public class GameScreen implements Screen {
         camera.position.y = player.getY();
 
         //TODO: REMOVE
+
         /*
-        int transspeed = 10;
+        int visWidth = (Gdx.graphics.getWidth() + translatedx)/ 64;
+        int visHeight = (Gdx.graphics.getHeight() + translatedy)/ 64;
 
-        if((player.getX()) - translatedx + 256 > (Gdx.graphics.getWidth() * 0.75)){
+        if(player.getMapX() > visWidth * 0.75){
 
-            camera.translate(transspeed, 0);
-            translatedx += transspeed;
+            camera.translate(+movementSpeed, 0);
+            translatedx += movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
 
-        if((player.getX()) - translatedx - 256 < (Gdx.graphics.getWidth() * 0.25)){
+        if(player.getMapX() < visWidth * 0.25){
 
-            camera.translate(-transspeed, 0);
-            translatedx -= transspeed;
+            camera.translate(-movementSpeed, 0);
+            translatedx -= movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
 
-        if((player.getY()) - translatedy + 256 > (Gdx.graphics.getHeight() * 0.75)){
+        if(player.getMapY() > visHeight * 0.75){
 
-            camera.translate(0, transspeed);
-            translatedy += transspeed;
+            camera.translate(0, -movementSpeed);
+            translatedy -= movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
 
-        if((player.getY()) - translatedy - 256 < (Gdx.graphics.getHeight() * 0.25)){
+        if(player.getMapY() < visHeight * 0.25){
 
-            camera.translate(0, -transspeed);
-            translatedy -= transspeed;
+            camera.translate(0, movementSpeed);
+            translatedy += movementSpeed;
             //this.paused = true;
 
         } //else this.paused = false;
-        */
+
+         */
 
 
         // Updates invulnerability and sets it to false after wearing of (reaching 0)
@@ -341,9 +347,21 @@ public class GameScreen implements Screen {
             }
         }
 
+        //TODO: ADD COMMENT
+        if(true){
+            movementTime--;
+            if(movementTime <= 0){
+                movementTime = 50;
+            }
+        }
+
         //Draws Ghosts and handles losing lives to them
         for (Entity e : enemies) {
             //e.moveUp(2)
+
+            if(movementTime < 50){
+                int randDir = (int) (4 * Math.random());
+            }
 
             // Checks if player is colliding with a ghost + checks for invulnerability
             if (e.getMapX() == player.getMapX() && e.getMapY() == player.getMapY() && !isInvulnerable) {
@@ -352,6 +370,7 @@ public class GameScreen implements Screen {
                 damageGhostSound.setVolume(damageGhostSound.play(), 0.3f);
                 isInvulnerable = true; // Temporary invulnerability granted
                 invulnerabilityTime = 30;
+
             }
             game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
         }
@@ -723,9 +742,11 @@ public class GameScreen implements Screen {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.schedule(() -> {
             // After 1 second, chestOpening is done and the key is collected
+            chest.open();
             keySound.play();
             player.setKey(true);
             setOpeningChest(false);
+
             player.setPickingUp(false);
             player.setPickedUp(false);
         }, 1, TimeUnit.SECONDS);
