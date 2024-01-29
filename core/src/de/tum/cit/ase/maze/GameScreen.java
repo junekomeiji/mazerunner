@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,6 +29,8 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
+    private Viewport viewport;
+
 
     public Maploader maploader;
 
@@ -191,6 +195,9 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         camera.zoom = 1.5f;
+
+        // For changing window size without stretching everything
+        viewport = new ScreenViewport(camera);
 
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false);
@@ -418,30 +425,30 @@ public class GameScreen implements Screen {
                 return true;
             }
 
-
             return false;
         });
-
-
         game.getSpriteBatch().setProjectionMatrix(this.camera.combined);
-
         game.getSpriteBatch().end();
 
+        // Convert screen coordinates to world coordinates using the camera's projection matrix
+        // Necessary when resizing the game
+        int centerX = Gdx.graphics.getWidth() / 2;
+        int centerY = Gdx.graphics.getHeight();
+        Vector3 worldCoordinates = new Vector3(centerX, centerY / 8, 0);
+        camera.unproject(worldCoordinates);
 
         // Renders the HUD for the game at the top of the screen, unless the game is paused
         // If game is paused, render a pause menu
-        int centerX = Gdx.graphics.getWidth() / 2;
-        int centerY = Gdx.graphics.getHeight();
-
         if (!isPaused()) {
             hudBatch.begin();
 
-            font.draw(hudBatch, "Score: " + player.getScore(), centerX + 200, centerY - 100);
-            int hearthX = Gdx.graphics.getWidth();
+            font.draw(hudBatch, "Score: " + player.getScore(), centerX + 150, centerY - 100);
             font.draw(hudBatch, String.format("Time : %.1f", timeCount), centerX - 300, centerY - 100);
-            font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 400, centerY - 100);
+            font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 350, centerY - 100);
 
+            hudBatch.end();
 
+            /*
             // Debug stuff
             font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
             font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
@@ -449,32 +456,26 @@ public class GameScreen implements Screen {
             font.draw(hudBatch, mapX + 1+ ", " + mapY + ", " + type(maploader.getMap()[mapX + 1][mapY]), 500, 700);
             font.draw(hudBatch, ((mapX * 64) - 64) + ", " + ((mapY * 64) - 64), 500, 650);
             font.draw(hudBatch, invulnerabilityTime + ", " + player.hasKey(), 500, 600);
-
-            hudBatch.end();
-
-
-            // Convert screen coordinates to world coordinates using the camera's projection matrix
-            Vector3 worldCoordinates = new Vector3(centerX, centerY / 8, 0);
-            camera.unproject(worldCoordinates);
+             */
 
             // Draw the hearts at the calculated world coordinates + updates for when a live is lost
             //TODO Draw Key if obtained
             game.getSpriteBatch().begin();
 
             if (player.getLives() == 3) {
-                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
-                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
-                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
             }
             if (player.getLives() == 2) {
-                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
-                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
-                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
+                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
             }
             if (player.getLives() == 1) {
-                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
-                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
-                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y, 64, 64);
+                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y, 64, 64);
+                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y, 64, 64);
             }
 
             game.getSpriteBatch().end();
@@ -746,10 +747,13 @@ public class GameScreen implements Screen {
         return paused;
     }
 
+    // Responsible for making sure the game does not get scaled down when resizing
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false);
+        viewport.update(width, height, true);
+        camera.setToOrtho(false, width, height); // Update the camera projection to match the new viewport size
     }
+
 
     @Override
     public void pause() {
