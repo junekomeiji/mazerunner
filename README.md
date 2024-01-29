@@ -4,14 +4,13 @@
 
 
 
-### Implement scrolling
 ### Implement enemy behaviour
-### Implement custom window sizes
-### Implement sound effects
 ### Transfer walls etc to their own class
 
 
 ## Doing
+
+### Implement sound effects
 
 ## Review
 
@@ -23,3 +22,4 @@
 ### Implement music
 ### Implement main menu
 ### Implement file reading
+### Implement custom window sizes
