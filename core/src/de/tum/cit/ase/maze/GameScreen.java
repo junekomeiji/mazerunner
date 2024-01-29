@@ -18,6 +18,7 @@ import de.tum.cit.ase.maze.Entities.Things.*;
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
+import org.ietf.jgss.GSSContext;
 
 
 /**
@@ -29,7 +30,9 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
+
     private Viewport viewport;
+    private Viewport hudViewport;
 
 
     public Maploader maploader;
@@ -66,7 +69,6 @@ public class GameScreen implements Screen {
     private Sound keySound;
     private Sound birdSound;
     private Sound chestSound;
-    private Sound lowHealthSound;
 
 
     int movementSpeed = 8;
@@ -162,15 +164,16 @@ public class GameScreen implements Screen {
         things = new ArrayList<Thing>();
 
         // Loads all the sounds that can be played in the game screen and sets them to an appropriate volume
-
-        //TODO: Make setVolume work
-        walkingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/Footstep_Dirt_00.mp3"));
-        keySound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/key.mp3"));
+        walkingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/walking.mp3"));
         swingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/swing.mp3"));
-        birdSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/bird.mp3"));
         ghostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/ghost.mp3"));
         damageGhostSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageGhost.mp3"));
         damageTrapSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/damageTrap.mp3"));
+
+        //TODO: Implement
+        keySound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/key.mp3"));
+        chestSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/chest.mp3"));
+
 
 
         //Spawns in entities
@@ -196,12 +199,15 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false);
         camera.zoom = 1.5f;
 
-        // For changing window size without stretching everything
-        viewport = new ScreenViewport(camera);
-
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false);
         hudCamera.zoom = 1f;
+
+        // For changing window size without stretching everything
+        viewport = new ScreenViewport(camera);
+        hudViewport = new ScreenViewport(camera);
+
+
 
         //hud = new HUD(game.getSpriteBatch(), player, game.height, game.width);
 
@@ -439,7 +445,10 @@ public class GameScreen implements Screen {
 
         // Renders the HUD for the game at the top of the screen, unless the game is paused
         // If game is paused, render a pause menu
+
         if (!isPaused()) {
+
+            hudBatch.setProjectionMatrix(hudCamera.combined); // Set the projection matrix
             hudBatch.begin();
 
             font.draw(hudBatch, "Score: " + player.getScore(), centerX + 150, centerY - 100);
@@ -735,6 +744,7 @@ public class GameScreen implements Screen {
         return false;
     }
 
+
     private void pauseGame() {
         paused = true;
     }
@@ -750,8 +760,9 @@ public class GameScreen implements Screen {
     // Responsible for making sure the game does not get scaled down when resizing
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
+        viewport.update(width, height);
         camera.setToOrtho(false, width, height); // Update the camera projection to match the new viewport size
+        hudCamera.setToOrtho(false, width, height); // Update the camera projection to match the new viewport size
     }
 
 
