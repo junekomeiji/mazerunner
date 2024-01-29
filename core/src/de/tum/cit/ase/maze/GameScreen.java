@@ -41,6 +41,8 @@ public class GameScreen implements Screen {
 
     private float elapsedTime = 0f;
 
+    private boolean paused;
+
     private Player player;
 
     private boolean isInvulnerable = false;
@@ -92,10 +94,8 @@ public class GameScreen implements Screen {
 
     private boolean once = false;
 
-    private boolean paused = false;
 
     // All the textures for the gameScreen are here
-
     //Wall Texture
     Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 32, 0, 16, 16);
@@ -145,6 +145,8 @@ public class GameScreen implements Screen {
     public GameScreen(MazeRunnerGame game, Maploader maploader) {
 
         this.maploader = maploader;
+
+        this.paused = false;
 
         timeCount = 0;
 
@@ -207,9 +209,10 @@ public class GameScreen implements Screen {
         torch = new Torch(0, 0, 0);
         lever = new Lever(0, 0, 0);
         spike = new Spike(0, 0, 0);
-        chest = new Chest(0, 0, 0);
         fireplace = new Fireplace(0, 0, 0);
         vase = new Vase(0, 0, 0);
+        chest = new Chest(0, 0, 0);
+
 
         collided = false;
         // Get the font from the game's skin
@@ -220,8 +223,6 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        // Updates timer
-        timeCount += delta;
         int mapX = (int) (player.getX() / 64);
         int mapY = (int) (player.getY() / 64);
 
@@ -236,8 +237,21 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
 
-        //if(!paused) handleInput();
-        handleInput();
+        // If p is pressed, either pause or unpause the game
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            if (isPaused()) {
+                resumeGame();
+            } else {
+                pauseGame();
+            }
+        }
+
+        // If the game is not paused, handle inputs (aside from ESC) and update timer
+        if (!isPaused()) {
+            handleInput();
+            timeCount += delta;
+        }
+
 
         if (player.getAnimation().isAnimationFinished(elapsedTime) & (player.isPickingUp() | player.isSlashing())) {
             player.setPickingUp(false);
@@ -414,57 +428,63 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().end();
 
 
-        // Renders the HUD for the game at the top of the screen
+        // Renders the HUD for the game at the top of the screen, unless the game is paused
+        // If game is paused, render a pause menu
         int centerX = Gdx.graphics.getWidth() / 2;
         int centerY = Gdx.graphics.getHeight();
 
+        if (!isPaused()) {
+            hudBatch.begin();
 
-        hudBatch.begin();
-
-        font.draw(hudBatch, "Score: " + player.getScore(), centerX + 200, centerY - 100);
-        int hearthX = Gdx.graphics.getWidth();
-        font.draw(hudBatch, String.format("Time : %.1f", timeCount), centerX - 300, centerY - 100);
-        font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 400, centerY - 100);
-
-
-        // Debug stuff
-        font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
-        font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
-
-        font.draw(hudBatch, mapX + 1+ ", " + mapY + ", " + type(maploader.getMap()[mapX + 1][mapY]), 500, 700);
-        font.draw(hudBatch, ((mapX * 64) - 64) + ", " + ((mapY * 64) - 64), 500, 650);
-        font.draw(hudBatch, invulnerabilityTime + ", " + player.hasKey(), 500, 600);
+            font.draw(hudBatch, "Score: " + player.getScore(), centerX + 200, centerY - 100);
+            int hearthX = Gdx.graphics.getWidth();
+            font.draw(hudBatch, String.format("Time : %.1f", timeCount), centerX - 300, centerY - 100);
+            font.draw(hudBatch, "Key obtained: " + player.hasKey(), centerX + 400, centerY - 100);
 
 
-        hudBatch.end();
+            // Debug stuff
+            font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
+            font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
+
+            font.draw(hudBatch, mapX + 1+ ", " + mapY + ", " + type(maploader.getMap()[mapX + 1][mapY]), 500, 700);
+            font.draw(hudBatch, ((mapX * 64) - 64) + ", " + ((mapY * 64) - 64), 500, 650);
+            font.draw(hudBatch, invulnerabilityTime + ", " + player.hasKey(), 500, 600);
+
+            hudBatch.end();
 
 
-        // Convert screen coordinates to world coordinates using the camera's projection matrix
-        Vector3 worldCoordinates = new Vector3(centerX, centerY / 8, 0);
-        camera.unproject(worldCoordinates);
+            // Convert screen coordinates to world coordinates using the camera's projection matrix
+            Vector3 worldCoordinates = new Vector3(centerX, centerY / 8, 0);
+            camera.unproject(worldCoordinates);
 
-        // Draw the hearts at the calculated world coordinates + logic for when a live is lost
-        // Draw Key if obtained
-        game.getSpriteBatch().begin();
+            // Draw the hearts at the calculated world coordinates + logic for when a live is lost
+            // Draw Key if obtained
+            game.getSpriteBatch().begin();
 
-        if (player.getLives() == 3) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
+            if (player.getLives() == 3) {
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
+            }
+            if (player.getLives() == 2) {
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
+            }
+            if (player.getLives() == 1) {
+                game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
+                game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
+            }
+
+            game.getSpriteBatch().end();
+        } else {
+            hudBatch.begin();
+
+            font.draw(hudBatch, "GAME PAUSED", centerX - 100, centerY - 200);
+            font.draw(hudBatch, "Press P to resume game", centerX - 200, centerY - 300);
+            hudBatch.end();
         }
-        if (player.getLives() == 2) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
-            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
-        }
-        if (player.getLives() == 1) {
-            game.getSpriteBatch().draw(fullHearthTextureRegion, worldCoordinates.x - 90, worldCoordinates.y + 15, 64, 64);
-            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x, worldCoordinates.y + 15, 64, 64);
-            game.getSpriteBatch().draw(emptyHearthTextureRegion, worldCoordinates.x + 90, worldCoordinates.y + 15, 64, 64);
-        }
-
-
-        game.getSpriteBatch().end();
 
         camera.update(); // Update the camera
         hudCamera.update();
@@ -570,7 +590,6 @@ public class GameScreen implements Screen {
         // Press E to pick up a key from a chest
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             if(chestProximity(player.getX(), player.getY())){
-                chest.open();
                 player.setKey(true);
             } else if (!player.isPickedUp()) {
                 elapsedTime = 0;
@@ -691,7 +710,6 @@ public class GameScreen implements Screen {
     }
 
     // Assuming you have a method to get the player's coordinates and a list of chest coordinates
-
     private boolean chestProximity(float x, float y) {
 
         int mapX = (int) (x / 64);
@@ -713,9 +731,17 @@ public class GameScreen implements Screen {
         return false;
     }
 
+    private void pauseGame() {
+        paused = true;
+    }
 
+    private void resumeGame() {
+        paused = false;
+    }
 
-
+    public boolean isPaused() {
+        return paused;
+    }
 
     @Override
     public void resize(int width, int height) {
