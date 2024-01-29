@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.audio.Sound;
@@ -31,6 +32,9 @@ public class MenuScreen implements Screen {
 
     private Sound clickSound;
 
+    private OrthographicCamera camera;
+    private Viewport viewport;
+
     MazeRunnerGame game;
 
     private final Texture backgroundTexture;
@@ -46,10 +50,14 @@ public class MenuScreen implements Screen {
 
         this.game = game;
 
-        var camera = new OrthographicCamera();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false);
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
-        Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
+        // For changing window size without stretching everything
+        viewport = new ScreenViewport(camera);
+
+
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
         // Loading background texture
@@ -102,9 +110,11 @@ public class MenuScreen implements Screen {
         stage.draw(); // Draw the stage
     }
 
+    // Responsible for making sure the game does not get scaled down when resizing
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true); // Update the stage viewport on resize
+        viewport.update(width, height);
+        camera.setToOrtho(false, width, height); // Update the camera projection to match the new viewport size
     }
 
     @Override
