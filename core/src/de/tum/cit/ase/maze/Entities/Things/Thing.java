@@ -10,14 +10,16 @@ import de.tum.cit.ase.maze.Entities.Entity;
 public abstract class Thing extends Entity {
     int xoffset;
     int yoffset;
-    public Thing(int xpos, int ypos, int direction, int xoffset, int yoffset) {
 
+    // Constructor for creating a Thing instance.
+    public Thing(int xpos, int ypos, int direction, int xoffset, int yoffset) {
         super(xpos, ypos, direction);
         this.xoffset = xoffset;
         this.yoffset = yoffset;
         loadAnimations(xoffset, yoffset);
     }
 
+    // Load animations for the Mob, 2 frames each
     public void loadAnimations(int xoffset, int yoffset) {
         int frameWidth = 16;
         int frameHeight = 16;
@@ -57,12 +59,9 @@ public abstract class Thing extends Entity {
         }
 
         characterUpAnimation = new Animation<TextureRegion>(0.1f, characterUpAnimationFrames);
-
     }
 
-    public void open(){}
-
-
-
-
+    // Method to perform an action when the Thing is opened
+    public void open() {
+    }
 }

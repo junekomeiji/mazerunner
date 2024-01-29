@@ -108,6 +108,7 @@ public abstract class Entity {
         return characterRightAnimation;
     }
 
+    // Constructor for creating an Entity instance.
     public Entity(int x, int ypos, int direction) {
 
         this.x = x;
@@ -179,6 +180,5 @@ public abstract class Entity {
                 return characterUpAnimation;
             }
         }
-
     }
 }

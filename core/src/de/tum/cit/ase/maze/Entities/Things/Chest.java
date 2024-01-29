@@ -6,6 +6,7 @@ public class Chest extends Thing{
         super(xpos, ypos, direction, 96, 0);
     }
 
+    // Changes appearance of chest from closed to open
     @Override
     public void open(){
         this.setDirection(1);

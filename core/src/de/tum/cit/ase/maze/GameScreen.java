@@ -90,8 +90,8 @@ public class GameScreen implements Screen {
 
 
     // All the textures for the gameScreen are here
-    //TODO: MOVE
     // Wall Texture
+    //TODO: MOVE
     Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 32, 0, 16, 16);
 
@@ -133,7 +133,7 @@ public class GameScreen implements Screen {
 
 
     /**
-     * Constructor for GameScreen. Sets up the camera, audio, enteties and font.
+     * Constructor for GameScreen. Sets up the camera, audio, entities and font.
      *
      * @param game The main game class, used to access global resources and methods.
      */
@@ -200,7 +200,14 @@ public class GameScreen implements Screen {
     }
 
 
-    // Screen interface methods with necessary functionality
+    /**
+     * Screen interface methods with necessary functionality: main gameplay screen, rendering,
+     * player input, entity interactions, HUD display.
+     *
+     * <p>
+     * It renders entities and the map, manages player movement and interaction with enemies and traps,
+     * handles HUD display, and allows pausing and resuming the game.
+     */
     @Override
     public void render(float delta) {
 

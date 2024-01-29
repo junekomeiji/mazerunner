@@ -6,26 +6,27 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import de.tum.cit.ase.maze.Entities.Entity;
-
 import java.awt.*;
 
-/* anything from the mobs.png folder is just an extension of a mob, individual behaviours can be implemented
-in subclasses
+/**
+ * Abstract class representing a mobile entity in the game.
+ * anything from the mobs.png folder is just an extension of a mob, individual behaviours can be implemented
+ * in subclasses
  */
 public abstract class Mob extends Entity {
 
     int xoffset;
     int yoffset;
 
+    // Constructor for creating a Mob instance.
     public Mob(int xpos, int ypos, int direction, int xoffset, int yoffset) {
-
         super(xpos, ypos, direction);
         this.xoffset = xoffset;
         this.yoffset = yoffset;
         loadAnimations(xoffset, yoffset);
     }
 
-
+    // Load animations for the Mob, 3 frames each
     public void loadAnimations(int xoffset, int yoffset) {
         int frameWidth = 16;
         int frameHeight = 16;
@@ -65,9 +66,5 @@ public abstract class Mob extends Entity {
         }
 
         characterUpAnimation = new Animation<TextureRegion>(0.1f, characterUpAnimationFrames);
-
     }
-
-
-
 }
