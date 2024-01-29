@@ -21,7 +21,7 @@ public abstract class Thing extends Entity {
     public void loadAnimations(int xoffset, int yoffset) {
         int frameWidth = 16;
         int frameHeight = 16;
-        int walkAnimationFrames = 3;
+        int walkAnimationFrames = 2;
 
         this.texture = new Texture(Gdx.files.internal("things.png"));
 
@@ -37,7 +37,7 @@ public abstract class Thing extends Entity {
         Array<TextureRegion> characterLeftAnimationFrames = new Array<>(TextureRegion.class);
 
         for (int col = 0; col < walkAnimationFrames; col++) {
-            characterLeftAnimationFrames.add(new TextureRegion(this.texture, (col * frameWidth) + xoffset + 16, 16 + yoffset, frameWidth, frameHeight));
+            characterLeftAnimationFrames.add(new TextureRegion(this.texture, (col * frameWidth) + xoffset, 16 + yoffset, frameWidth, frameHeight));
         }
 
         characterLeftAnimation = new Animation<TextureRegion>(0.1f, characterLeftAnimationFrames);
@@ -45,7 +45,7 @@ public abstract class Thing extends Entity {
         Array<TextureRegion> characterRightAnimationFrames = new Array<>(TextureRegion.class);
 
         for (int col = 0; col < walkAnimationFrames; col++) {
-            characterRightAnimationFrames.add(new TextureRegion(this.texture, (col * frameWidth) + xoffset + 32, 32 + yoffset, frameWidth, frameHeight));
+            characterRightAnimationFrames.add(new TextureRegion(this.texture, (col * frameWidth) + xoffset, 32 + yoffset, frameWidth, frameHeight));
         }
 
         characterRightAnimation = new Animation<TextureRegion>(0.1f, characterRightAnimationFrames);
@@ -53,7 +53,7 @@ public abstract class Thing extends Entity {
         Array<TextureRegion> characterUpAnimationFrames = new Array<>(TextureRegion.class);
 
         for (int col = 0; col < walkAnimationFrames; col++) {
-            characterUpAnimationFrames.add(new TextureRegion(this.texture, (col * frameWidth) + xoffset + 48, 48 + yoffset, frameWidth, frameHeight));
+            characterUpAnimationFrames.add(new TextureRegion(this.texture, (col * frameWidth) + xoffset, 48 + yoffset, frameWidth, frameHeight));
         }
 
         characterUpAnimation = new Animation<TextureRegion>(0.1f, characterUpAnimationFrames);
