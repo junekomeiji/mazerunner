@@ -25,6 +25,9 @@ public class VictoryScreen implements Screen {
     SpriteBatch batch;
     BitmapFont font;
 
+    private OrthographicCamera camera;
+    private Viewport viewport;
+
     MazeRunnerGame game;
 
     private final Texture backgroundTexture;
@@ -34,10 +37,10 @@ public class VictoryScreen implements Screen {
     public VictoryScreen(MazeRunnerGame game){
         this.game = game;
 
-        var camera = new OrthographicCamera();
+        camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
-        Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
+        viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
         table = new Table(); // Create a table for layout
@@ -59,7 +62,7 @@ public class VictoryScreen implements Screen {
 
         batch.begin();
 
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(backgroundTexture, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
         font.draw(batch, "Press ESC to return to the main menu", 100, 100);
 
         batch.end();

@@ -18,7 +18,6 @@ import de.tum.cit.ase.maze.Entities.Things.*;
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
-import org.ietf.jgss.GSSContext;
 
 
 /**
@@ -196,11 +195,9 @@ public class GameScreen implements Screen {
         }
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false);
         camera.zoom = 1.5f;
 
         hudCamera = new OrthographicCamera();
-        hudCamera.setToOrtho(false);
         hudCamera.zoom = 1f;
 
         // For changing window size without stretching everything

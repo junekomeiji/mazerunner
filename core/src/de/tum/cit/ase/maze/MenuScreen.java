@@ -13,8 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.audio.Sound;
@@ -51,12 +52,9 @@ public class MenuScreen implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false);
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
-        // For changing window size without stretching everything
-        viewport = new ScreenViewport(camera);
-
+        viewport = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
@@ -98,23 +96,28 @@ public class MenuScreen implements Screen {
         font = game.getSkin().getFont("font");
     }
 
+    // Method for rendering all the graphics of the  menuScreen
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
 
-        batch.begin(); // Use the batch variable
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.begin();
+
+        // Draw the background texture, scaled to fit the current window size
+        batch.draw(backgroundTexture, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
+        System.out.println(Gdx.graphics.getWidth());
+
         batch.end();
 
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
-        stage.draw(); // Draw the stage
+        // Update and draw the stage
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
     // Responsible for making sure the game does not get scaled down when resizing
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        camera.setToOrtho(false, width, height); // Update the camera projection to match the new viewport size
     }
 
     @Override

@@ -22,6 +22,11 @@ public class DefeatScreen implements Screen {
 
     private final Stage stage;
 
+    private Viewport textViewport;
+
+    private OrthographicCamera camera;
+    private Viewport viewport;
+
     SpriteBatch batch;
     BitmapFont font;
 
@@ -34,10 +39,10 @@ public class DefeatScreen implements Screen {
     public DefeatScreen(MazeRunnerGame game){
         this.game = game;
 
-        var camera = new OrthographicCamera();
+        camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
-        Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
+        viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
         backgroundTexture = new Texture(Gdx.files.internal("backgrounds/defeat.png")); // Background texture
@@ -59,7 +64,7 @@ public class DefeatScreen implements Screen {
 
         batch.begin();
 
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(backgroundTexture, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
         font.draw(batch, "Press ESC to return to the main menu", 100, 100);
 
         batch.end();

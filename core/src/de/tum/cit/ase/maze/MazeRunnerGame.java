@@ -101,7 +101,8 @@ public class MazeRunnerGame extends Game {
         victoryMusicLooped.stop();
         defeatMusic.stop();
 
-        menuMusic.setVolume(0.75f); // Sets volume of the music for menu (and by extension map selector)
+        // Sets volume of the music for menu (and by extension map selector)
+        menuMusic.setVolume(0.75f);
         menuMusic.play();
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
         if (gameScreen != null) {

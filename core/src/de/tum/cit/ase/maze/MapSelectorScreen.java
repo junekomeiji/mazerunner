@@ -37,6 +37,9 @@ public class MapSelectorScreen implements Screen {
     MazeRunnerGame game;
     Maploader maploader;
 
+    private OrthographicCamera camera;
+    private Viewport viewport;
+
     private Sound clickSound;
 
     Table table;
@@ -53,10 +56,10 @@ public class MapSelectorScreen implements Screen {
         this.game = game;
         this.maploader = maploader;
 
-        var camera = new OrthographicCamera();
+        camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
-        Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
+        viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
         table = new Table(); // Create a table for layout
@@ -194,7 +197,7 @@ public class MapSelectorScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
 
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(backgroundTexture, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
         batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
