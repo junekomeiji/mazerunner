@@ -22,9 +22,6 @@ public class MazeRunnerGame extends Game {
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
 
-    //TODO: REMOVE
-    private TiledTest tiledTest;
-
     private SpriteBatch spriteBatch;
 
     // All music used during the game
@@ -131,14 +128,6 @@ public class MazeRunnerGame extends Game {
 
     public void goToDebug(){
         this.setScreen(new DebugScreen(this));
-        if(menuScreen != null){
-            menuScreen.dispose();
-            menuScreen = null;
-        }
-    }
-
-    public void goToTiledTest(){
-        this.setScreen(new TiledTest(this));
         if(menuScreen != null){
             menuScreen.dispose();
             menuScreen = null;

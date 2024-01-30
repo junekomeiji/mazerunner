@@ -31,15 +31,8 @@ public class DebugScreen implements Screen {
     MazeRunnerGame game;
 
     //declare all the characters...
-    Bat b;
-    Ghost g;
-    Humanoid h;
-    Man m;
     Player p;
-    Skeleton s;
-    Slime l;
-    Spider d;
-    Woman w;
+
 
     public DebugScreen(MazeRunnerGame game){
         this.game = game;

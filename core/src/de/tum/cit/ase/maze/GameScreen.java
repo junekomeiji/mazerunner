@@ -34,19 +34,16 @@ public class GameScreen implements Screen {
     private Player player;
 
     private final MazeRunnerGame game;
-    private OrthographicCamera camera;
-    private OrthographicCamera hudCamera;
+    private final OrthographicCamera camera;
+    private final OrthographicCamera hudCamera;
 
-    private Viewport viewport;
-    private Viewport hudViewport;
+    private final Viewport viewport;
 
-    private SpriteBatch hudBatch;
+    private final SpriteBatch hudBatch;
 
     private final BitmapFont font;
 
     //TODO: REMOVE
-    private float sinusInput = 0f;
-
     private float timeCount;
 
     private float elapsedTime = 0f;
@@ -60,67 +57,40 @@ public class GameScreen implements Screen {
 
     //TODO: ADD COMMENT
     private int movementTime = 0;
-    private int randDir = 0;
 
     // Necessary for handling walking sounds
     private boolean walkingSoundDelay = true;
     private int walkingSoundDelayTime = 0;
-    private int walkingSoundDelayTimeTicks = 20;
 
     // All sound effects used in this class
-    private Sound damageGhostSound;
-    private Sound damageTrapSound;
-    private Sound ghostSound;
-    private Sound swingSound;
-    private Sound walkingSound;
-    private Sound keySound;
-    private Sound chestSound;
+    private final Sound damageGhostSound;
+    private final Sound damageTrapSound;
+    private final Sound ghostSound;
+    private final Sound swingSound;
+    private final Sound walkingSound;
+    private final Sound keySound;
+    private final Sound chestSound;
 
     int movementSpeed = 8;
 
-    private ArrayList<Mob> enemies;
-    private ArrayList<Thing> things;
+    private final ArrayList<Mob> enemies;
+    private final ArrayList<Thing> things;
 
-    private Ghost ghost;
-    private Spike spike;
-    private Chest chest;
-
-    //TODO: DELETE
-    private Texture TextureRegion;
-    private boolean collided;
-
-    private boolean once = false;
-
+    private final Ghost ghost;
+    private final Spike spike;
+    private final Chest chest;
 
     // All the textures for the gameScreen are here
     // Wall Texture
     //TODO: MOVE
-    Texture wallTexture = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion wallTextureRegion = new TextureRegion(wallTexture, 32, 0, 16, 16);
-
-    //Entry Point Texture
-    Texture entryPointTexture = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion entryPointTextureRegion = new TextureRegion(entryPointTexture, 16, 112, 16, 16);
-
-    //Exit Texture (currently door)
     Texture exitTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion exitTextureRegion = new TextureRegion(exitTexture, 0, 96, 16, 16);
-
-    //Grass Texture
     Texture grassTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion grassTextureRegion = new TextureRegion(grassTexture, 0, 128, 16, 16);
 
-    //Lush Grass Texture
-    Texture lushGrassTexture = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion lushGrassTextureRegion = new TextureRegion(lushGrassTexture, 16, 128, 16, 16);
-
-    // Plain Grass Texture
     Texture plainGrassTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion plainGrassTextureRegion = new TextureRegion(plainGrassTexture, 48, 16, 16, 16);
 
-    // Wall Filler Texture
-    Texture wallTextureShadowless = new Texture(Gdx.files.internal("basictiles.png"));
-    TextureRegion wallTextureShadowlessRegion = new TextureRegion(wallTextureShadowless, 16, 0, 16, 16);
 
     // Bush Texture
     Texture bushTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -157,14 +127,14 @@ public class GameScreen implements Screen {
 
         // For changing window size without stretching everything
         viewport = new ScreenViewport(camera);
-        hudViewport = new ScreenViewport(camera);
+        Viewport hudViewport = new ScreenViewport(camera);
 
 
         hudBatch = new SpriteBatch();
         font = game.getSkin().getFont("font");
 
-        enemies = new ArrayList<Mob>();
-        things = new ArrayList<Thing>();
+        enemies = new ArrayList<>();
+        things = new ArrayList<>();
 
         // Loads all the sounds that can be played in the game screen
         walkingSound = Gdx.audio.newSound(Gdx.files.internal("soundeffects/walking.mp3"));
@@ -198,8 +168,6 @@ public class GameScreen implements Screen {
         ghost = new Ghost(0, 0, 0);
         spike = new Spike(0, 0, 0);
         chest = new Chest(0, 0, 0);
-
-        collided = false;
     }
 
 
@@ -213,11 +181,6 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-
-        //TODO: DELETE
-        int mapX = (int) (player.getX() / 64);
-        int mapY = (int) (player.getY() / 64);
-
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         elapsedTime += Gdx.graphics.getDeltaTime();
@@ -279,47 +242,6 @@ public class GameScreen implements Screen {
         camera.position.x = player.getX();
         camera.position.y = player.getY();
 
-        //TODO: REMOVE
-
-        /*
-        int visWidth = (Gdx.graphics.getWidth() + translatedx)/ 64;
-        int visHeight = (Gdx.graphics.getHeight() + translatedy)/ 64;
-
-        if(player.getMapX() > visWidth * 0.75){
-
-            camera.translate(+movementSpeed, 0);
-            translatedx += movementSpeed;
-            //this.paused = true;
-
-        } //else this.paused = false;
-
-        if(player.getMapX() < visWidth * 0.25){
-
-            camera.translate(-movementSpeed, 0);
-            translatedx -= movementSpeed;
-            //this.paused = true;
-
-        } //else this.paused = false;
-
-        if(player.getMapY() > visHeight * 0.75){
-
-            camera.translate(0, -movementSpeed);
-            translatedy -= movementSpeed;
-            //this.paused = true;
-
-        } //else this.paused = false;
-
-        if(player.getMapY() < visHeight * 0.25){
-
-            camera.translate(0, movementSpeed);
-            translatedy += movementSpeed;
-            //this.paused = true;
-
-        } //else this.paused = false;
-
-         */
-
-
         // Updates invulnerability and sets it to false after wearing of (reaching 0)
         if (isInvulnerable) {
             invulnerabilityTime--;
@@ -329,11 +251,9 @@ public class GameScreen implements Screen {
         }
 
         //TODO: ADD COMMENT
-        if(true){
-            movementTime--;
-            if(movementTime <= 1){
-                movementTime = 10;
-            }
+        movementTime--;
+        if(movementTime <= 1){
+            movementTime = 10;
         }
 
 
@@ -362,8 +282,8 @@ public class GameScreen implements Screen {
 
             switch(enemies.get(i).getDirection()){
                     case(0):
-                        if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() - 8, 64, enemies.get(i)) &&
-                                !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() - 8, 64, enemies.get(i))) {
+                        if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() - 8, enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() - 8, enemies.get(i))) {
                             enemies.get(i).moveDown(movementSpeed);
 
                         }
@@ -371,8 +291,8 @@ public class GameScreen implements Screen {
                         break;
 
                     case(1):
-                        if (!isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY(), 64, enemies.get(i)) &&
-                                !isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY() + 64 - movementSpeed, 64, enemies.get(i))) {
+                        if (!isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY(), enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY() + 64 - movementSpeed, enemies.get(i))) {
                             enemies.get(i).moveRight(movementSpeed);
 
                         }
@@ -380,8 +300,8 @@ public class GameScreen implements Screen {
                         break;
 
                     case(2):
-                        if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() + 64, 64, enemies.get(i)) &&
-                                !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() + 64, 64, enemies.get(i))) {
+                        if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() + 64, enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() + 64, enemies.get(i))) {
                             enemies.get(i).moveUp(movementSpeed);
 
                         }
@@ -389,8 +309,8 @@ public class GameScreen implements Screen {
                         break;
 
                     case(3):
-                        if (!isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY(), 64, enemies.get(i)) &&
-                                !isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY() + 64 - movementSpeed, 64, enemies.get(i))) {
+                        if (!isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY(), enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY() + 64 - movementSpeed, enemies.get(i))) {
                             enemies.get(i).moveLeft(movementSpeed);
 
                         }
@@ -459,16 +379,6 @@ public class GameScreen implements Screen {
             }
 
             hudBatch.end();
-            //TODO: REMOVE
-            /*
-            // Debug stuff
-            font.draw(hudBatch, player.getX() + ", " + player.getY(), 500, 800);
-            font.draw(hudBatch, player.getUpperrightcorner().x + ", " + player.getUpperrightcorner().y, 500, 750);
-
-            font.draw(hudBatch, mapX + 1+ ", " + mapY + ", " + type(maploader.getMap()[mapX + 1][mapY]), 500, 700);
-            font.draw(hudBatch, ((mapX * 64) - 64) + ", " + ((mapY * 64) - 64), 500, 650);
-            font.draw(hudBatch, invulnerabilityTime + ", " + player.hasKey(), 500, 600);
-             */
 
             // Draw the hearts at the calculated world coordinates + updates for when a live is lost
             game.getSpriteBatch().begin();
@@ -507,27 +417,6 @@ public class GameScreen implements Screen {
         hudCamera.update();
     }
 
-    //TODO: REMOVE
-    private String type(int t) {
-        switch (t) {
-            case 0 -> {
-                return "wall";
-            }
-            case 5 -> {
-                return "chest";
-            }
-            case 6 -> {
-                return "grass";
-            }
-            case 7 -> {
-                return "lush grass";
-            }
-            default -> {
-                return "something else";
-            }
-        }
-    }
-
     // Handles inputs from the player
     private void handleInput() {
 
@@ -541,9 +430,10 @@ public class GameScreen implements Screen {
 
         // Handles WASD inputs and corresponding situations
         // Collision with impassable objects and exits
+        int walkingSoundDelayTimeTicks = 20;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if (!isObstacleCollision(player.getX(), player.getY() + 64, 64, player) &&
-                    !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64, player)) {
+            if (!isObstacleCollision(player.getX(), player.getY() + 64, player) &&
+                    !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, player)) {
                 player.moveUp(movementSpeed);
                 if (!walkingSoundDelay) {
                     walkingSound.setVolume(walkingSound.play(), 0.75f);
@@ -551,15 +441,15 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (player.hasKey() & (isExitCollision(player.getX(), player.getY() + 64, 64) ||
-                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() + 64, 64))) {
+            if (player.hasKey() & (isExitCollision(player.getX(), player.getY() + 64) ||
+                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() + 64))) {
                 game.goToVictory();
             } else player.moveUp(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (!isObstacleCollision(player.getX() - 8, player.getY(), 64, player) &&
-                    !isObstacleCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, 64, player)) {
+            if (!isObstacleCollision(player.getX() - 8, player.getY(), player) &&
+                    !isObstacleCollision(player.getX() - 8, player.getY() + 64 - movementSpeed, player)) {
                 player.moveLeft(movementSpeed);
                 if (!walkingSoundDelay) {
                     walkingSound.setVolume(walkingSound.play(), 0.75f);
@@ -567,15 +457,15 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (player.hasKey() & (isExitCollision(player.getX() - 64, player.getY(), 64) ||
-                    isExitCollision(player.getX() - 64, player.getY() + 64 - movementSpeed, 64))) {
+            if (player.hasKey() & (isExitCollision(player.getX() - 64, player.getY()) ||
+                    isExitCollision(player.getX() - 64, player.getY() + 64 - movementSpeed))) {
                 game.goToVictory();
             } else player.moveLeft(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if (!isObstacleCollision(player.getX(), player.getY() - 8, 64, player) &&
-                    !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() - 8, 64, player)) {
+            if (!isObstacleCollision(player.getX(), player.getY() - 8, player) &&
+                    !isObstacleCollision(player.getX() + 64 - movementSpeed, player.getY() - 8, player)) {
                 player.moveDown(movementSpeed);
                 if (!walkingSoundDelay) {
                     walkingSound.setVolume(walkingSound.play(), 0.75f);
@@ -583,15 +473,15 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (player.hasKey() & (isExitCollision(player.getX(), player.getY() - 1, 64) ||
-                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() - 1, 64))) {
+            if (player.hasKey() & (isExitCollision(player.getX(), player.getY() - 1) ||
+                    isExitCollision(player.getX() + 64 - movementSpeed, player.getY() - 1))) {
                 game.goToVictory();
             } else player.moveDown(0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (!isObstacleCollision(player.getX() + 64, player.getY(), 64, player) &&
-                    !isObstacleCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64, player)) {
+            if (!isObstacleCollision(player.getX() + 64, player.getY(), player) &&
+                    !isObstacleCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, player)) {
                 player.moveRight(movementSpeed);
                 if (!walkingSoundDelay) {
                     walkingSound.setVolume(walkingSound.play(), 0.75f);
@@ -599,8 +489,8 @@ public class GameScreen implements Screen {
                     walkingSoundDelayTime = walkingSoundDelayTimeTicks;
                 }
             }
-            if (player.hasKey() & (isExitCollision(player.getX() + 64, player.getY(), 64) ||
-                    isExitCollision(player.getX() + 64, player.getY() + 64 - movementSpeed, 64))) {
+            if (player.hasKey() & (isExitCollision(player.getX() + 64, player.getY()) ||
+                    isExitCollision(player.getX() + 64, player.getY() + 64 - movementSpeed))) {
                 game.goToVictory();
             } else player.moveRight(0);
         }
@@ -663,16 +553,14 @@ public class GameScreen implements Screen {
                 }
             }
         }
-
-        collided = isObstacleCollision(player.getX() + movementSpeed, player.getY(), 64, player);
     }
 
     // Checks if we are about to run into an obstacle
-    private boolean isObstacleCollision(float nextX, float nextY, int tileSize, Entity entity) {
+    private boolean isObstacleCollision(float nextX, float nextY, Entity entity) {
 
         // Converting tiles to coordinates
-        int mapX = (int) (nextX / tileSize);
-        int mapY = (int) (nextY / tileSize);
+        int mapX = (int) (nextX / 64);
+        int mapY = (int) (nextY / 64);
 
         // Handles it so we cant just run outside of the map and bypass the Maze
         if (mapX < 0 || mapX >= maploader.getMapWidth() || mapY < 0 || mapY >= maploader.getMapHeight()) {
@@ -680,7 +568,7 @@ public class GameScreen implements Screen {
         }
 
         // Checks if the next position is a tile with collision (wall, entry point, chest, bush, exit)
-        return (isCollision(nextX, nextY, tileSize, entity) & (
+        return (isCollision(nextX, nextY, 64, entity) & (
                 maploader.getMap()[mapX][mapY] == 0
                         | maploader.getMap()[mapX][mapY] == 1)
                 | maploader.getMap()[mapX][mapY] == 2
@@ -691,16 +579,16 @@ public class GameScreen implements Screen {
 
 
     // Checks if we are about to run into an exit
-    private boolean isExitCollision(float nextX, float nextY, int tileSize) {
+    private boolean isExitCollision(float nextX, float nextY) {
 
         // Converting tiles to coordinates
-        int mapX = (int) (nextX / tileSize);
-        int mapY = (int) (nextY / tileSize);
+        int mapX = (int) (nextX / 64);
+        int mapY = (int) (nextY / 64);
 
         // Checks for out of bounds to prevent crashes
         if (mapX >= 0 && mapX < maploader.getMapWidth() && mapY >= 0 && mapY < maploader.getMapHeight()) {
             // Checks if next position is an exit (case 2)
-            return isCollision(nextX, nextY, tileSize, player) && (maploader.getMap()[mapX][mapY] == 2);
+            return isCollision(nextX, nextY, 64, player) && (maploader.getMap()[mapX][mapY] == 2);
         } else {
             // In case we are out of bounds
             return false;
@@ -746,9 +634,7 @@ public class GameScreen implements Screen {
                 return true;
             } else if (player.getDirection() == 2 & maploader.getMap()[player.getMapX()][player.getMapY() + 1] == 5) {
                 return true;
-            } else if (player.getDirection() == 3 & maploader.getMap()[player.getMapX() - 1][player.getMapY()] == 5) {
-                return true;
-            }
+            } else return player.getDirection() == 3 & maploader.getMap()[player.getMapX() - 1][player.getMapY()] == 5;
         }
 
         return false;
