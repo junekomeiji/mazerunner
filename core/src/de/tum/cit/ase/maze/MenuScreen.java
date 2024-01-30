@@ -102,7 +102,6 @@ public class MenuScreen implements Screen {
 
         // Draw the background texture, scaled to fit the current window size
         batch.draw(backgroundTexture, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
-        System.out.println(Gdx.graphics.getWidth());
 
         batch.end();
 

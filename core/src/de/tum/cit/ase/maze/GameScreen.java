@@ -58,6 +58,7 @@ public class GameScreen implements Screen {
 
     //TODO: ADD COMMENT
     private int movementTime = 0;
+    private int randDir = 0;
 
     // Necessary for handling walking sounds
     private boolean walkingSoundDelay = true;
@@ -184,7 +185,7 @@ public class GameScreen implements Screen {
                     things.add(new Spike(x * 64, y * 64, 0));
                 }
                 if (maploader.getMap()[x][y] == 4) {
-                    enemies.add(new Ghost(x * 64, y * 64, 0));
+                    enemies.add(new Ghost(x * 64, y * 64, 1));
                 }
                 if (maploader.getMap()[x][y] == 5) {
                     things.add(new Chest(x * 64, y * 64, 0));
@@ -357,30 +358,11 @@ public class GameScreen implements Screen {
         //TODO: ADD COMMENT
         if(true){
             movementTime--;
-            if(movementTime <= 0){
-                movementTime = 50;
+            if(movementTime <= 1){
+                movementTime = 10;
             }
         }
 
-        //Draws Ghosts and handles losing lives to them
-        for (Entity e : enemies) {
-            //e.moveUp(2)
-
-            if(movementTime < 50){
-                int randDir = (int) (4 * Math.random());
-            }
-
-            // Checks if player is colliding with a ghost + checks for invulnerability
-            if (e.getMapX() == player.getMapX() && e.getMapY() == player.getMapY() && !isInvulnerable) {
-
-                player.setLives(player.getLives() - 1);
-                damageGhostSound.setVolume(damageGhostSound.play(), 0.3f);
-                isInvulnerable = true; // Temporary invulnerability granted
-                invulnerabilityTime = 30;
-
-            }
-            game.getSpriteBatch().draw(ghostFrame, e.getX(), e.getY(), 64, 64);
-        }
 
         //Draws Spikes and handles losing lives to them
         for (Thing t : things) {
@@ -398,6 +380,67 @@ public class GameScreen implements Screen {
                 game.getSpriteBatch().draw(spikeFrame, t.getX(), t.getY(), 64, 64);
             }
         }
+
+        for (int i = 0; i < enemies.size(); i++) {
+
+            System.out.println(i + " " + enemies.get(i).getDirection());
+
+            if(movementTime == 2) enemies.get(i).setDirection((int) (4 * Math.random()));
+
+            switch(enemies.get(i).getDirection()){
+                    case(0):
+                        if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() - 8, 64, enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() - 8, 64, enemies.get(i))) {
+                            enemies.get(i).moveDown(movementSpeed);
+
+                        }
+
+                        break;
+
+                    case(1):
+                        if (!isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY(), 64, enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY() + 64 - movementSpeed, 64, enemies.get(i))) {
+                            enemies.get(i).moveRight(movementSpeed);
+
+                        }
+
+                        break;
+
+                    case(2):
+                        if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() + 64, 64, enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() + 64, 64, enemies.get(i))) {
+                            enemies.get(i).moveUp(movementSpeed);
+
+                        }
+
+                        break;
+
+                    case(3):
+                        if (!isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY(), 64, enemies.get(i)) &&
+                                !isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY() + 64 - movementSpeed, 64, enemies.get(i))) {
+                            enemies.get(i).moveLeft(movementSpeed);
+
+                        }
+
+                        break;
+
+                }
+
+
+            // Checks if player is colliding with a ghost + checks for invulnerability
+            if (enemies.get(i).getMapX() == player.getMapX() && enemies.get(i).getMapY() == player.getMapY() && !isInvulnerable) {
+
+                player.setLives(player.getLives() - 1);
+                damageGhostSound.setVolume(damageGhostSound.play(), 0.3f);
+                isInvulnerable = true; // Temporary invulnerability granted
+                invulnerabilityTime = 50;
+
+
+            }
+            game.getSpriteBatch().draw(ghostFrame, enemies.get(i).getX(), enemies.get(i).getY(), 64, 64);
+        }
+
+
 
         // Player gets drawn below where he "actually is" to make up for empty space at the bottom of the skin
         game.getSpriteBatch().draw(playerFrame, player.getX(), player.getY() - 16, 64, 128);
