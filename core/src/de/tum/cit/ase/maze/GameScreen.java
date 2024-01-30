@@ -18,6 +18,8 @@ import de.tum.cit.ase.maze.Entities.Things.*;
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
+import de.tum.cit.ase.maze.Tiles.*;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -252,50 +254,21 @@ public class GameScreen implements Screen {
         // Draws the Map aside from Enteties (ghosts and spikes)
         game.getSpriteBatch().begin();
 
-        // Loop goes through every coordinate in the grid and draws appropriate texture according to its case
         for (int x = 0; x < maploader.getMapWidth(); x++) {
             for (int y = 0; y < maploader.getMapHeight(); y++) {
-                int entityType = maploader.getMap()[x][y]; // Retrieves the object type
-                // Render Objects based on their type
-                switch (entityType) {
-                    case 0:
-                        // Render Wall
-                        game.getSpriteBatch().draw(wallTextureRegion, x * 64, y * 64, 64, 64);
-                        break;
-                    case 1:
-                        // Render Entry
-                        game.getSpriteBatch().draw(entryPointTextureRegion, x * 64, y * 64, 64, 64);
-                        break;
-                    case 2:
-                        // Render Exit on top of plain Grass
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64, y * 64, 64, 64);
-                        game.getSpriteBatch().draw(exitTextureRegion, x * 64, y * 64, 64, 64);
-                        break;
-                    case 3, 5:
-                        // Render plain grass below all Traps and Chests
-                        game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64, y * 64, 64, 64);
-                        break;
-                    case 4, 6:
-                        // Render grass below all Enemies and randomly on the floor
-                        game.getSpriteBatch().draw(grassTextureRegion, x * 64, y * 64, 64, 64);
-                        break;
-                    case 7:
-                        // Render Lush Grass randomly on the floor
-                        game.getSpriteBatch().draw(lushGrassTextureRegion, x * 64, y * 64, 64, 64);
-                        break;
-                    case 8:
-                        // Render shadowless Walls
-                        game.getSpriteBatch().draw(wallTextureShadowlessRegion, x * 64, y * 64, 64, 64);
-                        break;
-                    case 9:
-                        // Render bushes on top of plain Grass
-                        game.getSpriteBatch().draw(grassTextureRegion, x * 64, y * 64, 64, 64);
-                        game.getSpriteBatch().draw(bushTextureRegion, x * 64, y * 64, 64, 64);
-                        break;
+                Tile t = maploader.getMapTiles()[x][y]; // Retrieves the object type
 
-                }
+                if(t instanceof Exit){
+                    game.getSpriteBatch().draw(plainGrassTextureRegion, x * 64, y * 64, 64, 64);
+                    game.getSpriteBatch().draw(exitTextureRegion, x * 64, y * 64, 64, 64);
+                } else if (t instanceof Bush){
+                    game.getSpriteBatch().draw(grassTextureRegion, x * 64, y * 64, 64, 64);
+                    game.getSpriteBatch().draw(bushTextureRegion, x * 64, y * 64, 64, 64);
+                } else game.getSpriteBatch().draw(maploader.getMapTiles()[x][y].getTextureRegion(), x * 64, y * 64, 64, 64);
             }
         }
+
+
 
         //Checks if we are out of lives
         if (player.getLives() < 1) {

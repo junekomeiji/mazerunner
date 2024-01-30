@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 import com.badlogic.gdx.Gdx;
 import de.tum.cit.ase.maze.Entities.Mobs.Player;
+import de.tum.cit.ase.maze.Tiles.*;
 
 public class Maploader {
 
@@ -20,10 +21,13 @@ public class Maploader {
     int mapHeight;
     int[][] map;
 
+    Tile[][] mapTiles;
+
     public Maploader(MazeRunnerGame game, Player player) {
         this.game = game;
         this.mapType = 1;
         map = new int[mapHeight][mapWidth];
+        mapTiles = new Tile[mapHeight][mapWidth];
         this.player = player;
     }
 
@@ -67,6 +71,45 @@ public class Maploader {
                 }
             }
         }
+
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                switch (map[x][y]) {
+                    case 0:
+                        // Render Wall
+                        mapTiles[x][y] = new Wall();
+                        break;
+                    case 1:
+                        mapTiles[x][y] = new Entry();
+                        break;
+                    case 2:
+                        // Render Exit on top of plain Grass
+                        mapTiles[x][y] = new Exit();
+                        break;
+                    case 3, 5:
+                        // Render plain grass below all Traps and Chests
+                        mapTiles[x][y] = new Grass();
+                        break;
+                    case 4, 6:
+                        // Render grass below all Enemies and randomly on the floor
+                        mapTiles[x][y] = new Grass();
+                        break;
+                    case 7:
+                        // Render Lush Grass randomly on the floor
+                        mapTiles[x][y] = new LushGrass();
+                        break;
+                    case 8:
+                        // Render shadowless Walls
+                        mapTiles[x][y] = new WallShadowless();
+                        break;
+                    case 9:
+                        // Render bushes on top of plain Grass
+                        mapTiles[x][y] = new Bush();
+                        break;
+
+                }            }
+        }
+
     }
 
     public void loadMap() {
@@ -127,6 +170,9 @@ public class Maploader {
             }
         }
         return false;
+
+
+
     }
 
     public int getMapType() {
@@ -137,6 +183,7 @@ public class Maploader {
         this.mapType = mapType;
         loadMap(); // Updates map size when Map changes
         map = new int[mapHeight][mapWidth];
+        mapTiles = new Tile[mapHeight][mapWidth];
     }
 
     public int getMapWidth() {
@@ -161,5 +208,13 @@ public class Maploader {
 
     public void setMap(int[][] map) {
         this.map = map;
+    }
+
+    public Tile[][] getMapTiles() {
+        return mapTiles;
+    }
+
+    public void setMapTiles(Tile[][] mapTiles) {
+        this.mapTiles = mapTiles;
     }
 }

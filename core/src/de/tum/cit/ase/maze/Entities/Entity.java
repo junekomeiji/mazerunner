@@ -9,8 +9,6 @@ import java.awt.*;
 
 public abstract class Entity {
     protected Texture texture;
-    protected SpriteBatch spriteBatch;
-
     protected int x;
     protected int y;
     protected int direction;
