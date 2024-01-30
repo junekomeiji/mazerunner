@@ -43,7 +43,6 @@ public class GameScreen implements Screen {
 
     private final BitmapFont font;
 
-    //TODO: REMOVE
     private float timeCount;
 
     private float elapsedTime = 0f;
@@ -55,7 +54,6 @@ public class GameScreen implements Screen {
     private boolean isInvulnerable = false;
     private int invulnerabilityTime = 0;
 
-    //TODO: ADD COMMENT
     private int movementTime = 0;
 
     // Necessary for handling walking sounds
@@ -72,6 +70,8 @@ public class GameScreen implements Screen {
     private final Sound chestSound;
 
     int movementSpeed = 8;
+    int GhostMovementSpeed = 4;
+
 
     private final ArrayList<Mob> enemies;
     private final ArrayList<Thing> things;
@@ -80,9 +80,7 @@ public class GameScreen implements Screen {
     private final Spike spike;
     private final Chest chest;
 
-    // All the textures for the gameScreen are here
-    // Wall Texture
-    //TODO: MOVE
+    // All the textures not in their own classes are here
     Texture exitTexture = new Texture(Gdx.files.internal("basictiles.png"));
     TextureRegion exitTextureRegion = new TextureRegion(exitTexture, 0, 96, 16, 16);
     Texture grassTexture = new Texture(Gdx.files.internal("basictiles.png"));
@@ -250,7 +248,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        //TODO: ADD COMMENT
         movementTime--;
         if(movementTime <= 1){
             movementTime = 10;
@@ -274,44 +271,44 @@ public class GameScreen implements Screen {
             }
         }
 
+        // Random movement of ghosts
         for (int i = 0; i < enemies.size(); i++) {
 
-            System.out.println(i + " " + enemies.get(i).getDirection());
-
+            // randomiser for next movement
             if(movementTime == 2) enemies.get(i).setDirection((int) (4 * Math.random()));
 
             switch(enemies.get(i).getDirection()){
-                    case(0):
+                    case(0): // down
                         if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() - 8, enemies.get(i)) &&
                                 !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() - 8, enemies.get(i))) {
-                            enemies.get(i).moveDown(movementSpeed);
+                            enemies.get(i).moveDown(GhostMovementSpeed);
 
                         }
 
                         break;
 
-                    case(1):
+                    case(1): // right
                         if (!isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY(), enemies.get(i)) &&
                                 !isObstacleCollision(enemies.get(i).getX() + 64, enemies.get(i).getY() + 64 - movementSpeed, enemies.get(i))) {
-                            enemies.get(i).moveRight(movementSpeed);
+                            enemies.get(i).moveRight(GhostMovementSpeed);
 
                         }
 
                         break;
 
-                    case(2):
+                    case(2): // up
                         if (!isObstacleCollision(enemies.get(i).getX(), enemies.get(i).getY() + 64, enemies.get(i)) &&
                                 !isObstacleCollision(enemies.get(i).getX() + 64 - movementSpeed, enemies.get(i).getY() + 64, enemies.get(i))) {
-                            enemies.get(i).moveUp(movementSpeed);
+                            enemies.get(i).moveUp(GhostMovementSpeed);
 
                         }
 
                         break;
 
-                    case(3):
+                    case(3): // left
                         if (!isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY(), enemies.get(i)) &&
                                 !isObstacleCollision(enemies.get(i).getX() - 8, enemies.get(i).getY() + 64 - movementSpeed, enemies.get(i))) {
-                            enemies.get(i).moveLeft(movementSpeed);
+                            enemies.get(i).moveLeft(GhostMovementSpeed);
 
                         }
 
